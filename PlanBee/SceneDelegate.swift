@@ -2,7 +2,7 @@
 //  SceneDelegate.swift
 //  PlanBee
 //
-//  Copyright (c) 2023 oasis444. All right reserved.
+//  Copyright (c) 2023 z-wook. All right reserved.
 //
 
 import UIKit
@@ -17,12 +17,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         options connectionOptions: UIScene.ConnectionOptions
     ) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        window = UIWindow(windowScene: windowScene)
-        
         let tabBar  = TabBarController()
-        let homeTap = UINavigationController(rootViewController: tabBar)
-        
-        window?.rootViewController = homeTap
+        window = UIWindow(windowScene: windowScene)
+        window?.backgroundColor = .PlanBeeBackgroundColor
+        window?.rootViewController = tabBar
         window?.makeKeyAndVisible()
     }
 

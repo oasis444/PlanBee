@@ -2,7 +2,7 @@
 //  Plan+CoreDataClass.swift
 //  
 //
-//  Copyright (c) 2023 oasis444. All right reserved.
+//  Copyright (c) 2023 z-wook. All right reserved.
 //
 //
 
@@ -11,5 +11,5 @@ import CoreData
 
 @objc(Plan)
 public class Plan: NSManagedObject {
-    
+
 }

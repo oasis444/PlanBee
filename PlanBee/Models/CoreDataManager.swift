@@ -2,7 +2,7 @@
 //  CoreDataManager.swift
 //  PlanBee
 //
-//  Copyright (c) 2023 oasis444. All right reserved.
+//  Copyright (c) 2023 z-wook. All right reserved.
 //
 
 import UIKit
@@ -20,11 +20,11 @@ final class CoreDataManager {
         return appDelegate.persistentContainer.viewContext
     }()
     
-    static func saveTodoData(todo: Todo) {
-        guard let context = context else { return }
+    static func saveTodoData(todo: Todo) -> Bool {
+        guard let context = context else { return false }
         guard let entity = NSEntityDescription.entity(
             forEntityName: planEntityName, in: context
-        ) else { return }
+        ) else { return false }
         
         let object = NSManagedObject(entity: entity, insertInto: context)
         object.setValue(todo.id, forKey: Todokeys.uuid.key)
@@ -34,28 +34,32 @@ final class CoreDataManager {
         
         do {
             try context.save()
+            return true
         } catch {
             print("error: \(error.localizedDescription)")
+            return false
         }
     }
     
-    static func fetchTodoData() {
-        guard let context = context else { return }
+    static func fetchTodoData() -> [Todo]? {
+        guard let context = context else { return nil }
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: planEntityName)
         
         do {
-            guard let planList = try context.fetch(fetchRequest) as? [Plan] else { return }
+            guard let planList = try context.fetch(fetchRequest) as? [Plan] else { return nil }
             let todoList = planList.map {
                 Todo(
                     id: $0.uuid ?? UUID(),
                     content: $0.content ?? "nil",
-                    date: $0.date ?? Date.now,
+                    date: $0.date ?? Date(),
+                    priority: $0.priority ?? Date(),
                     done: $0.done
                 )
             }
-            print(todoList)
+            return todoList
         } catch {
             print("error: \(error.localizedDescription)")
+            return nil
         }
     }
     

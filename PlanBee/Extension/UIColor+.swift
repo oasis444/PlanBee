@@ -2,11 +2,12 @@
 //  UIColor+.swift
 //  PlanBee
 //
-//  Copyright (c) 2023 oasis444. All right reserved.
+//  Copyright (c) 2023 z-wook. All right reserved.
 //
 
 import UIKit
 
 extension UIColor {
-    static var mainTabBarTintColor: UIColor = .systemPink
+    static let mainTabBarTintColor: UIColor = .systemPink
+    static let PlanBeeBackgroundColor: UIColor = .secondarySystemBackground
 }

@@ -2,7 +2,7 @@
 //  Plan+CoreDataProperties.swift
 //  
 //
-//  Copyright (c) 2023 oasis444. All right reserved.
+//  Copyright (c) 2023 z-wook. All right reserved.
 //
 //
 
@@ -15,9 +15,10 @@ extension Plan {
         return NSFetchRequest<Plan>(entityName: "Plan")
     }
 
-    @NSManaged public var uuid: UUID?
-    @NSManaged public var date: Date?
     @NSManaged public var content: String?
+    @NSManaged public var date: Date?
     @NSManaged public var done: Bool
+    @NSManaged public var uuid: UUID?
+    @NSManaged public var priority: Date?
 
 }

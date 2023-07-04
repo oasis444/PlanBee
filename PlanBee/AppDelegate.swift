@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  PlanBee
 //
-//  Copyright (c) 2023 oasis444. All right reserved.
+//  Copyright (c) 2023 z-wook. All right reserved.
 //
 
 import UIKit
@@ -38,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "PlanBee")
         container.loadPersistentStores(
-            completionHandler: { (storeDescription, error) in
+            completionHandler: { (_, error) in
                 if let error = error as NSError? {
                     fatalError("Unresolved error \(error), \(error.userInfo)")
                 }

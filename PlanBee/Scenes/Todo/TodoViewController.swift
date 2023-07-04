@@ -1,5 +1,5 @@
 //
-//  SettingViewController.swift
+//  TodoViewController.swift
 //  PlanBee
 //
 //  Copyright (c) 2023 z-wook. All right reserved.
@@ -7,18 +7,18 @@
 
 import UIKit
 
-final class SettingViewController: UIViewController {
+final class TodoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureSettingView()
+        configureTodoView()
     }
 }
 
-private extension SettingViewController {
-    func configureSettingView() {
+private extension TodoViewController {
+    func configureTodoView() {
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title  = "설정"
+        navigationItem.title = "일정"
     }
 }

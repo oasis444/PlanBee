@@ -2,7 +2,7 @@
 //  TabBarController.swift
 //  PlanBee
 //
-//  Copyright (c) 2023 oasis444. All right reserved.
+//  Copyright (c) 2023 z-wook. All right reserved.
 //
 
 import UIKit
@@ -18,11 +18,18 @@ final class TabBarController: UITabBarController {
 
 private extension TabBarController {
     func configure() {
-        let homeVC = UINavigationController(rootViewController: HomeViewController())
-        homeVC.tabBarItem = UITabBarItem(
-            title: "홈",
-            image: UIImage(systemName: "house"),
-            selectedImage: UIImage(systemName: "house.fill")
+        let todoVC = UINavigationController(rootViewController: TodoViewController())
+        todoVC.tabBarItem = UITabBarItem(
+            title: "일정",
+            image: UIImage(systemName: "checklist"),
+            selectedImage: UIImage(systemName: "checklist.checked")
+        )
+        
+        let plannerVC = UINavigationController(rootViewController: PlannerViewController())
+        plannerVC.tabBarItem = UITabBarItem(
+            title: "플래너",
+            image: UIImage(systemName: "calendar.badge.plus"),
+            selectedImage: UIImage(systemName: "calendar")
         )
         
         let settingVC = UINavigationController(rootViewController: SettingViewController())
@@ -32,7 +39,7 @@ private extension TabBarController {
             selectedImage: UIImage(systemName: "gear")
         )
         
-        viewControllers = [homeVC, settingVC]
+        viewControllers = [todoVC, plannerVC, settingVC]
         tabBar.tintColor = UIColor.mainTabBarTintColor
     }
 }
