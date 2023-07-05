@@ -28,12 +28,49 @@ final class PlannerViewModel {
         return dateList
     }
     
-    func getSelectedTodoList(date: Date?) -> [Todo] {
+    func getTodoList(date: Date?) -> [Todo] {
         guard let date = date,
               let list = CoreDataManager.fetchTodoData() else { return [] }
         let selectedList = list.filter {
             $0.date == date
+        }.sorted { prev, next in
+            prev.priority < next.priority
         }
         return selectedList
+    }
+    
+    func updateTodo(todo: Todo) -> Bool {
+        return CoreDataManager.updatePlanData(newTodo: todo)
+    }
+    
+    func removeTodo(todo: Todo) -> Bool {
+        return CoreDataManager.deletePlanData(todo: todo)
+    }
+    
+    func textFieldIsFullWithBlank(text: String) -> Bool {
+        let trimmedText = text.trimmingCharacters(in: .whitespaces)
+        print(trimmedText)
+        return trimmedText.isEmpty ? true : false
+    }
+    
+    func moveTodo(date: Date?, startIndex: Int, destinationIndex: Int) {
+        var todoList = getTodoList(date: date)
+        todoList.swapAt(startIndex, destinationIndex)
+        let newIndex = destinationIndex + 1
+        
+        todoList[newIndex...].sort {
+            $0.priority < $1.priority
+        }
+        
+        todoList[destinationIndex...].forEach {
+            let updatedTodo = Todo(
+                id: $0.id,
+                content: $0.content,
+                date: $0.date,
+                priority: Date(),
+                done: $0.done
+            )
+            _ = updateTodo(todo: updatedTodo)
+        }
     }
 }

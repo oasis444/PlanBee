@@ -68,7 +68,7 @@ private extension PlannerViewController {
         calendarView.appearance.titleDefaultColor = .label  // 평일
 //        calendarView.appearance.titleWeekendColor = .link    // 주말
         calendarView.calendarWeekdayView.weekdayLabels.first!.textColor = .systemRed
-        calendarView.calendarWeekdayView.weekdayLabels.last!.textColor = .link
+        calendarView.calendarWeekdayView.weekdayLabels.last!.textColor = .systemBlue
         
 //        // 다중 선택
 //        calendarView.allowsMultipleSelection = true

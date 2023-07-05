@@ -9,7 +9,6 @@ import UIKit
 
 final class PlannerDetailTableViewCell: UITableViewCell {
     
-    var todo: Todo?
     private static let identifier = "PlannerDetailTableViewCell"
     
     static var getIdentifier: String {
@@ -19,26 +18,38 @@ final class PlannerDetailTableViewCell: UITableViewCell {
     private lazy var todoTitle: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 23, weight: .regular)
+        label.textColor = .label
         label.textAlignment = .left
+        label.numberOfLines = 0
         return label
     }()
     
-    override func layoutSubviews() {
+    func configure(todo: Todo?) {
         configureLayout()
-        todoTitle.text = todo?.content
+        configureCell(todo: todo)
     }
 }
 
 private extension PlannerDetailTableViewCell {
     func configureLayout() {
         let spacing: CGFloat = 16
+        let verticalSpacing: CGFloat = 15
         
         contentView.addSubview(todoTitle)
         
         todoTitle.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(spacing)
-            $0.top.bottom.equalToSuperview()
-            $0.trailing.equalToSuperview().inset(30)
+            $0.top.bottom.equalToSuperview().inset(verticalSpacing)
+            $0.trailing.equalToSuperview().inset(spacing)
         }
+    }
+    
+    func configureCell(todo: Todo?) {
+        selectionStyle = .none
+        
+        let type: UITableViewCell.AccessoryType = todo?.done == true ? .checkmark : .none
+        accessoryType = type
+        
+        todoTitle.text = todo?.content
     }
 }

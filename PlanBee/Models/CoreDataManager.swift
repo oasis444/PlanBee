@@ -30,6 +30,7 @@ final class CoreDataManager {
         object.setValue(todo.id, forKey: Todokeys.uuid.key)
         object.setValue(todo.content, forKey: Todokeys.content.key)
         object.setValue(todo.date, forKey: Todokeys.date.key)
+        object.setValue(todo.priority, forKey: Todokeys.priority.key)
         object.setValue(todo.done, forKey: Todokeys.done.key)
         
         do {
@@ -74,6 +75,7 @@ final class CoreDataManager {
                   let object = result.first as? NSManagedObject else { return false }
             object.setValue(newTodo.content, forKey: Todokeys.content.key)
             object.setValue(newTodo.date, forKey: Todokeys.date.key)
+            object.setValue(newTodo.priority, forKey: Todokeys.priority.key)
             object.setValue(newTodo.done, forKey: Todokeys.done.key)
 
             try context.save()
