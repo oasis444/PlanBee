@@ -44,7 +44,7 @@ private extension TodoTableViewCell {
     func configureCell() {
         contentView.backgroundColor = .systemOrange
         selectionStyle = .none
-        
+
         let type: UITableViewCell.AccessoryType = todo?.done == true ? .checkmark : .none
         accessoryType = type
         
