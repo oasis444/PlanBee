@@ -1,5 +1,5 @@
 //
-//  PlannerViewModel.swift
+//  TodoManager.swift
 //  PlanBee
 //
 //  Copyright (c) 2023 z-wook. All right reserved.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-final class PlannerViewModel {
+final class TodoManager {
     
     func saveTodo(saveTodo: Todo) -> Bool {
         let saveResult = CoreDataManager.saveTodoData(todo: saveTodo)
@@ -31,10 +31,15 @@ final class PlannerViewModel {
     func getTodoList(date: Date?) -> [Todo] {
         guard let date = date,
               let list = CoreDataManager.fetchTodoData() else { return [] }
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyyMMdd"
+        formatter.string(from: date)
+        
         let selectedList = list.filter {
-            $0.date == date
-        }.sorted { prev, next in
-            prev.priority < next.priority
+            formatter.string(from: $0.date) == formatter.string(from: date)
+        }.sorted {
+            $0.priority < $1.priority
         }
         return selectedList
     }
@@ -49,7 +54,6 @@ final class PlannerViewModel {
     
     func textFieldIsFullWithBlank(text: String) -> Bool {
         let trimmedText = text.trimmingCharacters(in: .whitespaces)
-        print(trimmedText)
         return trimmedText.isEmpty ? true : false
     }
     

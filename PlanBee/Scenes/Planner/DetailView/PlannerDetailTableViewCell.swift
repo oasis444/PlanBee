@@ -10,6 +10,7 @@ import UIKit
 final class PlannerDetailTableViewCell: UITableViewCell {
     
     private static let identifier = "PlannerDetailTableViewCell"
+    private var todo: Todo?
     
     static var getIdentifier: String {
         return identifier
@@ -25,8 +26,9 @@ final class PlannerDetailTableViewCell: UITableViewCell {
     }()
     
     func configure(todo: Todo?) {
+        self.todo = todo
         configureLayout()
-        configureCell(todo: todo)
+        configureCell()
     }
 }
 
@@ -44,7 +46,7 @@ private extension PlannerDetailTableViewCell {
         }
     }
     
-    func configureCell(todo: Todo?) {
+    func configureCell() {
         selectionStyle = .none
         
         let type: UITableViewCell.AccessoryType = todo?.done == true ? .checkmark : .none

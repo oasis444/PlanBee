@@ -12,7 +12,7 @@ final class PlannerDetailViewController: UIViewController {
     
     var date: Date?
     var reloadCalendar: ((_ relodaCalendar: Bool) -> Void)?
-    private let viewModel = PlannerViewModel()
+    private let viewModel = TodoManager()
     private var subscriptions = Set<AnyCancellable>()
     
     private lazy var dateFormatter: DateFormatter = {
@@ -183,9 +183,10 @@ extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: PlannerDetailTableViewCell.getIdentifier,
-            for: indexPath) as? PlannerDetailTableViewCell else { return UITableViewCell() }
-        let selectedTodoList = viewModel.getTodoList(date: date)
-        cell.configure(todo: selectedTodoList[indexPath.row])
+            for: indexPath
+        ) as? PlannerDetailTableViewCell else { return UITableViewCell() }
+        let todoList = viewModel.getTodoList(date: date)
+        cell.configure(todo: todoList[indexPath.row])
         return cell
     }
     

@@ -12,7 +12,7 @@ import FSCalendar
 final class PlannerViewController: UIViewController {
     
     var selectDate = Date()
-    let viewModel = PlannerViewModel()
+    let viewModel = TodoManager()
     
     private lazy var calendarView: FSCalendar = {
         let calendar = FSCalendar()
@@ -80,7 +80,7 @@ private extension PlannerViewController {
         view.addSubview(calendarView)
         
         calendarView.snp.makeConstraints {
-            $0.leading.trailing.top.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.edges.equalTo(view.safeAreaLayoutGuide)
         }
     }
 }
