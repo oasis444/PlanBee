@@ -16,7 +16,7 @@ final class TodoViewController: UIViewController {
         let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = .systemBackground
+        tableView.backgroundColor = .PlanBeeBackgroundColor
         tableView.register(TodoTableViewCell.self, forCellReuseIdentifier: TodoTableViewCell.getIdentifier)
         return tableView
     }()
@@ -64,31 +64,31 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        var selectedTodo = viewModel.getTodoList(date: Date())[indexPath.row]
-//        selectedTodo.done = !selectedTodo.done
-//        if viewModel.updateTodo(todo: selectedTodo) == true {
-//            tableView.reloadRows(at: [indexPath], with: .automatic)
-//        }
-//    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        var selectedTodo = viewModel.getTodoList(date: Date())[indexPath.row]
+        selectedTodo.done = !selectedTodo.done
+        if viewModel.updateTodo(todo: selectedTodo) == true {
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+        }
+    }
     
-//    func tableView(_ tableView: UITableView,
-//                   commit editingStyle: UITableViewCell.EditingStyle,
-//                   forRowAt indexPath: IndexPath) {
-//        let todo = viewModel.getTodoList(date: Date())[indexPath.row]
-//        if viewModel.removeTodo(todo: todo) {
-//            tableView.deleteRows(at: [indexPath], with: .automatic)
-//        }
-//    }
+    func tableView(_ tableView: UITableView,
+                   commit editingStyle: UITableViewCell.EditingStyle,
+                   forRowAt indexPath: IndexPath) {
+        let todo = viewModel.getTodoList(date: Date())[indexPath.row]
+        if viewModel.removeTodo(todo: todo) {
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+    }
     
-//    func tableView(_ tableView: UITableView,
-//                   moveRowAt sourceIndexPath: IndexPath,
-//                   to destinationIndexPath: IndexPath) {
-//        if sourceIndexPath == destinationIndexPath { return }
-//        viewModel.moveTodo(
-//            date: Date(),
-//            startIndex: sourceIndexPath.row,
-//            destinationIndex: destinationIndexPath.row
-//        )
-//    }
+    func tableView(_ tableView: UITableView,
+                   moveRowAt sourceIndexPath: IndexPath,
+                   to destinationIndexPath: IndexPath) {
+        if sourceIndexPath == destinationIndexPath { return }
+        viewModel.moveTodo(
+            date: Date(),
+            startIndex: sourceIndexPath.row,
+            destinationIndex: destinationIndexPath.row
+        )
+    }
 }

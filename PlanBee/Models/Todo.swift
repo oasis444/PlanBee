@@ -24,7 +24,7 @@ enum Todokeys: String {
 struct Todo {
     var id: UUID = UUID()
     var content: String
-    var date: Date
+    var date: String
     var priority = Date()
     var done: Bool = false
 }

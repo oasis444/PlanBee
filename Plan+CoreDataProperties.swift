@@ -16,7 +16,7 @@ extension Plan {
     }
 
     @NSManaged public var content: String?
-    @NSManaged public var date: Date?
+    @NSManaged public var date: String?
     @NSManaged public var done: Bool
     @NSManaged public var priority: Date?
     @NSManaged public var uuid: UUID?

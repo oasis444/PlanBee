@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 
 final class TodoManager {
     
@@ -19,7 +18,7 @@ final class TodoManager {
         return saveResult
     }
     
-    func getDateList() -> [Date] {
+    func getDateList() -> [String] {
         let todoList = CoreDataManager.fetchTodoData()
         guard let todoList = todoList else { return [] }
         let dateList = todoList.map { todo in
@@ -30,18 +29,11 @@ final class TodoManager {
     
     func getTodoList(date: Date?) -> [Todo] {
         guard let date = date,
-              let list = CoreDataManager.fetchTodoData() else { return [] }
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyyMMdd"
-        formatter.string(from: date)
-        
-        let selectedList = list.filter {
-            formatter.string(from: $0.date) == formatter.string(from: date)
-        }.sorted {
+              let list = CoreDataManager.fetchTodoData(date: date) else { return [] }
+        let sortedList = list.sorted {
             $0.priority < $1.priority
         }
-        return selectedList
+        return sortedList
     }
     
     func updateTodo(todo: Todo) -> Bool {

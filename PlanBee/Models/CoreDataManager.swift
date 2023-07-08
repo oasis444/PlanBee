@@ -42,17 +42,35 @@ final class CoreDataManager {
         }
     }
     
-    static func fetchTodoData() -> [Todo]? {
+    static func fetchTodoData(date: Date? = nil) -> [Todo]? {
         guard let context = context else { return nil }
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: planEntityName)
+        let formatter = DateFormatter()
         
         do {
+            if let date = date {
+                let strDate = DateFormatter.formatTodoDate(date: date)
+                fetchRequest.predicate = NSPredicate(format: "date = %@", strDate)
+                guard let planList = try context.fetch(fetchRequest) as? [Plan] else { return nil }
+                let todoList = planList.filter {
+                    $0.date == strDate
+                }.map {
+                    Todo(
+                        id: $0.uuid ?? UUID(),
+                        content: $0.content ?? "nil",
+                        date: $0.date ?? strDate,
+                        priority: $0.priority ?? Date(),
+                        done: $0.done
+                    )
+                }
+                return todoList
+            }
             guard let planList = try context.fetch(fetchRequest) as? [Plan] else { return nil }
             let todoList = planList.map {
                 Todo(
                     id: $0.uuid ?? UUID(),
                     content: $0.content ?? "nil",
-                    date: $0.date ?? Date(),
+                    date: $0.date ?? formatter.string(from: Date()),
                     priority: $0.priority ?? Date(),
                     done: $0.done
                 )

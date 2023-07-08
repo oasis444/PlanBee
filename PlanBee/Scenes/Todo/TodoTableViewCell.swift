@@ -10,6 +10,7 @@ import UIKit
 final class TodoTableViewCell: UITableViewCell {
     private static let identifier = "TodoTableViewCell"
     private var todo: Todo?
+    private let spacing: CGFloat = 16
     
     static var getIdentifier: String {
         return identifier
@@ -32,8 +33,6 @@ final class TodoTableViewCell: UITableViewCell {
 
 private extension TodoTableViewCell {
     func configureLayout() {
-        let spacing: CGFloat = 16
-        
         contentView.addSubview(title)
         
         title.snp.makeConstraints {

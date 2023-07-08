@@ -133,15 +133,18 @@ private extension PlannerDetailViewController {
     }
     
     @objc func didTappedAddTodoButton() {
-        guard let text = inputTodoTextField.text else { return }
+        guard let date = date,
+              let text = inputTodoTextField.text else { return }
         if viewModel.textFieldIsFullWithBlank(text: text) == false {
+            let strDate = DateFormatter.formatTodoDate(date: date)
             let todo = Todo(
                 content: text,
-                date: self.date ?? Date()
+                date: strDate
             )
             let saveResult = viewModel.saveTodo(saveTodo: todo)
             if saveResult == true {
                 tableView.reloadData()
+//                reloadTableView(date: date)
             } else {
                 showAlert()
             }
@@ -176,8 +179,7 @@ private extension PlannerDetailViewController {
 
 extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let selectedTodoList = viewModel.getTodoList(date: date)
-        return selectedTodoList.count
+        return viewModel.getTodoList(date: date).count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

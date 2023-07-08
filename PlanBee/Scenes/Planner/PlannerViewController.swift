@@ -95,7 +95,8 @@ extension PlannerViewController: FSCalendarDataSource, FSCalendarDelegate, FSCal
     func calendar(_ calendar: FSCalendar,
                   numberOfEventsFor date: Date
     ) -> Int {
-        if viewModel.getDateList().contains(date) {
+        let strDate = DateFormatter.formatTodoDate(date: date)
+        if viewModel.getDateList().contains(strDate) {
             return 1
         }
         return 0
