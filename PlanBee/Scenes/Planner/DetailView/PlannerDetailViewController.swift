@@ -10,29 +10,31 @@ import Combine
 
 final class PlannerDetailViewController: UIViewController {
     
-    var date: Date?
     var reloadCalendar: ((_ relodaCalendar: Bool) -> Void)?
-    private let viewModel = TodoManager()
+    private let todoManager = TodoManager()
+    private var viewModel: PlannerDetailViewModel?
     private var subscriptions = Set<AnyCancellable>()
     
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "M월 d일 EEEE"
-        return formatter
-    }()
+    init(date: Date) {
+        super.init(nibName: nil, bundle: nil)
+        viewModel = PlannerDetailViewModel(selectedDate: date)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private lazy var dateLabel: UILabel = {
-        guard let date = date else { return UILabel() }
         let label = UILabel()
-        label.text = dateFormatter.string(from: date)
-        label.font = .systemFont(ofSize: 30, weight: .bold)
-        label.textColor = .label
+        label.font = viewModel?.dateLabelFont
+        label.text = viewModel?.dateLabelText
+        label.textColor = viewModel?.dateLabelTextColor
         return label
     }()
     
     private lazy var addTodoButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "plus.circle"), for: .normal)
+        button.setImage(viewModel?.addTodoBtnImage, for: .normal)
         button.addTarget(self, action: #selector(didTappedAddTodoButton), for: .touchUpInside)
         button.isEnabled = false
         return button
@@ -40,18 +42,18 @@ final class PlannerDetailViewController: UIViewController {
     
     private lazy var inputTodoTextField: UITextField = {
         let textField = UITextField()
-        textField.borderStyle = .roundedRect
-        textField.font = .systemFont(ofSize: 20)
-        textField.placeholder = "할 일을 추가해주세요"
-        textField.backgroundColor = .systemBackground
+        textField.borderStyle = viewModel?.textFieldBorderStyle ?? .roundedRect
+        textField.font = viewModel?.textFieldFont
+        textField.placeholder = viewModel?.textFieldPlaceHolderText
+        textField.backgroundColor = viewModel?.textFieldBackgoundColor
         textField.delegate = self
         return textField
     }()
     
     private lazy var editModeButton: UIButton = {
         let button = UIButton()
-        button.setTitle("편집", for: .normal)
-        button.setTitleColor(.systemBlue, for: .normal)
+        button.setTitle(viewModel?.editBtnTitle, for: .normal)
+        button.setTitleColor(viewModel?.editBtnTitleColor, for: .normal)
         button.addTarget(self, action: #selector(didTappedEditButton), for: .touchUpInside)
         return button
     }()
@@ -64,7 +66,7 @@ final class PlannerDetailViewController: UIViewController {
             PlannerDetailTableViewCell.self,
             forCellReuseIdentifier: PlannerDetailTableViewCell.getIdentifier
         )
-        tableView.layer.cornerRadius = 15
+        tableView.layer.cornerRadius = viewModel?.tableViewCornerRadius ?? 15
         return tableView
     }()
     
@@ -77,7 +79,7 @@ final class PlannerDetailViewController: UIViewController {
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        subscriptions.removeAll()
+        super.viewDidDisappear(animated)
         reloadCalendar?(true)
     }
     
@@ -96,55 +98,51 @@ private extension PlannerDetailViewController {
     }
     
     func configureLayout() {
-        let spacing: CGFloat = 16
-        let contentSpacing: CGFloat = 40
-        
         [dateLabel, addTodoButton, inputTodoTextField, editModeButton, tableView].forEach {
             view.addSubview($0)
         }
         
         dateLabel.snp.makeConstraints {
-            $0.leading.top.equalToSuperview().inset(spacing)
+            $0.leading.top.equalToSuperview().inset(viewModel?.layoutSpacing ?? 16)
             $0.trailing.equalTo(addTodoButton.snp.leading)
         }
         
         addTodoButton.snp.makeConstraints {
-            $0.top.trailing.equalToSuperview().inset(spacing)
+            $0.top.trailing.equalToSuperview().inset(viewModel?.layoutSpacing ?? 26)
             $0.height.equalTo(dateLabel.snp.height)
         }
         
         inputTodoTextField.snp.makeConstraints {
-            $0.top.equalTo(dateLabel.snp.bottom).offset(contentSpacing)
-            $0.leading.trailing.equalToSuperview().inset(spacing)
-            $0.height.equalTo(contentSpacing)
+            $0.top.equalTo(dateLabel.snp.bottom).offset(viewModel?.layoutContentSpacing ?? 16)
+            $0.leading.trailing.equalToSuperview().inset(viewModel?.layoutSpacing ?? 40)
+            $0.height.equalTo(viewModel?.layoutContentSpacing ?? 40)
         }
         
         editModeButton.snp.makeConstraints {
-            $0.top.equalTo(inputTodoTextField.snp.bottom).offset(spacing)
-            $0.trailing.equalToSuperview().inset(spacing)
+            $0.top.equalTo(inputTodoTextField.snp.bottom).offset(viewModel?.layoutSpacing ?? 16)
+            $0.trailing.equalToSuperview().inset(viewModel?.layoutSpacing ?? 16)
             $0.bottom.equalTo(tableView.snp.top)
         }
         
         tableView.snp.makeConstraints {
             $0.top.equalTo(editModeButton.snp.bottom)
-            $0.leading.trailing.equalToSuperview().inset(spacing)
-            $0.bottom.equalToSuperview().inset(contentSpacing)
+            $0.leading.trailing.equalToSuperview().inset(viewModel?.layoutSpacing ?? 16)
+            $0.bottom.equalToSuperview().inset(viewModel?.layoutContentSpacing ?? 40)
         }
     }
     
     @objc func didTappedAddTodoButton() {
-        guard let date = date,
+        guard let date = viewModel?.getDate,
               let text = inputTodoTextField.text else { return }
-        if viewModel.textFieldIsFullWithBlank(text: text) == false {
+        if todoManager.textFieldIsFullWithBlank(text: text) == false {
             let strDate = DateFormatter.formatTodoDate(date: date)
             let todo = Todo(
                 content: text,
                 date: strDate
             )
-            let saveResult = viewModel.saveTodo(saveTodo: todo)
+            let saveResult = todoManager.saveTodo(saveTodo: todo)
             if saveResult == true {
                 tableView.reloadData()
-//                reloadTableView(date: date)
             } else {
                 showAlert()
             }
@@ -163,15 +161,17 @@ private extension PlannerDetailViewController {
     func bind() {
         inputTodoTextField.textFieldPublisher
             .receive(on: DispatchQueue.main)
-            .sink { text in
-                self.addTodoButton.isEnabled = !text.isEmpty
+            .sink { [weak self] text in
+                self?.addTodoButton.isEnabled = !text.isEmpty
             }
             .store(in: &subscriptions)
     }
     
     func showAlert() {
-        let alert = UIAlertController(title: "Todo 저장 실패", message: "잠시 후 다시 시도해 주세요.", preferredStyle: .alert)
-        let confirm = UIAlertAction(title: "확인", style: .default)
+        let alert = UIAlertController(title: viewModel?.alertTitle,
+                                      message: viewModel?.alertMessage,
+                                      preferredStyle: .alert)
+        let confirm = UIAlertAction(title: viewModel?.alertActionTitle, style: .default)
         alert.addAction(confirm)
         present(alert, animated: true)
     }
@@ -179,7 +179,7 @@ private extension PlannerDetailViewController {
 
 extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.getTodoList(date: date).count
+        return todoManager.getTodoList(date: viewModel?.getDate).count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -187,19 +187,19 @@ extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSourc
             withIdentifier: PlannerDetailTableViewCell.getIdentifier,
             for: indexPath
         ) as? PlannerDetailTableViewCell else { return UITableViewCell() }
-        let todoList = viewModel.getTodoList(date: date)
+        let todoList = todoManager.getTodoList(date: viewModel?.getDate)
         cell.configure(todo: todoList[indexPath.row])
         return cell
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Todo"
+        return viewModel?.tableViewHeaderTitle
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var selectedTodo = viewModel.getTodoList(date: date)[indexPath.row]
+        var selectedTodo = todoManager.getTodoList(date: viewModel?.getDate)[indexPath.row]
         selectedTodo.done = !selectedTodo.done
-        if viewModel.updateTodo(todo: selectedTodo) == true {
+        if todoManager.updateTodo(todo: selectedTodo) == true {
             tableView.reloadRows(at: [indexPath], with: .automatic)
         }
     }
@@ -207,8 +207,8 @@ extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView,
                    commit editingStyle: UITableViewCell.EditingStyle,
                    forRowAt indexPath: IndexPath) {
-        let todo = viewModel.getTodoList(date: date)[indexPath.row]
-        if viewModel.removeTodo(todo: todo) {
+        let todo = todoManager.getTodoList(date: viewModel?.getDate)[indexPath.row]
+        if todoManager.removeTodo(todo: todo) {
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
     }
@@ -217,8 +217,8 @@ extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSourc
                    moveRowAt sourceIndexPath: IndexPath,
                    to destinationIndexPath: IndexPath) {
         if sourceIndexPath == destinationIndexPath { return }
-        viewModel.moveTodo(
-            date: date,
+        todoManager.moveTodo(
+            date: viewModel?.getDate,
             startIndex: sourceIndexPath.row,
             destinationIndex: destinationIndexPath.row
         )

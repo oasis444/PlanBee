@@ -9,6 +9,8 @@ import UIKit
 
 final class SettingViewController: UIViewController {
     
+    let viewModel = SettingViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -19,6 +21,6 @@ final class SettingViewController: UIViewController {
 private extension SettingViewController {
     func configureSettingView() {
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title  = "설정"
+        navigationItem.title = viewModel.settingViewNavigationTitle
     }
 }

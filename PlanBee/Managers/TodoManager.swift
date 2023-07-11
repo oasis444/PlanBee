@@ -18,6 +18,7 @@ final class TodoManager {
         return saveResult
     }
     
+    // remove, delete
     func getDateList() -> [String] {
         let todoList = CoreDataManager.fetchTodoData()
         guard let todoList = todoList else { return [] }

@@ -10,4 +10,5 @@ import UIKit
 extension UIColor {
     static let mainTabBarTintColor: UIColor = .systemPink
     static let PlanBeeBackgroundColor: UIColor = .secondarySystemBackground
+    static let PlanBeetintColor: UIColor = .systemPink
 }

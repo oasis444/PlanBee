@@ -10,7 +10,8 @@ import SnapKit
 
 final class TodoViewController: UIViewController {
     
-    let viewModel = TodoManager()
+    private let todoManager = TodoManager()
+    private let viewModel = TodoViewModel()
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -36,7 +37,12 @@ final class TodoViewController: UIViewController {
 private extension TodoViewController {
     func configureTodoView() {
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "오늘 일정"
+        navigationItem.title = viewModel.todoTitle
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: viewModel.navigationLeftBtnTitle,
+                                                           style: .plain,
+                                                           target: self,
+                                                           action: #selector(didTappedLeftBarBtn))
     }
     
     func configureLayout() {
@@ -47,11 +53,16 @@ private extension TodoViewController {
             $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
+    
+    @objc func didTappedLeftBarBtn() {
+        let editing = tableView.isEditing
+        tableView.setEditing(!editing, animated: true)
+    }
 }
 
 extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.getTodoList(date: Date()).count
+        return todoManager.getTodoList(date: Date()).count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -59,15 +70,16 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
             withIdentifier: TodoTableViewCell.getIdentifier,
             for: indexPath
         ) as? TodoTableViewCell else { return UITableViewCell() }
-        let todoList = viewModel.getTodoList(date: Date())
+        let todoList = todoManager.getTodoList(date: Date())
         cell.configure(todo: todoList[indexPath.row])
+        cell.backgroundColor = .systemGray5
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var selectedTodo = viewModel.getTodoList(date: Date())[indexPath.row]
+        var selectedTodo = todoManager.getTodoList(date: Date())[indexPath.row]
         selectedTodo.done = !selectedTodo.done
-        if viewModel.updateTodo(todo: selectedTodo) == true {
+        if todoManager.updateTodo(todo: selectedTodo) == true {
             tableView.reloadRows(at: [indexPath], with: .automatic)
         }
     }
@@ -75,20 +87,36 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    commit editingStyle: UITableViewCell.EditingStyle,
                    forRowAt indexPath: IndexPath) {
-        let todo = viewModel.getTodoList(date: Date())[indexPath.row]
-        if viewModel.removeTodo(todo: todo) {
+        let todo = todoManager.getTodoList(date: Date())[indexPath.row]
+        if todoManager.removeTodo(todo: todo) {
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
+    }
+    
+    func tableView(_ tableView: UITableView,
+                   leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        let addAlarmAction = UIContextualAction(style: .normal, title: viewModel.alarmActionTitle) {_, _, _ in
+            let alarmVC = AlarmViewController()
+//            self.present(alarmVC, animated: true)
+            self.navigationController?.pushViewController(alarmVC, animated: true)
+        }
+        addAlarmAction.image = viewModel.alarmActionImage
+        return UISwipeActionsConfiguration(actions: [addAlarmAction])
     }
     
     func tableView(_ tableView: UITableView,
                    moveRowAt sourceIndexPath: IndexPath,
                    to destinationIndexPath: IndexPath) {
         if sourceIndexPath == destinationIndexPath { return }
-        viewModel.moveTodo(
+        todoManager.moveTodo(
             date: Date(),
             startIndex: sourceIndexPath.row,
             destinationIndex: destinationIndexPath.row
         )
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return viewModel.todoHeaderTitle
     }
 }

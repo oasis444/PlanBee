@@ -41,11 +41,11 @@ private extension TodoTableViewCell {
     }
     
     func configureCell() {
-        contentView.backgroundColor = .systemOrange
+        let checkMarkImage = AccessoryImage().accessoryImage
+        let accessoryImage: UIImageView? = todo?.done == true ? checkMarkImage : nil
+        accessoryView = accessoryImage
+        
         selectionStyle = .none
-
-        let type: UITableViewCell.AccessoryType = todo?.done == true ? .checkmark : .none
-        accessoryType = type
         
         title.text = todo?.content
     }
