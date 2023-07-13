@@ -32,6 +32,7 @@ final class CoreDataManager {
         object.setValue(todo.date, forKey: Todokeys.date.key)
         object.setValue(todo.priority, forKey: Todokeys.priority.key)
         object.setValue(todo.done, forKey: Todokeys.done.key)
+//        object.setValue(todo.alarm, forKey: Todokeys.alarm.key) // 생성시 필요하나?
         
         do {
             try context.save()
@@ -57,7 +58,8 @@ final class CoreDataManager {
                         content: $0.content ?? "nil",
                         date: $0.date ?? strDate,
                         priority: $0.priority ?? Date(),
-                        done: $0.done
+                        done: $0.done,
+                        alarm: $0.alarm
                     )
                 }
                 return todoList
@@ -70,7 +72,8 @@ final class CoreDataManager {
                     content: $0.content ?? "nil",
                     date: $0.date ?? defaultDate,
                     priority: $0.priority ?? Date(),
-                    done: $0.done
+                    done: $0.done,
+                    alarm: $0.alarm
                 )
             }
             return todoList
@@ -93,6 +96,7 @@ final class CoreDataManager {
             object.setValue(newTodo.date, forKey: Todokeys.date.key)
             object.setValue(newTodo.priority, forKey: Todokeys.priority.key)
             object.setValue(newTodo.done, forKey: Todokeys.done.key)
+            object.setValue(newTodo.alarm, forKey: Todokeys.alarm.key)
 
             try context.save()
             return true

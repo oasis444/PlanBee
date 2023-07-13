@@ -39,10 +39,12 @@ private extension TodoViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = viewModel.todoTitle
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: viewModel.navigationLeftBtnTitle,
-                                                           style: .plain,
-                                                           target: self,
-                                                           action: #selector(didTappedLeftBarBtn))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: viewModel.navigationRightBtnTitle,
+            style: .plain,
+            target: self,
+            action: #selector(didTappedRightBarBtn)
+        )
     }
     
     func configureLayout() {
@@ -54,7 +56,7 @@ private extension TodoViewController {
         }
     }
     
-    @objc func didTappedLeftBarBtn() {
+    @objc func didTappedRightBarBtn() {
         let editing = tableView.isEditing
         tableView.setEditing(!editing, animated: true)
     }
@@ -96,10 +98,16 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
-        let addAlarmAction = UIContextualAction(style: .normal, title: viewModel.alarmActionTitle) {_, _, _ in
+        let addAlarmAction = UIContextualAction(style: .normal,
+                                                title: viewModel.alarmActionTitle) { [weak self] _, _, _ in
+            guard let self = self else { return }
             let alarmVC = AlarmViewController()
-//            self.present(alarmVC, animated: true)
-            self.navigationController?.pushViewController(alarmVC, animated: true)
+            let todoList = todoManager.getTodoList(date: Date())
+            alarmVC.todo = todoList[indexPath.row]
+            alarmVC.reloadTodoTableView = { _ in
+                tableView.reloadRows(at: [indexPath], with: .automatic)
+            }
+            self.present(alarmVC, animated: true)
         }
         addAlarmAction.image = viewModel.alarmActionImage
         return UISwipeActionsConfiguration(actions: [addAlarmAction])

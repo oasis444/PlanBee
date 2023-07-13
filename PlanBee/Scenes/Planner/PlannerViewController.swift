@@ -106,7 +106,7 @@ extension PlannerViewController: FSCalendarDataSource, FSCalendarDelegate, FSCal
             let plannerDetailVC = PlannerDetailViewController(date: date)
             plannerDetailVC.reloadCalendar = { [weak self] _ in
                 guard let self = self else { return }
-                presentEvents()
+                self.presentEvents()
             }
             present(plannerDetailVC, animated: true)
         }

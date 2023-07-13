@@ -9,6 +9,7 @@
 import Foundation
 import CoreData
 
+
 extension Plan {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Plan> {
@@ -20,5 +21,6 @@ extension Plan {
     @NSManaged public var done: Bool
     @NSManaged public var priority: Date?
     @NSManaged public var uuid: UUID?
+    @NSManaged public var alarm: Date?
 
 }

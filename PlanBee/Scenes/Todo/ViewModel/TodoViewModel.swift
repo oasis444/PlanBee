@@ -10,7 +10,7 @@ import UIKit
 final class TodoViewModel {
     
     let todoTitle = "오늘 일정"
-    let navigationLeftBtnTitle = "편집"
+    let navigationRightBtnTitle = "편집"
     let formatter = DateFormatter()
     
     var todoHeaderTitle: String {

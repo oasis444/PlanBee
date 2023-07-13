@@ -10,18 +10,19 @@ import UIKit
 final class PlannerDetailTableViewCell: UITableViewCell {
     
     private static let identifier = "PlannerDetailTableViewCell"
+    private let viewModel = PlannerDetailCellViewModel()
     private var todo: Todo?
     
     static var getIdentifier: String {
         return identifier
     }
     
-    private lazy var todoTitle: UILabel = {
+    private lazy var todoTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 23, weight: .regular)
-        label.textColor = .label
+        label.font = viewModel.todoTitleLabelFont
+        label.textColor = viewModel.todoTitleLabelColor
         label.textAlignment = .left
-        label.numberOfLines = 0
+        label.numberOfLines = viewModel.todoTitleLabelNumberOfLines
         return label
     }()
     
@@ -34,24 +35,22 @@ final class PlannerDetailTableViewCell: UITableViewCell {
 
 private extension PlannerDetailTableViewCell {
     func configureLayout() {
-        let spacing: CGFloat = 16
-        let verticalSpacing: CGFloat = 15
+        contentView.addSubview(todoTitleLabel)
         
-        contentView.addSubview(todoTitle)
-        
-        todoTitle.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(spacing)
-            $0.top.bottom.equalToSuperview().inset(verticalSpacing)
-            $0.trailing.equalToSuperview().inset(spacing)
+        todoTitleLabel.snp.makeConstraints {
+            $0.leading.equalToSuperview().inset(viewModel.spacing)
+            $0.top.bottom.equalToSuperview().inset(viewModel.verticalSpacing)
+            $0.trailing.equalToSuperview().inset(viewModel.spacing)
         }
     }
     
     func configureCell() {
+        let checkMarkImage = AccessoryImage().accessoryImage
+        let accessoryImage: UIImageView? = todo?.done == true ? checkMarkImage : nil
+        accessoryView = accessoryImage
+        
         selectionStyle = .none
         
-        let type: UITableViewCell.AccessoryType = todo?.done == true ? .checkmark : .none
-        accessoryType = type
-        
-        todoTitle.text = todo?.content
+        todoTitleLabel.text = todo?.content
     }
 }
