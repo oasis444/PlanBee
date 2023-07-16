@@ -12,13 +12,11 @@ final class TodoManager {
     func saveTodo(saveTodo: Todo) -> Bool {
         let saveResult = CoreDataManager.saveTodoData(todo: saveTodo)
         if saveResult == false {
-            // 에러 처리
             print("PlannerVM.saveTodo_Error")
         }
         return saveResult
     }
     
-    // remove, delete
     func getDateList() -> [String] {
         let todoList = CoreDataManager.fetchTodoData()
         guard let todoList = todoList else { return [] }
@@ -65,7 +63,8 @@ final class TodoManager {
                 content: $0.content,
                 date: $0.date,
                 priority: Date(),
-                done: $0.done
+                done: $0.done,
+                alarm: $0.alarm
             )
             _ = updateTodo(todo: updatedTodo)
         }

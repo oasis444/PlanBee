@@ -32,7 +32,6 @@ final class CoreDataManager {
         object.setValue(todo.date, forKey: Todokeys.date.key)
         object.setValue(todo.priority, forKey: Todokeys.priority.key)
         object.setValue(todo.done, forKey: Todokeys.done.key)
-//        object.setValue(todo.alarm, forKey: Todokeys.alarm.key) // 생성시 필요하나?
         
         do {
             try context.save()

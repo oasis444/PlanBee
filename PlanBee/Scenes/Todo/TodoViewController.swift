@@ -58,6 +58,8 @@ private extension TodoViewController {
     
     @objc func didTappedRightBarBtn() {
         let editing = tableView.isEditing
+        let todoList = todoManager.getTodoList(date: Date())
+        if todoList.isEmpty { return }
         tableView.setEditing(!editing, animated: true)
     }
 }
@@ -104,8 +106,11 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
             let alarmVC = AlarmViewController()
             let todoList = todoManager.getTodoList(date: Date())
             alarmVC.todo = todoList[indexPath.row]
-            alarmVC.reloadTodoTableView = { _ in
-                tableView.reloadRows(at: [indexPath], with: .automatic)
+            alarmVC.reloadTodoTableView = { [weak self] result in
+                guard let self = self else { return }
+                if result {
+                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                }
             }
             self.present(alarmVC, animated: true)
         }

@@ -32,11 +32,6 @@ final class TodoTableViewCell: UITableViewCell {
         return label
     }()
     
-    private lazy var alarmToggleBtn: UISwitch = {
-        let toggleSwitch = UISwitch()
-        return toggleSwitch
-    }()
-    
     private lazy var todoStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -59,19 +54,10 @@ final class TodoTableViewCell: UITableViewCell {
 
 private extension TodoTableViewCell {
     func configureLayout() {
-        [todoStackView, alarmToggleBtn].forEach {
-            contentView.addSubview($0)
-        }
+        contentView.addSubview(todoStackView)
         
         todoStackView.snp.makeConstraints {
-            $0.leading.top.bottom.equalToSuperview().inset(viewModel.spacing)
-            $0.trailing.equalTo(alarmToggleBtn.snp.leading).offset(-viewModel.contentOffset)
-        }
-        
-        alarmToggleBtn.snp.makeConstraints {
-            $0.centerY.equalTo(todoStackView.snp.centerY)
-            $0.leading.equalTo(todoStackView.snp.trailing).offset(viewModel.contentOffset)
-            $0.trailing.equalToSuperview().inset(viewModel.spacing)
+            $0.leading.top.trailing.bottom.equalToSuperview().inset(viewModel.spacing)
         }
     }
     
@@ -85,12 +71,11 @@ private extension TodoTableViewCell {
         todoTitleLabel.text = todo?.content
         
         if let alarmDate = todo?.alarm {
-            alarmLabel.text = "알림, " + DateFormatter.formatAlarmTime(date: alarmDate)
-            alarmToggleBtn.isOn = true
+            alarmLabel.text = "⏰ 알림, " + DateFormatter.formatAlarmTime(date: alarmDate)
+            todoStackView.spacing = viewModel.stackViewSpacing
         } else {
             alarmLabel.text = ""
-            alarmToggleBtn.isOn = false
-            alarmToggleBtn.isHidden = true
+            todoStackView.spacing = 0
         }
     }
 }

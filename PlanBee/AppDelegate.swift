@@ -20,11 +20,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ) -> Bool {
         userNotificationCenter.delegate = self
         let authorizationOption: UNAuthorizationOptions = [.alert, .badge, .sound]
-        userNotificationCenter.requestAuthorization(options: authorizationOption) { allow, error in
+        userNotificationCenter.requestAuthorization(options: authorizationOption) { _, error in
             if let error = error {
                 print("error: \(error.localizedDescription)")
             }
-            print(allow)
         }
         return true
     }

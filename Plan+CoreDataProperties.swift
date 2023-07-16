@@ -9,7 +9,6 @@
 import Foundation
 import CoreData
 
-
 extension Plan {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Plan> {
