@@ -15,11 +15,7 @@ enum Todokeys: String {
     case done
     case alarm
     
-    var key: String {
-        switch self {
-        case .uuid, .content, .date, .priority, .done, .alarm: return self.rawValue
-        }
-    }
+    var key: String { rawValue }
 }
 
 struct Todo {

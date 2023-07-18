@@ -9,11 +9,10 @@ import Foundation
 import UserNotifications
 
 extension UNUserNotificationCenter {
-    func addNotificationRequest(alert: Alert) {
+    func addNotificationRequest(todo: Todo, alert: Alert) {
         let content = UNMutableNotificationContent()
         content.title = "알림❗️"
-        content.subtitle = "테스트 알림입니다."
-        content.body = "테스트 알림을 위해 발송된 푸시 알림 입니다."
+        content.body = todo.content
         content.sound = .default
         content.badge = 1
         

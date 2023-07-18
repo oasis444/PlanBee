@@ -13,7 +13,7 @@ final class TodoCellViewModel {
     
     let todoTitleLabelFont: UIFont = .systemFont(ofSize: 30, weight: .bold)
     let todoTitleLabelColor: UIColor = .label
-    let todoTitleNumberOfLines = 2
+    let todoTitleNumberOfLines = 0
     
     let alarmLabelFont: UIFont = .systemFont(ofSize: 17, weight: .medium)
     let alarmLabelColor: UIColor = .darkGray

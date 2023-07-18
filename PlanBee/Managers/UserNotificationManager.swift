@@ -15,7 +15,7 @@ final class UserNotificationManager {
     func addAlarm(todo: Todo) {
         guard let alarmDate = todo.alarm else { return }
         let alert = Alert(id: todo.id, date: alarmDate)
-        userNotificationCenter.addNotificationRequest(alert: alert)
+        userNotificationCenter.addNotificationRequest(todo: todo, alert: alert)
     }
     
     func removeAlarm(todo: Todo, completion: ((Bool) -> Void)?) { // 사용자가 직접 삭제하는 경우

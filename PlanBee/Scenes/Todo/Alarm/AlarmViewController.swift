@@ -61,7 +61,8 @@ final class AlarmViewController: UIViewController {
 
 private extension AlarmViewController {
     @objc func didTappedRemoveAlarmBtn() {
-        guard let todo = todo else { return }
+        guard let todo = todo,
+              todo.alarm != nil else { return }
         alarmManager.removeAlarm(todo: todo) { [weak self] result in
             guard let self = self else { return }
             if result {
@@ -79,7 +80,6 @@ private extension AlarmViewController {
     
     @objc func didTappedSetAlarmBtn() {
         guard var todo = todo else { return }
-        
         if checkAlarmDate() {
             todo.alarm = alarmDatePicker.date
             let updateResult = TodoManager().updateTodo(todo: todo)
