@@ -8,6 +8,7 @@
 import UIKit
 import CoreData
 import UserNotifications
+import FirebaseCore
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,6 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        FirebaseApp.configure() // Firebase 초기화
+        
         userNotificationCenter.delegate = self
         let authorizationOption: UNAuthorizationOptions = [.alert, .badge, .sound]
         userNotificationCenter.requestAuthorization(options: authorizationOption) { _, error in

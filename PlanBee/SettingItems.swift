@@ -8,6 +8,7 @@
 import Foundation
 
 enum SettingSection: String, CaseIterable {
+    case profile = "프로필"
     case setting = "앱 설정"
     case infomation = "이용 안내"
     case etc = "기타"
@@ -16,6 +17,8 @@ enum SettingSection: String, CaseIterable {
     
     var items: [String] {
         switch self {
+        case .profile:
+            return [SettingSection.profile.title]
         case .setting:
             return Setting.allCases.map { $0.title }
         case .infomation:

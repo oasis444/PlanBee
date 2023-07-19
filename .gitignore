@@ -1,8 +1,9 @@
 # Private_File
 Store.swift
+GoogleService-Info.plist
 
-# Created by https://www.toptal.com/developers/gitignore/api/macos,swift,swiftpackagemanager,cocoapods,xcode
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,swift,swiftpackagemanager,cocoapods,xcode
+# Created by https://www.toptal.com/developers/gitignore/api/xcode,swift,swiftpackagemanager,cocoapods,macos,firebase
+# Edit at https://www.toptal.com/developers/gitignore?templates=xcode,swift,swiftpackagemanager,cocoapods,macos,firebase
 
 ### CocoaPods ###
 ## CocoaPods GitIgnore Template
@@ -11,6 +12,15 @@ Store.swift
 #           - Also handy if you have a large number of dependant pods
 #           - AS PER https://guides.cocoapods.org/using/using-cocoapods.html NEVER IGNORE THE LOCK FILE
 Pods/
+
+### Firebase ###
+.idea
+**/node_modules/*
+**/.firebaserc
+
+### Firebase Patch ###
+.runtimeconfig.json
+.firebase/
 
 ### macOS ###
 # General
@@ -148,4 +158,4 @@ xcuserdata
 /*.gcno
 **/xcshareddata/WorkspaceSettings.xcsettings
 
-# End of https://www.toptal.com/developers/gitignore/api/macos,swift,swiftpackagemanager,cocoapods,xcode
+# End of https://www.toptal.com/developers/gitignore/api/xcode,swift,swiftpackagemanager,cocoapods,macos,firebase

@@ -17,6 +17,7 @@ final class SettingViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .PlanBeeBackgroundColor
+        tableView.register(SettingProfileCell.self, forCellReuseIdentifier: SettingProfileCell.getIdentifier)
         tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.getIdentifier)
         return tableView
     }()
@@ -52,10 +53,12 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0:
-            return SettingSection.setting.title
+            return SettingSection.profile.title
         case 1:
-            return SettingSection.infomation.title
+            return SettingSection.setting.title
         case 2:
+            return SettingSection.infomation.title
+        case 3:
             return SettingSection.etc.title
         default:
             return ""
@@ -65,10 +68,12 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return SettingSection.setting.items.count
+            return SettingSection.profile.items.count
         case 1:
-            return SettingSection.infomation.items.count
+            return SettingSection.setting.items.count
         case 2:
+            return SettingSection.infomation.items.count
+        case 3:
             return SettingSection.etc.items.count
         default:
             return 0
@@ -76,28 +81,57 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(
+        guard let profileCell = tableView.dequeueReusableCell(
+            withIdentifier: SettingProfileCell.getIdentifier,
+            for: indexPath) as? SettingProfileCell else { return UITableViewCell() }
+        
+        guard let defaultCell = tableView.dequeueReusableCell(
             withIdentifier: SettingTableViewCell.getIdentifier,
             for: indexPath) as? SettingTableViewCell else { return UITableViewCell() }
+        
         switch indexPath.section {
         case 0:
-            cell.configureCell(
+            profileCell.configure()
+            return profileCell
+        case 1:
+            defaultCell.configureCell(
                 title: SettingSection.setting.items[indexPath.row],
                 icon: SettingIcons.setting.iconImage[indexPath.row],
                 iconColor: SettingIcons.setting.iconColor[indexPath.row])
-        case 1:
-            cell.configureCell(
+            return defaultCell
+        case 2:
+            defaultCell.configureCell(
                 title: SettingSection.infomation.items[indexPath.row],
                 icon: SettingIcons.infomation.iconImage[indexPath.row],
                 iconColor: SettingIcons.infomation.iconColor[indexPath.row])
-        case 2:
-            cell.configureCell(
+            return defaultCell
+        case 3:
+            defaultCell.configureCell(
                 title: SettingSection.etc.items[indexPath.row],
                 icon: SettingIcons.etc.iconImage[indexPath.row],
                 iconColor: SettingIcons.etc.iconColor[indexPath.row])
+            return defaultCell
         default:
             return UITableViewCell()
         }
-        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case 0:
+            if FirebaseManager().checkLoginState() == false {
+                let profileVC = ProfileViewController()
+                navigationController?.pushViewController(profileVC, animated: true)
+            }
+            return
+        case 1:
+            return
+        case 2:
+            return
+        case 3:
+            return
+        default:
+            return
+        }
     }
 }
