@@ -104,6 +104,9 @@ private extension ProfileViewController {
         loginVC.modalPresentationStyle = .fullScreen
         loginVC.modalTransitionStyle = .flipHorizontal
         loginVC.configure(tapped: .register)
+        loginVC.popToRootViewsClosure = {
+            self.navigationController?.popToRootViewController(animated: true)
+        }
         present(loginVC, animated: true)
     }
 }

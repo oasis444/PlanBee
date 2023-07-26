@@ -9,7 +9,32 @@ import Foundation
 import FirebaseAuth
 
 class FirebaseManager {
-    let auth = Auth.auth()
+    private let auth = Auth.auth()
+    
+    func createUsers(email: String, password: String, completion: @escaping (FirebaseErrors?) -> Void) {
+        auth.createUser(withEmail: email, password: password) { authResult, error in
+            if let error = error {
+                let sampleError = (error as NSError)
+                let code = sampleError.code
+                switch code {
+                case 17007:
+                    completion(.FIRAuthErrorCodeEmailAlreadyInUse)
+                case 17008:
+                    completion(.FIRAuthErrorCodeInvalidEmail)
+                case 17026:
+                    completion(.FIRAuthErrorCodeLeastPasswordLength)
+                default:
+                    print("error: \(error.localizedDescription)")
+                    completion(.unknown)
+                    return
+                }
+            }
+            guard let authResult = authResult else { return }
+            let uid = authResult.user.uid
+            // 앱 내 정보 저장하기
+            completion(nil)
+        }
+    }
     
     func checkLoginState() -> Bool {
         if auth.currentUser != nil {
