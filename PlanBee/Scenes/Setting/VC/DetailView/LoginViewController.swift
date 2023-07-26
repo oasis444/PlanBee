@@ -16,12 +16,9 @@ enum LoginBtnType {
 
 final class LoginViewController: UIViewController {
     
-    var viewType: LoginBtnType = .login
     let viewModel = LoginViewModel()
     let manager = FirebaseManager()
     var subscriptions = Set<AnyCancellable>()
-    var textFieldIsFill: Bool = false
-    var checkBoxFill: Bool = false
     var popToRootViewsClosure: (() -> Void)?
     
     private lazy var indicator: UIActivityIndicatorView = {
@@ -133,7 +130,7 @@ final class LoginViewController: UIViewController {
         return button
     }()
     
-    private lazy var signUpButton: UIButton = {
+    private lazy var signUpBtn: UIButton = {
         let button = UIButton()
         button.titleLabel?.font = viewModel.signUpButtonFont
         button.setTitle(viewModel.signUpButtonTitle, for: .normal)
@@ -166,7 +163,7 @@ final class LoginViewController: UIViewController {
         stackView.alignment = .fill
         stackView.distribution = .fillEqually
         stackView.spacing = viewModel.consentStackSpacing
-        [ageCheckStack, personalInfoStack, signUpButton].forEach {
+        [ageCheckStack, personalInfoStack].forEach {
             stackView.addArrangedSubview($0)
         }
         return stackView
@@ -175,13 +172,13 @@ final class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureLayout()
         bind()
     }
     
     func configure(tapped: LoginBtnType) {
         view.backgroundColor = .PlanBeeBackgroundColor
-        viewType = tapped
+        viewModel.viewType = tapped
+        configureLayout(type: tapped)
     }
     
     deinit {
@@ -190,8 +187,9 @@ final class LoginViewController: UIViewController {
 }
 
 private extension LoginViewController {
-    func configureLayout() {
-        [dismissBtn, textFieldStackView, separateView, consentStack, indicator].forEach {
+    func configureLayout(type: LoginBtnType) {
+        
+        [dismissBtn, textFieldStackView, separateView, signUpBtn, indicator].forEach {
             view.addSubview($0)
         }
         
@@ -216,9 +214,29 @@ private extension LoginViewController {
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel.separateViewLeadTrailOffset)
         }
         
-        consentStack.snp.makeConstraints {
-            $0.top.equalTo(separateView.snp.bottom).offset(viewModel.consentStackTopOffset)
-            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel.consentStackLeadTrailOffset)
+        switch type {
+        case .login:
+            signUpBtn.snp.makeConstraints {
+                $0.top.equalTo(separateView.snp.bottom).offset(viewModel.signUpBtnTopOffset)
+                $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel.signUpBtnLeadTrailInset)
+            }
+            return
+            
+        case .register:
+            [consentStack].forEach {
+                view.addSubview($0)
+            }
+            
+            consentStack.snp.makeConstraints {
+                $0.top.equalTo(separateView.snp.bottom).offset(viewModel.consentStackTopOffset)
+                $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel.consentStackLeadTrailOffset)
+            }
+            
+            signUpBtn.snp.makeConstraints {
+                $0.top.equalTo(consentStack.snp.bottom).offset(viewModel.signUpBtnTopOffset)
+                $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel.signUpBtnLeadTrailInset)
+            }
+            return
         }
     }
 }
@@ -239,11 +257,23 @@ private extension LoginViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] result in
                 guard let self = self else { return }
-                self.textFieldIsFill = result
-                if self.textFieldIsFill && self.checkBoxFill {
-                    viewModel.buttonON(button: signUpButton)
-                } else {
-                    viewModel.buttonOFF(button: signUpButton)
+                viewModel.textFieldIsFill = result
+                
+                switch viewModel.viewType {
+                case .login:
+                    if viewModel.textFieldIsFill {
+                        viewModel.buttonON(button: signUpBtn)
+                    } else {
+                        viewModel.buttonOFF(button: signUpBtn)
+                    }
+                    return
+                case .register:
+                    if viewModel.textFieldIsFill && viewModel.checkBoxFill {
+                        viewModel.buttonON(button: signUpBtn)
+                    } else {
+                        viewModel.buttonOFF(button: signUpBtn)
+                    }
+                    return
                 }
             }
             .store(in: &subscriptions)
@@ -256,20 +286,39 @@ private extension LoginViewController {
               password.isEmpty == false else { return }
         indicator.startAnimating()
         
-        manager.createUsers(email: email, password: password) { [weak self] firebaseError in
-            guard let self = self else { return }
-            self.indicator.stopAnimating()
-            
-            if let error = firebaseError {
-                self.showAlert(error: error)
-                return
+        switch viewModel.viewType {
+        case .login:
+            manager.emailLogIn(email: email, password: password) { [weak self] firebaseError in
+                guard let self = self else { return }
+                self.indicator.stopAnimating()
+                
+                if let error = firebaseError {
+                    self.showAlert(title: "로그인 실패", error: error)
+                    return
+                }
+                self.dismiss(animated: true) {
+                    self.popToRootViewsClosure?()
+                }
             }
-            self.welcomPlanBee()
+            
+            return
+        case .register:
+            manager.createUsers(email: email, password: password) { [weak self] firebaseError in
+                guard let self = self else { return }
+                self.indicator.stopAnimating()
+                
+                if let error = firebaseError {
+                    self.showAlert(title: "회원가입 실패", error: error)
+                    return
+                }
+                self.welcomPlanBee(title: "🎉 회원가입 완료 🎉", message: "플랜비에 오신 것을 환영합니다.")
+            }
+            return
         }
     }
     
-    func welcomPlanBee() {
-        let alert = UIAlertController(title: "🎉 회원가입 완료 🎉", message: "플랜비에 오신 것을 환영합니다.", preferredStyle: .alert)
+    func welcomPlanBee(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let confirm = UIAlertAction(title: "확인", style: .default) { [weak self] _ in
             guard let self = self else { return }
             self.dismiss(animated: true) {
@@ -280,8 +329,8 @@ private extension LoginViewController {
         present(alert, animated: true)
     }
     
-    func showAlert(error: FirebaseErrors) {
-        let alert = UIAlertController(title: "회원가입 실패", message: error.errorMessage, preferredStyle: .alert)
+    func showAlert(title: String, error: FirebaseErrors) {
+        let alert = UIAlertController(title: title, message: error.errorMessage, preferredStyle: .alert)
         let confirm = UIAlertAction(title: "확인", style: .default)
         alert.addAction(confirm)
         present(alert, animated: true)
@@ -293,13 +342,13 @@ private extension LoginViewController {
         sender.tintColor = tintColor
         
         if ageCheckBox.isSelected && personalInfoCheckBox.isSelected {
-            checkBoxFill = true
-            if textFieldIsFill && checkBoxFill {
-                viewModel.buttonON(button: signUpButton)
+            viewModel.checkBoxFill = true
+            if viewModel.textFieldIsFill && viewModel.checkBoxFill {
+                viewModel.buttonON(button: signUpBtn)
             }
         } else {
-            checkBoxFill = false
-            viewModel.buttonOFF(button: signUpButton)
+            viewModel.checkBoxFill = false
+            viewModel.buttonOFF(button: signUpBtn)
         }
     }
     

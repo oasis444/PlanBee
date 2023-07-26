@@ -12,7 +12,9 @@ final class LoginViewModel {
     
     @Published var email: String = ""
     @Published var password: String = ""
-    
+    var viewType: LoginBtnType = .login
+    var textFieldIsFill: Bool = false
+    var checkBoxFill: Bool = false
     private let emailChecker = EmailValidCheck()
     
     let indicatorColor: UIColor = .systemOrange
@@ -73,6 +75,9 @@ final class LoginViewModel {
     
     let consentStackTopOffset: CGFloat = 20
     let consentStackLeadTrailOffset: CGFloat = 30
+    
+    let signUpBtnTopOffset: CGFloat = 30
+    let signUpBtnLeadTrailInset: CGFloat = 40
     
     func buttonON(button: UIButton) {
         button.isEnabled = true

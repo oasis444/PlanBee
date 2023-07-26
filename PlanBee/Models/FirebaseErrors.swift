@@ -10,6 +10,7 @@ import Foundation
 enum FirebaseErrors: Int {
     case FIRAuthErrorCodeEmailAlreadyInUse = 17007
     case FIRAuthErrorCodeInvalidEmail = 17008
+    case FIRAuthErrorCodeWrongPassword = 17009
     case FIRAuthErrorCodeOperationNotAllowed
     case FIRAuthErrorCodeWeakPassword
     case FIRAuthErrorCodeRequiresRecentLogin
@@ -25,6 +26,9 @@ enum FirebaseErrors: Int {
             
         case .FIRAuthErrorCodeInvalidEmail:
             return "이메일 주소 형식이 잘못되었습니다."
+            
+        case .FIRAuthErrorCodeWrongPassword:
+            return "잘못된 비밀번호입니다."
             
         case .FIRAuthErrorCodeOperationNotAllowed:
             return "관리자가 계정을 사용 중지시켰습니다."
