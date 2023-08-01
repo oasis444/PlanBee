@@ -29,7 +29,7 @@ enum SettingSection: String, CaseIterable {
     }
 }
 
-private extension SettingSection {
+extension SettingSection {
     enum Setting: String, CaseIterable {
         case screenMode = "화면 모드"
         case alarm = "알림 설정"

@@ -11,6 +11,7 @@ import SnapKit
 final class SettingViewController: UIViewController {
     
     private let viewModel = SettingViewModel()
+    private let firebaseManager = FirebaseManager()
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
@@ -27,6 +28,14 @@ final class SettingViewController: UIViewController {
         
         configureSettingView()
         configLayout()
+                
+        self.view.window?.overrideUserInterfaceStyle = .dark
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        tableView.reloadSections(IndexSet([0]), with: .automatic)
     }
 }
 
@@ -42,6 +51,37 @@ private extension SettingViewController {
         tableView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
+    }
+    
+    func showAlert1(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let confirm = UIAlertAction(title: "확인", style: .default)
+        alert.addAction(confirm)
+        present(alert, animated: true)
+    }
+    
+    func showAlert(loginState: Bool) {
+        var alert = UIAlertController()
+        if loginState {
+            alert = UIAlertController(title: "로그아웃", message: "로그아웃 하시겠습니까?", preferredStyle: .alert)
+            let logOut = UIAlertAction(title: "로그아웃", style: .destructive) { [weak self] _ in
+                guard let self = self else { return }
+                if let error = self.firebaseManager.logOut() {
+                    print(error)
+                    showAlert1(title: "로그아웃 실패", message: "나중에 다시 로그아웃 해주세요")
+                    return
+                }
+                tableView.reloadSections(IndexSet([0]), with: .automatic)
+            }
+            let cancel = UIAlertAction(title: "취소", style: .cancel)
+            alert.addAction(logOut)
+            alert.addAction(cancel)
+        } else {
+            alert = UIAlertController(title: nil, message: "현재 로그아웃 상태입니다.", preferredStyle: .alert)
+            let confirm = UIAlertAction(title: "확인", style: .default)
+            alert.addAction(confirm)
+        }
+        present(alert, animated: true)
     }
 }
 
@@ -119,17 +159,22 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            if FirebaseManager().checkLoginState() == false {
-                let profileVC = ProfileViewController()
-                navigationController?.pushViewController(profileVC, animated: true)
+            if firebaseManager.checkLoginState() == true {
+                
+                return
             }
-            return
+            let profileVC = SignInViewController()
+            navigationController?.pushViewController(profileVC, animated: true)
+            
         case 1:
             return
         case 2:
             return
         case 3:
+            let loginState = firebaseManager.checkLoginState()
+            showAlert(loginState: loginState)
             return
+            
         default:
             return
         }

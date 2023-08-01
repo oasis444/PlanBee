@@ -38,7 +38,6 @@ private extension TabBarController {
             image: UIImage(systemName: "gear"),
             selectedImage: UIImage(systemName: "gear")
         )
-        
         viewControllers = [todoVC, plannerVC, settingVC]
         tabBar.tintColor = UIColor.mainTabBarTintColor
     }

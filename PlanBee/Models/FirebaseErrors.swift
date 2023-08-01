@@ -8,11 +8,11 @@
 import Foundation
 
 enum FirebaseErrors: Int {
+    case FIRAuthErrorCodeUserDisabled = 17005
     case FIRAuthErrorCodeEmailAlreadyInUse = 17007
     case FIRAuthErrorCodeInvalidEmail = 17008
     case FIRAuthErrorCodeWrongPassword = 17009
-    case FIRAuthErrorCodeOperationNotAllowed
-    case FIRAuthErrorCodeWeakPassword
+    case FIRAuthErrorCodeOperationNotAllowed = 17011
     case FIRAuthErrorCodeRequiresRecentLogin
     case FIRAuthErrorCodeLeastPasswordLength = 17026
     case unknown = -99999
@@ -21,6 +21,9 @@ enum FirebaseErrors: Int {
     
     var errorMessage: String {
         switch self {
+        case .FIRAuthErrorCodeUserDisabled:
+            return "관리자가 계정을 사용 중지시켰습니다."
+            
         case .FIRAuthErrorCodeEmailAlreadyInUse:
             return "이미 사용 중인 이메일입니다."
             
@@ -31,10 +34,7 @@ enum FirebaseErrors: Int {
             return "잘못된 비밀번호입니다."
             
         case .FIRAuthErrorCodeOperationNotAllowed:
-            return "관리자가 계정을 사용 중지시켰습니다."
-            
-        case .FIRAuthErrorCodeWeakPassword:
-            return "안전성이 낮은 비밀번호입니다."
+            return "회원가입을 하지 않은 계정입니다."
             
         case .FIRAuthErrorCodeRequiresRecentLogin:
             return "최근에 로그인한 적이 있어야 진행할 수 있습니다."

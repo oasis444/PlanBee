@@ -1,5 +1,5 @@
 //
-//  ProfileViewModel.swift
+//  SignInViewModel.swift
 //  PlanBee
 //
 //  Copyright (c) 2023 z-wook. All right reserved.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ProfileViewModel {
+final class SignInViewModel {
  
     let introLabelFont: UIFont = .systemFont(ofSize: 27, weight: .bold)
     let introLabelColor: UIColor = .label

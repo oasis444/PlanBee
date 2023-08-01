@@ -16,13 +16,18 @@ class FirebaseManager {
             if let error = error {
                 let sampleError = (error as NSError)
                 let code = sampleError.code
+                print("code: \(code)")
                 switch code {
+                case 17005:
+                    completion(.FIRAuthErrorCodeUserDisabled)
                 case 17007:
                     completion(.FIRAuthErrorCodeEmailAlreadyInUse)
                 case 17008:
                     completion(.FIRAuthErrorCodeInvalidEmail)
                 case 17009:
                     completion(.FIRAuthErrorCodeWrongPassword)
+                case 17011:
+                    completion(.FIRAuthErrorCodeOperationNotAllowed)
                 case 17026:
                     completion(.FIRAuthErrorCodeLeastPasswordLength)
                 default:
@@ -31,9 +36,7 @@ class FirebaseManager {
                     return
                 }
             }
-            guard let authResult = authResult else { return }
-            let uid = authResult.user.uid
-            // 앱 내 정보 저장하기
+            guard authResult != nil else { return }
             completion(nil)
         }
     }
@@ -45,12 +48,16 @@ class FirebaseManager {
                 let code = sampleError.code
                 print("에러코드: \(code)")
                 switch code {
+                case 17005:
+                    completion(.FIRAuthErrorCodeUserDisabled)
                 case 17007:
                     completion(.FIRAuthErrorCodeEmailAlreadyInUse)
                 case 17008:
                     completion(.FIRAuthErrorCodeInvalidEmail)
                 case 17009:
                     completion(.FIRAuthErrorCodeWrongPassword)
+                case 17011:
+                    completion(.FIRAuthErrorCodeOperationNotAllowed)
                 case 17026:
                     completion(.FIRAuthErrorCodeLeastPasswordLength)
                 default:
@@ -59,15 +66,29 @@ class FirebaseManager {
                     return
                 }
             }
-            guard let authResult = authResult else { return }
-            print("\(authResult.user.email), \(authResult.user.uid)")
+            guard authResult != nil else { return }
             completion(nil)
         }
     }
     
     func checkLoginState() -> Bool {
         if auth.currentUser != nil {
-            return false
-        } else { return true }
+            return true
+        } else { return false }
+    }
+    
+    func logOut() -> String? {
+        do {
+            try auth.signOut()
+            return nil
+        } catch {
+            return error.localizedDescription
+        }
+    }
+    
+    func getUserEmail() -> String {
+        guard let currentUserEmail = auth.currentUser?.email else { return "익명" }
+        print(currentUserEmail)
+        return currentUserEmail
     }
 }

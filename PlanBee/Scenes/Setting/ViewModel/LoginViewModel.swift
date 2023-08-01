@@ -8,6 +8,17 @@
 import UIKit
 import Combine
 
+enum LoginBtnType {
+    case login
+    case register
+}
+
+enum UserInterfaceStyle: Int {
+    case unspecified = 0
+    case light = 1
+    case dark = 2
+}
+
 final class LoginViewModel {
     
     @Published var email: String = ""
@@ -59,6 +70,8 @@ final class LoginViewModel {
     let signUpButtonBackgroundColor: UIColor = .lightGray
     let signUpButtonTintColor: UIColor = .white
     let signUpButtonRadius: CGFloat = 10
+    let signUpBtnPadding: CGFloat = 30
+    let signUpBtnLeadTrailInset: CGFloat = 40
     
     let personalInfoStackSpacing: CGFloat = 20
 
@@ -68,16 +81,15 @@ final class LoginViewModel {
     let dismissBtnWidth: CGFloat = 40
     let textFieldStackViewTopOffset: CGFloat = 50
     let textFieldStackViewLeadTrailOffset: CGFloat = 50
-    let textFieldStackViewBottomOffset: CGFloat = 20
     
-    let separateViewTopOffset: CGFloat = 20
+    let separateViewPadding: CGFloat = 30
     let separateViewLeadTrailOffset: CGFloat = 50
     
-    let consentStackTopOffset: CGFloat = 20
     let consentStackLeadTrailOffset: CGFloat = 30
     
-    let signUpBtnTopOffset: CGFloat = 30
-    let signUpBtnLeadTrailInset: CGFloat = 40
+    let socialLoginStackSpacing: CGFloat = 20
+    let socialLoginStackPadding: CGFloat = 30
+    let socialLoginStackLeadTrailInsset: CGFloat = 50
     
     func buttonON(button: UIButton) {
         button.isEnabled = true
@@ -101,6 +113,19 @@ final class LoginViewModel {
             return false
         }
         .eraseToAnyPublisher()
+    
+    func appleBtnImage(interfaceStyle: UserInterfaceStyle.RawValue) -> UIImage? {
+        switch interfaceStyle {
+        case 0:
+            return UIImage(named: "appleid_button-2")
+        case 1:
+            return UIImage(named: "appleid_button-2")
+        case 2:
+            return UIImage(named: "appleid_button-3")
+        default:
+            return UIImage(named: "appleid_button-2")
+        }
+    }
 }
 
 private extension LoginViewModel {

@@ -8,18 +8,19 @@
 import UIKit
 import FirebaseAuth
 import Combine
-
-enum LoginBtnType {
-    case login
-    case register
-}
+import CryptoKit
+import AuthenticationServices
+import CommonCrypto
+import CryptoTokenKit
 
 final class LoginViewController: UIViewController {
     
     let viewModel = LoginViewModel()
-    let manager = FirebaseManager()
+    let firebaseManager = FirebaseManager()
+    let appleManager = AppleLoginManager()
     var subscriptions = Set<AnyCancellable>()
     var popToRootViewsClosure: (() -> Void)?
+    fileprivate var currentNonce: String?
     
     private lazy var indicator: UIActivityIndicatorView = {
         let indicatorView = UIActivityIndicatorView(style: .large)
@@ -67,7 +68,13 @@ final class LoginViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var separateView: UIView = {
+    private lazy var separateView1: UIView = {
+        let view = UIView()
+        view.backgroundColor = viewModel.separateViewColor
+        return view
+    }()
+    
+    private lazy var separateView2: UIView = {
         let view = UIView()
         view.backgroundColor = viewModel.separateViewColor
         return view
@@ -169,6 +176,27 @@ final class LoginViewController: UIViewController {
         return stackView
     }()
     
+    private lazy var appleSignInBtn: UIButton = {
+        let button = UIButton()
+        let interfaceStyleRawValue = traitCollection.userInterfaceStyle.rawValue
+        let btnImage: UIImage? = viewModel.appleBtnImage(interfaceStyle: interfaceStyleRawValue)
+        button.setImage(btnImage, for: .normal)
+        button.addTarget(self, action: #selector(didTappedSignInWithApple), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var socialLoginStack: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.distribution = .fillEqually
+        stackView.spacing = viewModel.socialLoginStackSpacing
+        [appleSignInBtn].forEach {
+            stackView.addArrangedSubview($0)
+        }
+        return stackView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -178,7 +206,15 @@ final class LoginViewController: UIViewController {
     func configure(tapped: LoginBtnType) {
         view.backgroundColor = .PlanBeeBackgroundColor
         viewModel.viewType = tapped
-        configureLayout(type: tapped)
+        configureLayout()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        let interfaceStyleRawValue = traitCollection.userInterfaceStyle.rawValue
+        let btnImage: UIImage? = viewModel.appleBtnImage(interfaceStyle: interfaceStyleRawValue)
+        appleSignInBtn.setImage(btnImage, for: .normal)
     }
     
     deinit {
@@ -187,9 +223,8 @@ final class LoginViewController: UIViewController {
 }
 
 private extension LoginViewController {
-    func configureLayout(type: LoginBtnType) {
-        
-        [dismissBtn, textFieldStackView, separateView, signUpBtn, indicator].forEach {
+    func configureLayout() {
+        [indicator, dismissBtn, textFieldStackView, separateView1, separateView2, signUpBtn, socialLoginStack].forEach {
             view.addSubview($0)
         }
         
@@ -205,38 +240,53 @@ private extension LoginViewController {
         textFieldStackView.snp.makeConstraints {
             $0.top.equalTo(dismissBtn.snp.bottom).offset(viewModel.textFieldStackViewTopOffset)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel.textFieldStackViewLeadTrailOffset)
-            $0.bottom.equalTo(separateView.snp.top).offset(-viewModel.textFieldStackViewBottomOffset)
+            $0.bottom.equalTo(separateView1.snp.top).offset(-viewModel.separateViewPadding)
         }
         
-        separateView.snp.makeConstraints {
+        separateView1.snp.makeConstraints {
             $0.height.equalTo(viewModel.separateViewHeight)
-            $0.top.equalTo(textFieldStackView.snp.bottom).offset(viewModel.separateViewTopOffset)
+            $0.top.equalTo(textFieldStackView.snp.bottom).offset(viewModel.separateViewPadding)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel.separateViewLeadTrailOffset)
+            $0.bottom.equalTo(socialLoginStack.snp.top).offset(-viewModel.separateViewPadding)
+        }
+        
+        socialLoginStack.snp.makeConstraints {
+            $0.top.equalTo(separateView1.snp.bottom).offset(viewModel.socialLoginStackPadding)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel
+                .socialLoginStackLeadTrailInsset)
+            $0.bottom.equalTo(separateView2.snp.top).offset(-viewModel.separateViewPadding)
+        }
+        
+        separateView2.snp.makeConstraints {
+            $0.height.equalTo(viewModel.separateViewHeight)
+            $0.top.equalTo(socialLoginStack.snp.bottom).offset(viewModel.socialLoginStackPadding)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel.separateViewLeadTrailOffset)
         }
         
-        switch type {
+        configTypeOfLayout()
+    }
+    
+    func configTypeOfLayout() {
+        switch viewModel.viewType {
         case .login:
             signUpBtn.snp.makeConstraints {
-                $0.top.equalTo(separateView.snp.bottom).offset(viewModel.signUpBtnTopOffset)
+                $0.top.equalTo(separateView2.snp.bottom).offset(viewModel.signUpBtnPadding)
                 $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel.signUpBtnLeadTrailInset)
             }
-            return
             
         case .register:
-            [consentStack].forEach {
-                view.addSubview($0)
-            }
+            view.addSubview(consentStack)
             
             consentStack.snp.makeConstraints {
-                $0.top.equalTo(separateView.snp.bottom).offset(viewModel.consentStackTopOffset)
+                $0.top.equalTo(separateView2.snp.bottom).offset(viewModel.separateViewPadding)
                 $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel.consentStackLeadTrailOffset)
+                $0.bottom.equalTo(signUpBtn.snp.top).offset(-viewModel.signUpBtnPadding)
             }
             
             signUpBtn.snp.makeConstraints {
-                $0.top.equalTo(consentStack.snp.bottom).offset(viewModel.signUpBtnTopOffset)
+                $0.top.equalTo(consentStack.snp.bottom).offset(viewModel.signUpBtnPadding)
                 $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel.signUpBtnLeadTrailInset)
             }
-            return
         }
     }
 }
@@ -257,16 +307,18 @@ private extension LoginViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] result in
                 guard let self = self else { return }
-                viewModel.textFieldIsFill = result
+                self.viewModel.textFieldIsFill = result
                 
                 switch viewModel.viewType {
                 case .login:
                     if viewModel.textFieldIsFill {
                         viewModel.buttonON(button: signUpBtn)
+                        return
                     } else {
                         viewModel.buttonOFF(button: signUpBtn)
                     }
                     return
+                    
                 case .register:
                     if viewModel.textFieldIsFill && viewModel.checkBoxFill {
                         viewModel.buttonON(button: signUpBtn)
@@ -280,15 +332,13 @@ private extension LoginViewController {
     }
     
     @objc func didTappedSignUpBtn() {
-        guard let email = emailTextField.text,
-              email.isEmpty == false,
-              let password = passwordTextField.text,
-              password.isEmpty == false else { return }
+        guard let email = emailTextField.text, email.isEmpty == false,
+              let password = passwordTextField.text, password.isEmpty == false else { return }
         indicator.startAnimating()
         
         switch viewModel.viewType {
         case .login:
-            manager.emailLogIn(email: email, password: password) { [weak self] firebaseError in
+            firebaseManager.emailLogIn(email: email, password: password) { [weak self] firebaseError in
                 guard let self = self else { return }
                 self.indicator.stopAnimating()
                 
@@ -300,10 +350,9 @@ private extension LoginViewController {
                     self.popToRootViewsClosure?()
                 }
             }
-            
             return
         case .register:
-            manager.createUsers(email: email, password: password) { [weak self] firebaseError in
+            firebaseManager.createUsers(email: email, password: password) { [weak self] firebaseError in
                 guard let self = self else { return }
                 self.indicator.stopAnimating()
                 
@@ -352,7 +401,91 @@ private extension LoginViewController {
         }
     }
     
+    @objc func didTappedSignInWithApple() {
+        startSignInWithAppleFlow()
+    }
+    
     @objc func didTappedDismissBtn() {
         dismiss(animated: true)
+    }
+}
+
+private extension LoginViewController {
+    func startSignInWithAppleFlow() {
+        let nonce = appleManager.randomNonceString()
+        currentNonce = nonce
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let request = appleIDProvider.createRequest()
+        request.requestedScopes = [.fullName, .email]
+        request.nonce = appleManager.sha256(nonce)
+        
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
+    }
+    
+//    func deleteCurrentUser() {
+//        let CryptoUtils = CryptoUtils()
+//        do {
+//            let nonce = try CryptoUtils.randomNonceString()
+//            currentNonce = nonce
+//            let appleIDProvider = ASAuthorizationAppleIDProvider()
+//            let request = appleIDProvider.createRequest()
+//            request.requestedScopes = [.fullName, .email]
+//            request.nonce = CryptoUtils.sha256(nonce)
+//            
+//            let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+//            authorizationController.delegate = self
+//            authorizationController.presentationContextProvider = self
+//            authorizationController.performRequests()
+//        } catch {
+//            // In the unlikely case that nonce generation fails, show error view.
+//            displayError(error)
+//        }
+//    }
+}
+
+extension LoginViewController: ASAuthorizationControllerDelegate {
+    func authorizationController(controller: ASAuthorizationController,
+                                 didCompleteWithAuthorization authorization: ASAuthorization) {
+        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+            guard let nonce = currentNonce else {
+                fatalError("Invalid state: A login callback was received, but no login request was sent.")
+            }
+            guard let appleIDToken = appleIDCredential.identityToken else {
+                print("Unable to fetch identity token")
+                return
+            }
+            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+                print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
+                return
+            }
+            let credential = OAuthProvider.appleCredential(withIDToken: idTokenString,
+                                                           rawNonce: nonce,
+                                                           fullName: appleIDCredential.fullName)
+            
+            print("Token: \(idTokenString)")
+            
+            Auth.auth().signIn(with: credential) { authResult, error in
+                if let error = error {
+                    print("Error Apple sign in: \(error.localizedDescription)")
+                    return
+                }
+                guard authResult != nil else { return }
+                
+                print("로그인 성공!!!")
+            }
+        }
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        print("Sign in with Apple errored: \(error)")
+    }
+}
+
+extension LoginViewController: ASAuthorizationControllerPresentationContextProviding {
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return self.view.window ?? UIWindow()
     }
 }

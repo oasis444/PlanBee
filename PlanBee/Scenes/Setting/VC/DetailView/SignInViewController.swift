@@ -1,5 +1,5 @@
 //
-//  ProfileViewController.swift
+//  SignInViewController.swift
 //  PlanBee
 //
 //  Copyright (c) 2023 z-wook. All right reserved.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-final class ProfileViewController: UIViewController {
+final class SignInViewController: UIViewController {
     
-    private let viewModel = ProfileViewModel()
+    private let viewModel = SignInViewModel()
     
     private lazy var introLabel: UILabel = {
         let label = UILabel()
@@ -68,7 +68,7 @@ final class ProfileViewController: UIViewController {
     }
 }
 
-private extension ProfileViewController {
+private extension SignInViewController {
     func configureLayout() {
 
         [introLabel, stackView].forEach {

@@ -26,6 +26,7 @@ final class SettingProfileCell: UITableViewCell {
         let label = UILabel()
         label.font = viewModel.profileNickNameFont
         label.textColor = viewModel.profileNickNameColor
+        label.adjustsFontSizeToFitWidth = true
         return label
     }()
     
@@ -38,9 +39,14 @@ final class SettingProfileCell: UITableViewCell {
 private extension SettingProfileCell {
     func configureCell() {
         selectionStyle = .none
-        accessoryType = .disclosureIndicator
         
-        profileNickNameLabel.text = "플랜비"
+        if FirebaseManager().checkLoginState() {
+            accessoryType = .none
+        } else {
+            accessoryType = .disclosureIndicator
+        }
+        
+        profileNickNameLabel.text = FirebaseManager().getUserEmail()
     }
     
     func configureLayout() {
