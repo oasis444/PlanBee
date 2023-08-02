@@ -30,6 +30,15 @@ final class SettingProfileCell: UITableViewCell {
         return label
     }()
     
+    private lazy var profileStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = viewModel.profileStackViewSpacing
+        stackView.alignment = .fill
+        stackView.distribution = .fillProportionally
+        return stackView
+    }()
+    
     func configure() {
         configureCell()
         configureLayout()
@@ -39,34 +48,24 @@ final class SettingProfileCell: UITableViewCell {
 private extension SettingProfileCell {
     func configureCell() {
         selectionStyle = .none
-        
-        if FirebaseManager().checkLoginState() {
-            accessoryType = .none
-        } else {
-            accessoryType = .disclosureIndicator
-        }
+        accessoryType = .disclosureIndicator
         
         profileNickNameLabel.text = FirebaseManager().getUserEmail()
     }
     
     func configureLayout() {
         [profileImageView, profileNickNameLabel].forEach {
-            contentView.addSubview($0)
+            profileStackView.addArrangedSubview($0)
         }
+        
+        contentView.addSubview(profileStackView)
         
         profileImageView.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(viewModel.spacing)
-            $0.top.bottom.equalToSuperview().inset(viewModel.spacing)
-            $0.trailing.equalTo(profileNickNameLabel.snp.leading).offset(-viewModel.contentSpacing)
-            $0.width.equalTo(viewModel.profileImageWidth)
-            $0.height.equalTo(profileImageView.snp.width)
+            $0.width.height.equalTo(viewModel.profileImageWidth)
         }
         
-        profileNickNameLabel.snp.makeConstraints {
-            $0.leading.equalTo(profileImageView.snp.trailing).offset(viewModel.contentSpacing)
-            $0.trailing.equalToSuperview().inset(viewModel.spacing)
-            $0.height.equalTo(profileImageView.snp.height)
-            $0.centerY.equalTo(profileImageView.snp.centerY)
+        profileStackView.snp.makeConstraints {
+            $0.edges.equalToSuperview().inset(viewModel.profileStackViewInset)
         }
     }
 }

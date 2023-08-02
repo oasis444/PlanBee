@@ -19,7 +19,7 @@ final class SettingViewController: UIViewController {
         tableView.dataSource = self
         tableView.backgroundColor = .PlanBeeBackgroundColor
         tableView.register(SettingProfileCell.self, forCellReuseIdentifier: SettingProfileCell.getIdentifier)
-        tableView.register(SettingTableViewCell.self, forCellReuseIdentifier: SettingTableViewCell.getIdentifier)
+        tableView.register(SettingCell.self, forCellReuseIdentifier: SettingCell.getIdentifier)
         return tableView
     }()
     
@@ -125,32 +125,43 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
             withIdentifier: SettingProfileCell.getIdentifier,
             for: indexPath) as? SettingProfileCell else { return UITableViewCell() }
         
-        guard let defaultCell = tableView.dequeueReusableCell(
-            withIdentifier: SettingTableViewCell.getIdentifier,
-            for: indexPath) as? SettingTableViewCell else { return UITableViewCell() }
+        guard let settingCell = tableView.dequeueReusableCell(
+            withIdentifier: SettingCell.getIdentifier,
+            for: indexPath) as? SettingCell else { return UITableViewCell() }
         
         switch indexPath.section {
         case 0:
             profileCell.configure()
             return profileCell
         case 1:
-            defaultCell.configureCell(
+            var screedModeTitle: String?
+            
+            switch indexPath.row {
+            case 0:
+                screedModeTitle = viewModel.subTitle(type: .screenMode)
+            case 1:
+                screedModeTitle = viewModel.subTitle(type: .alarm)
+            default:
+                return settingCell
+            }
+            settingCell.configureCell(
                 title: SettingSection.setting.items[indexPath.row],
-                icon: SettingIcons.setting.iconImage[indexPath.row],
-                iconColor: SettingIcons.setting.iconColor[indexPath.row])
-            return defaultCell
+                iconImage: SettingIcons.setting.iconImage[indexPath.row],
+                iconColor: SettingIcons.setting.iconColor[indexPath.row],
+                screenMode: screedModeTitle)
+            return settingCell
         case 2:
-            defaultCell.configureCell(
+            settingCell.configureCell(
                 title: SettingSection.infomation.items[indexPath.row],
-                icon: SettingIcons.infomation.iconImage[indexPath.row],
+                iconImage: SettingIcons.infomation.iconImage[indexPath.row],
                 iconColor: SettingIcons.infomation.iconColor[indexPath.row])
-            return defaultCell
+            return settingCell
         case 3:
-            defaultCell.configureCell(
+            settingCell.configureCell(
                 title: SettingSection.etc.items[indexPath.row],
-                icon: SettingIcons.etc.iconImage[indexPath.row],
+                iconImage: SettingIcons.etc.iconImage[indexPath.row],
                 iconColor: SettingIcons.etc.iconColor[indexPath.row])
-            return defaultCell
+            return settingCell
         default:
             return UITableViewCell()
         }
@@ -160,14 +171,26 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
         switch indexPath.section {
         case 0:
             if firebaseManager.checkLoginState() == true {
-                
+                let profileVC = ProfileViewController()
+                navigationController?.pushViewController(profileVC, animated: true)
                 return
             }
-            let profileVC = SignInViewController()
-            navigationController?.pushViewController(profileVC, animated: true)
+            let signInVC = SignInViewController()
+            navigationController?.pushViewController(signInVC, animated: true)
             
         case 1:
-            return
+            let cellTitle = SettingSection.setting.items[indexPath.row]
+            switch cellTitle {
+            case SettingSection.Setting.screenMode.title:
+                showScreenMode()
+                
+            case SettingSection.Setting.alarm.title:
+                return
+                
+            default:
+                return
+            }
+            
         case 2:
             return
         case 3:
@@ -178,5 +201,34 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
         default:
             return
         }
+    }
+}
+
+private extension SettingViewController {
+    func showScreenMode() {
+        let alert = UIAlertController(title: "화면 모드", message: nil, preferredStyle: .actionSheet)
+        let systemMode = UIAlertAction(title: "시스템 기본값", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            self.view.window?.overrideUserInterfaceStyle = .unspecified
+            UserDefaults.standard.set(0, forKey: "Appearance")
+            self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
+        }
+        let lightMode = UIAlertAction(title: "라이트 모드", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            self.view.window?.overrideUserInterfaceStyle = .light
+            UserDefaults.standard.set(1, forKey: "Appearance")
+            self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
+        }
+        let darkMode = UIAlertAction(title: "다크 모드", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            self.view.window?.overrideUserInterfaceStyle = .dark
+            UserDefaults.standard.set(2, forKey: "Appearance")
+            self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
+        }
+        let cancel = UIAlertAction(title: "취소", style: .cancel)
+        [systemMode, lightMode, darkMode, cancel].forEach {
+            alert.addAction($0)
+        }
+        present(alert, animated: true)
     }
 }

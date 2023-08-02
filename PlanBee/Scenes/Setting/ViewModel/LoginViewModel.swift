@@ -66,7 +66,12 @@ final class LoginViewModel {
     let personalInfoLabelColor: UIColor = .systemPink
     
     let signUpButtonFont: UIFont = .systemFont(ofSize: 25, weight: .bold)
-    let signUpButtonTitle = "회원가입"
+    var signUpButtonTitle: String {
+        switch viewType {
+        case .login: return "로그인"
+        case .register: return "회원가입"
+        }
+    }
     let signUpButtonBackgroundColor: UIColor = .lightGray
     let signUpButtonTintColor: UIColor = .white
     let signUpButtonRadius: CGFloat = 10
@@ -86,10 +91,6 @@ final class LoginViewModel {
     let separateViewLeadTrailOffset: CGFloat = 50
     
     let consentStackLeadTrailOffset: CGFloat = 30
-    
-    let socialLoginStackSpacing: CGFloat = 20
-    let socialLoginStackPadding: CGFloat = 30
-    let socialLoginStackLeadTrailInsset: CGFloat = 50
     
     func buttonON(button: UIButton) {
         button.isEnabled = true

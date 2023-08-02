@@ -8,10 +8,6 @@
 import UIKit
 
 final class SettingProfileCellViewModel {
-    
-    let spacing: CGFloat = 16
-    let contentSpacing: CGFloat = 20
-    
     let profileImageWidth: CGFloat = 80
     
     let defaultProfileImage: UIImage = UIImage(systemName: "person.fill") ?? UIImage()
@@ -19,4 +15,6 @@ final class SettingProfileCellViewModel {
     let profileNickNameFont: UIFont = .systemFont(ofSize: 25, weight: .medium)
     let profileNickNameColor: UIColor = .label
     
+    let profileStackViewSpacing: CGFloat = 20
+    let profileStackViewInset: CGFloat = 16
 }

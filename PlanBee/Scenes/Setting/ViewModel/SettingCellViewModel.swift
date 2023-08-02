@@ -8,11 +8,14 @@
 import UIKit
 
 final class SettingCellViewModel {
-    
-    let spacing: CGFloat = 16
-    let contentSpacing: CGFloat = 20
-    let iconSpacing: CGFloat = 12
-    
     let titleLabelFont: UIFont = .systemFont(ofSize: 17, weight: .medium)
     let titleLabelColor: UIColor = .label
+    
+    let stateTitleFont: UIFont = .systemFont(ofSize: 17, weight: .medium)
+    let stateTitleColor: UIColor = .lightGray
+    
+    let iconImageWidth: CGFloat = 30
+    
+    let settingStackViewSpacing: CGFloat = 20
+    let settingStackViewInset: CGFloat = 16
 }
