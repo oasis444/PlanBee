@@ -91,4 +91,8 @@ class FirebaseManager {
         print(currentUserEmail)
         return currentUserEmail
     }
+    
+    func getUID() -> String? {
+        return auth.currentUser?.uid
+    }
 }

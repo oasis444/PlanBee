@@ -6,18 +6,14 @@
 //
 
 import UIKit
-import FirebaseAuth
-import CryptoKit
-import AuthenticationServices
-import Alamofire
 
 final class ProfileViewController: UIViewController {
     
-    fileprivate var currentNonce: String?
+    let storeManager = FirestoreManager()
     
     private lazy var withdrawalBtn: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("탈퇴하기", for: .normal)
+        button.setTitle("전송", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 30, weight: .bold)
         button.setTitleColor(.label, for: .normal)
         button.backgroundColor = .lightGray
@@ -51,22 +47,5 @@ private extension ProfileViewController {
     
     @objc func didTappedWithdrawalBtn() {
         print("didTapped")
-        removeAccount()
-    }
-    
-    func removeAccount() {
-        let token = UserDefaults.standard.string(forKey: "refreshToken")
-        
-        if let token = token {
-            
-            let url = URL(string: "https://YOUR-URL.cloudfunctions.net/revokeToken?refresh_token=\(token)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "https://apple.com")!
-            
-            let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
-                guard data != nil else { return }
-            }
-            print("-------> here")
-            task.resume()
-            
-        }
     }
 }

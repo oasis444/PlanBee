@@ -8,8 +8,14 @@
 import Foundation
 
 final class TodoManager {
+    private let storeManager = FirestoreManager()
     
     func saveTodo(saveTodo: Todo) -> Bool {
+        let result = storeManager.saveTodo(data: saveTodo)
+        if CoreDataManager.saveTodoData(todo: saveTodo) {
+            return true
+        }
+        if storeManager.saveTodo(data: saveTodo) != nil { return false }
         let saveResult = CoreDataManager.saveTodoData(todo: saveTodo)
         if saveResult == false {
             print("PlannerVM.saveTodo_Error")
@@ -36,10 +42,12 @@ final class TodoManager {
     }
     
     func updateTodo(todo: Todo) -> Bool {
+        if storeManager.updateTodo(data: todo) != nil { return false }
         return CoreDataManager.updatePlanData(newTodo: todo)
     }
     
     func removeTodo(todo: Todo) -> Bool {
+        if storeManager.deleteTodo(data: todo) != nil { return false }
         return CoreDataManager.deletePlanData(todo: todo)
     }
     
@@ -66,6 +74,8 @@ final class TodoManager {
                 done: $0.done,
                 alarm: $0.alarm
             )
+            
+            if storeManager.updateTodo(data: updatedTodo) != nil { return }
             _ = updateTodo(todo: updatedTodo)
         }
     }

@@ -9,7 +9,7 @@ import Foundation
 import UserNotifications
 
 final class UserNotificationManager {
-    
+    private let storeManager = FirestoreManager()
     private let userNotificationCenter = UNUserNotificationCenter.current()
     
     func addAlarm(todo: Todo) {
@@ -25,7 +25,7 @@ final class UserNotificationManager {
                            priority: todo.priority,
                            done: todo.done,
                            alarm: nil)
-        
+        if storeManager.updateTodo(data: todo) != nil { completion?(false) }
         if TodoManager().updateTodo(todo: newTodo) {
             userNotificationCenter.removePendingNotificationRequests(withIdentifiers: [todo.id.uuidString])
             userNotificationCenter.removeDeliveredNotifications(withIdentifiers: [todo.id.uuidString])

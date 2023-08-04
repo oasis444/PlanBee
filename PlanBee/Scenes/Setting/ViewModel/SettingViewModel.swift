@@ -5,7 +5,7 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import Foundation
+import UIKit
 
 final class SettingViewModel {
     let settingViewNavigationTitle = "설정"
@@ -27,5 +27,19 @@ final class SettingViewModel {
             return nil
         }
         return nil
+    }
+    
+    func saveScreenMode(viewController: UIViewController, mode: UserInterfaceStyle) {
+        switch mode {
+        case .unspecified:
+            viewController.view.window?.overrideUserInterfaceStyle = .unspecified
+            UserDefaults.standard.set(0, forKey: "Appearance")
+        case .light:
+            viewController.view.window?.overrideUserInterfaceStyle = .light
+            UserDefaults.standard.set(1, forKey: "Appearance")
+        case .dark:
+            viewController.view.window?.overrideUserInterfaceStyle = .dark
+            UserDefaults.standard.set(2, forKey: "Appearance")
+        }
     }
 }

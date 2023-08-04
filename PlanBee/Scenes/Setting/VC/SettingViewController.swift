@@ -28,8 +28,6 @@ final class SettingViewController: UIViewController {
         
         configureSettingView()
         configLayout()
-                
-        self.view.window?.overrideUserInterfaceStyle = .dark
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -193,11 +191,19 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
             
         case 2:
             return
-        case 3:
-            let loginState = firebaseManager.checkLoginState()
-            showAlert(loginState: loginState)
-            return
             
+        case 3:
+            switch indexPath.row {
+            case 0:
+                return
+            case 1:
+                return
+            case 2:
+                let loginState = firebaseManager.checkLoginState()
+                showAlert(loginState: loginState)
+            default:
+                return
+            }
         default:
             return
         }
@@ -209,20 +215,17 @@ private extension SettingViewController {
         let alert = UIAlertController(title: "화면 모드", message: nil, preferredStyle: .actionSheet)
         let systemMode = UIAlertAction(title: "시스템 기본값", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.view.window?.overrideUserInterfaceStyle = .unspecified
-            UserDefaults.standard.set(0, forKey: "Appearance")
+            self.viewModel.saveScreenMode(viewController: self, mode: .unspecified)
             self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
         }
         let lightMode = UIAlertAction(title: "라이트 모드", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.view.window?.overrideUserInterfaceStyle = .light
-            UserDefaults.standard.set(1, forKey: "Appearance")
+            self.viewModel.saveScreenMode(viewController: self, mode: .light)
             self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
         }
         let darkMode = UIAlertAction(title: "다크 모드", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.view.window?.overrideUserInterfaceStyle = .dark
-            UserDefaults.standard.set(2, forKey: "Appearance")
+            self.viewModel.saveScreenMode(viewController: self, mode: .dark)
             self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
         }
         let cancel = UIAlertAction(title: "취소", style: .cancel)

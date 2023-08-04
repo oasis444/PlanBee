@@ -10,8 +10,8 @@ import UIKit
 final class AlarmViewController: UIViewController {
     
     var todo: Todo?
-    let viewModel = AlarmViewModel()
-    let alarmManager = UserNotificationManager()
+    private let viewModel = AlarmViewModel()
+    private let alarmManager = UserNotificationManager()
     var reloadTodoTableView: ((_ reloadTableView: Bool) -> Void)?
     
     private lazy var removeAlarmBtn: UIButton = {
@@ -61,8 +61,9 @@ final class AlarmViewController: UIViewController {
 
 private extension AlarmViewController {
     @objc func didTappedRemoveAlarmBtn() {
-        guard let todo = todo,
+        guard var todo = todo,
               todo.alarm != nil else { return }
+        todo.alarm = nil
         alarmManager.removeAlarm(todo: todo) { [weak self] result in
             guard let self = self else { return }
             if result {
