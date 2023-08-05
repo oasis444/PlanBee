@@ -60,11 +60,11 @@ final class AlarmViewController: UIViewController {
 }
 
 private extension AlarmViewController {
-    @objc func didTappedRemoveAlarmBtn() {
+    @objc func didTappedRemoveAlarmBtn() async {
         guard var todo = todo,
               todo.alarm != nil else { return }
         todo.alarm = nil
-        alarmManager.removeAlarm(todo: todo) { [weak self] result in
+        await alarmManager.removeAlarm(todo: todo) { [weak self] result in
             guard let self = self else { return }
             if result {
                 self.reloadTodoTableView?(result)
@@ -79,11 +79,11 @@ private extension AlarmViewController {
         dismiss(animated: true)
     }
     
-    @objc func didTappedSetAlarmBtn() {
+    @objc func didTappedSetAlarmBtn() async {
         guard var todo = todo else { return }
         if checkAlarmDate() {
             todo.alarm = alarmDatePicker.date
-            let updateResult = TodoManager().updateTodo(todo: todo)
+            let updateResult = await TodoManager().updateTodo(todo: todo)
             if updateResult {
                 alarmManager.addAlarm(todo: todo)
             }

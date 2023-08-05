@@ -18,21 +18,31 @@ final class UserNotificationManager {
         userNotificationCenter.addNotificationRequest(todo: todo, alert: alert)
     }
     
-    func removeAlarm(todo: Todo, completion: ((Bool) -> Void)?) { // 사용자가 직접 삭제하는 경우
+    func removeAlarm(todo: Todo, completion: ((Bool) -> Void)?) async { // 사용자가 직접 삭제하는 경우
         let newTodo = Todo(id: todo.id,
                            content: todo.content,
                            date: todo.date,
                            priority: todo.priority,
                            done: todo.done,
                            alarm: nil)
-        if storeManager.updateTodo(data: todo) != nil { completion?(false) }
-        if TodoManager().updateTodo(todo: newTodo) {
-            userNotificationCenter.removePendingNotificationRequests(withIdentifiers: [todo.id.uuidString])
-            userNotificationCenter.removeDeliveredNotifications(withIdentifiers: [todo.id.uuidString])
-            completion?(true)
-        } else {
-            completion?(false)
+        
+        if await storeManager.updateTodo(data: todo) {
+            if await TodoManager().updateTodo(todo: newTodo) {
+                userNotificationCenter.removePendingNotificationRequests(withIdentifiers: [todo.id.uuidString])
+                userNotificationCenter.removeDeliveredNotifications(withIdentifiers: [todo.id.uuidString])
+                completion?(true)
+            }
         }
+        completion?(false)
+        
+//        if storeManager.updateTodo(data: todo) != nil { completion?(false) }
+//        if TodoManager().updateTodo(todo: newTodo) {
+//            userNotificationCenter.removePendingNotificationRequests(withIdentifiers: [todo.id.uuidString])
+//            userNotificationCenter.removeDeliveredNotifications(withIdentifiers: [todo.id.uuidString])
+//            completion?(true)
+//        } else {
+//            completion?(false)
+//        }
     }
     
     func removeAllDeliveredAlarm() {

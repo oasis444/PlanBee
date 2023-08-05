@@ -10,17 +10,14 @@ import Foundation
 final class TodoManager {
     private let storeManager = FirestoreManager()
     
-    func saveTodo(saveTodo: Todo) -> Bool {
-        let result = storeManager.saveTodo(data: saveTodo)
-        if CoreDataManager.saveTodoData(todo: saveTodo) {
-            return true
+    func saveTodo(saveTodo: Todo) async -> Bool {
+        let result = Task {
+            if await storeManager.saveTodo(data: saveTodo) == true {
+                if CoreDataManager.saveTodoData(todo: saveTodo) { return true }
+            }
+            return false
         }
-        if storeManager.saveTodo(data: saveTodo) != nil { return false }
-        let saveResult = CoreDataManager.saveTodoData(todo: saveTodo)
-        if saveResult == false {
-            print("PlannerVM.saveTodo_Error")
-        }
-        return saveResult
+        return await result.value
     }
     
     func getDateList() -> [String] {
@@ -41,14 +38,24 @@ final class TodoManager {
         return sortedList
     }
     
-    func updateTodo(todo: Todo) -> Bool {
-        if storeManager.updateTodo(data: todo) != nil { return false }
-        return CoreDataManager.updatePlanData(newTodo: todo)
+    func updateTodo(todo: Todo) async -> Bool {
+        let result = Task {
+            if await storeManager.updateTodo(data: todo) == true {
+                if CoreDataManager.updatePlanData(newTodo: todo) { return true }
+            }
+            return false
+        }
+        return await result.value
     }
     
-    func removeTodo(todo: Todo) -> Bool {
-        if storeManager.deleteTodo(data: todo) != nil { return false }
-        return CoreDataManager.deletePlanData(todo: todo)
+    func removeTodo(todo: Todo) async -> Bool {
+        let result = Task {
+            if await storeManager.deleteTodo(data: todo) == true {
+                if CoreDataManager.deletePlanData(todo: todo) { return true }
+            }
+            return false
+        }
+        return await result.value
     }
     
     func textFieldIsFullWithBlank(text: String) -> Bool {
@@ -56,7 +63,7 @@ final class TodoManager {
         return trimmedText.isEmpty ? true : false
     }
     
-    func moveTodo(date: Date?, startIndex: Int, destinationIndex: Int) {
+    func moveTodo(date: Date?, startIndex: Int, destinationIndex: Int) async {
         var todoList = getTodoList(date: date)
         todoList.swapAt(startIndex, destinationIndex)
         let newIndex = destinationIndex + 1
@@ -64,19 +71,20 @@ final class TodoManager {
         todoList[newIndex...].sort {
             $0.priority < $1.priority
         }
-        
-        todoList[destinationIndex...].forEach {
-            let updatedTodo = Todo(
-                id: $0.id,
-                content: $0.content,
-                date: $0.date,
-                priority: Date(),
-                done: $0.done,
-                alarm: $0.alarm
-            )
-            
-            if storeManager.updateTodo(data: updatedTodo) != nil { return }
-            _ = updateTodo(todo: updatedTodo)
+            todoList[destinationIndex...].forEach {
+                let updatedTodo = Todo(
+                    id: $0.id,
+                    content: $0.content,
+                    date: $0.date,
+                    priority: Date(),
+                    done: $0.done,
+                    alarm: $0.alarm
+                )
+                Task {
+                    await updateTodo(todo: updatedTodo)
+                }
+//            if storeManager.updateTodo(data: updatedTodo) != nil { return }
+//            _ = updateTodo(todo: updatedTodo)
         }
     }
 }

@@ -140,11 +140,13 @@ private extension PlannerDetailViewController {
                 content: text,
                 date: strDate
             )
-            let saveResult = todoManager.saveTodo(saveTodo: todo)
-            if saveResult == true {
-                tableView.reloadData()
-            } else {
-                showAlert()
+            Task {
+                let saveResult = await todoManager.saveTodo(saveTodo: todo)
+                if saveResult == true {
+                    tableView.reloadData()
+                } else {
+                    showAlert()
+                }
             }
         }
         inputTodoTextField.text?.removeAll()
@@ -196,28 +198,28 @@ extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSourc
         return viewModel?.tableViewHeaderTitle
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    private func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) async {
         var selectedTodo = todoManager.getTodoList(date: viewModel?.getDate)[indexPath.row]
         selectedTodo.done = !selectedTodo.done
-        if todoManager.updateTodo(todo: selectedTodo) == true {
+        if await todoManager.updateTodo(todo: selectedTodo) == true {
             tableView.reloadRows(at: [indexPath], with: .automatic)
         }
     }
     
-    func tableView(_ tableView: UITableView,
+    private func tableView(_ tableView: UITableView,
                    commit editingStyle: UITableViewCell.EditingStyle,
-                   forRowAt indexPath: IndexPath) {
+                   forRowAt indexPath: IndexPath) async {
         let todo = todoManager.getTodoList(date: viewModel?.getDate)[indexPath.row]
-        if todoManager.removeTodo(todo: todo) {
+        if await todoManager.removeTodo(todo: todo) {
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
     }
     
-    func tableView(_ tableView: UITableView,
+    private func tableView(_ tableView: UITableView,
                    moveRowAt sourceIndexPath: IndexPath,
-                   to destinationIndexPath: IndexPath) {
+                   to destinationIndexPath: IndexPath) async {
         if sourceIndexPath == destinationIndexPath { return }
-        todoManager.moveTodo(
+        await todoManager.moveTodo(
             date: viewModel?.getDate,
             startIndex: sourceIndexPath.row,
             destinationIndex: destinationIndexPath.row
