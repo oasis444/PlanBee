@@ -18,23 +18,9 @@ final class UserNotificationManager {
         userNotificationCenter.addNotificationRequest(todo: todo, alert: alert)
     }
     
-    func removeAlarm(todo: Todo, completion: ((Bool) -> Void)?) async { // 사용자가 직접 삭제하는 경우
-        let newTodo = Todo(id: todo.id,
-                           content: todo.content,
-                           date: todo.date,
-                           priority: todo.priority,
-                           done: todo.done,
-                           alarm: nil)
-        
-        if await TodoManager().updateTodo(todo: newTodo) {
-            Task {
-                await storeManager.updateTodo(data: todo)
-            }
-            userNotificationCenter.removePendingNotificationRequests(withIdentifiers: [todo.id.uuidString])
-            userNotificationCenter.removeDeliveredNotifications(withIdentifiers: [todo.id.uuidString])
-            completion?(true)
-        }
-        completion?(false)
+    func removeAlarm(todo: Todo) { // 사용자가 직접 삭제하는 경우
+        userNotificationCenter.removePendingNotificationRequests(withIdentifiers: [todo.id.uuidString])
+        userNotificationCenter.removeDeliveredNotifications(withIdentifiers: [todo.id.uuidString])
     }
     
     func removeAllDeliveredAlarm() {

@@ -202,7 +202,9 @@ extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSourc
         selectedTodo.done = !selectedTodo.done
         Task {
             if await todoManager.updateTodo(todo: selectedTodo) == true {
-                tableView.reloadRows(at: [indexPath], with: .automatic)
+                DispatchQueue.main.async {
+                    tableView.reloadRows(at: [indexPath], with: .automatic)
+                }
             }
         }
     }
@@ -213,7 +215,9 @@ extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSourc
         let todo = todoManager.getTodoList(date: viewModel?.getDate)[indexPath.row]
         Task {
             if await todoManager.removeTodo(todo: todo) {
-                tableView.deleteRows(at: [indexPath], with: .automatic)
+                DispatchQueue.main.async {
+                    tableView.deleteRows(at: [indexPath], with: .automatic)
+                }
             }
         }
     }

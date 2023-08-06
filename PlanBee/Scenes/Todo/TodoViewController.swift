@@ -85,7 +85,9 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
         selectedTodo.done = !selectedTodo.done
         Task {
             if await todoManager.updateTodo(todo: selectedTodo) == true {
-                tableView.reloadRows(at: [indexPath], with: .automatic)
+                DispatchQueue.main.async {
+                    tableView.reloadRows(at: [indexPath], with: .automatic)
+                }
             }
         }
     }
@@ -96,7 +98,9 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
         let todo = todoManager.getTodoList(date: Date())[indexPath.row]
         Task {
             if await todoManager.removeTodo(todo: todo) {
-                tableView.deleteRows(at: [indexPath], with: .automatic)
+                DispatchQueue.main.async {
+                    tableView.deleteRows(at: [indexPath], with: .automatic)
+                }
             }
         }
     }
@@ -112,7 +116,9 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
             alarmVC.reloadTodoTableView = { [weak self] result in
                 guard let self = self else { return }
                 if result {
-                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                    DispatchQueue.main.async {
+                        self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                    }
                 }
             }
             self.present(alarmVC, animated: true)

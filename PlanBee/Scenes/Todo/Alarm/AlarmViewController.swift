@@ -60,15 +60,16 @@ final class AlarmViewController: UIViewController {
 }
 
 private extension AlarmViewController {
-    @objc func didTappedRemoveAlarmBtn() async {
+    @objc func didTappedRemoveAlarmBtn() {
         guard var todo = todo,
               todo.alarm != nil else { return }
         todo.alarm = nil
-        await alarmManager.removeAlarm(todo: todo) { [weak self] result in
-            guard let self = self else { return }
-            if result {
-                self.reloadTodoTableView?(result)
-                dismiss(animated: true)
+        Task {
+            if await TodoManager().updateTodo(todo: todo) {
+                alarmManager.removeAlarm(todo: todo)
+                dismiss(animated: true) {
+                    self.reloadTodoTableView?(true)
+                }
             } else {
                 showAlert(title: viewModel.removeAlertTitle, message: viewModel.removeAlertMessage)
             }
@@ -79,16 +80,17 @@ private extension AlarmViewController {
         dismiss(animated: true)
     }
     
-    @objc func didTappedSetAlarmBtn() async {
+    @objc func didTappedSetAlarmBtn() {
         guard var todo = todo else { return }
         if checkAlarmDate() {
             todo.alarm = alarmDatePicker.date
-            let updateResult = await TodoManager().updateTodo(todo: todo)
-            if updateResult {
-                alarmManager.addAlarm(todo: todo)
-            }
-            dismiss(animated: true) {
-                self.reloadTodoTableView?(true)
+            Task {
+                if await TodoManager().updateTodo(todo: todo) {
+                    alarmManager.addAlarm(todo: todo)
+                }
+                dismiss(animated: true) {
+                    self.reloadTodoTableView?(true)
+                }
             }
         } else {
             showAlert(title: viewModel.setAlertTitle, message: viewModel.setAlertMessage)
