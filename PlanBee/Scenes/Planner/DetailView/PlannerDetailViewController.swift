@@ -12,6 +12,7 @@ final class PlannerDetailViewController: UIViewController {
     
     var reloadCalendar: ((_ relodaCalendar: Bool) -> Void)?
     private let todoManager = TodoManager()
+    private let storeManager = FirestoreManager()
     private var viewModel: PlannerDetailViewModel?
     private var subscriptions = Set<AnyCancellable>()
     
@@ -140,13 +141,11 @@ private extension PlannerDetailViewController {
                 content: text,
                 date: strDate
             )
-            Task {
-                let saveResult = await todoManager.saveTodo(saveTodo: todo)
-                if saveResult == true {
-                    tableView.reloadData()
-                } else {
-                    showAlert()
-                }
+            let saveResult = todoManager.saveTodo(saveTodo: todo)
+            if saveResult == true {
+                tableView.reloadData()
+            } else {
+                showAlert()
             }
         }
         inputTodoTextField.text?.removeAll()
@@ -198,32 +197,38 @@ extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSourc
         return viewModel?.tableViewHeaderTitle
     }
     
-    private func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) async {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         var selectedTodo = todoManager.getTodoList(date: viewModel?.getDate)[indexPath.row]
         selectedTodo.done = !selectedTodo.done
-        if await todoManager.updateTodo(todo: selectedTodo) == true {
-            tableView.reloadRows(at: [indexPath], with: .automatic)
+        Task {
+            if await todoManager.updateTodo(todo: selectedTodo) == true {
+                tableView.reloadRows(at: [indexPath], with: .automatic)
+            }
         }
     }
     
-    private func tableView(_ tableView: UITableView,
+    func tableView(_ tableView: UITableView,
                    commit editingStyle: UITableViewCell.EditingStyle,
-                   forRowAt indexPath: IndexPath) async {
+                   forRowAt indexPath: IndexPath) {
         let todo = todoManager.getTodoList(date: viewModel?.getDate)[indexPath.row]
-        if await todoManager.removeTodo(todo: todo) {
-            tableView.deleteRows(at: [indexPath], with: .automatic)
+        Task {
+            if await todoManager.removeTodo(todo: todo) {
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+            }
         }
     }
     
-    private func tableView(_ tableView: UITableView,
+    func tableView(_ tableView: UITableView,
                    moveRowAt sourceIndexPath: IndexPath,
-                   to destinationIndexPath: IndexPath) async {
+                   to destinationIndexPath: IndexPath) {
         if sourceIndexPath == destinationIndexPath { return }
-        await todoManager.moveTodo(
-            date: viewModel?.getDate,
-            startIndex: sourceIndexPath.row,
-            destinationIndex: destinationIndexPath.row
-        )
+        Task {
+            await todoManager.moveTodo(
+                date: viewModel?.getDate,
+                startIndex: sourceIndexPath.row,
+                destinationIndex: destinationIndexPath.row
+            )
+        }
     }
 }
 

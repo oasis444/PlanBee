@@ -80,26 +80,29 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    private func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) async {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         var selectedTodo = todoManager.getTodoList(date: Date())[indexPath.row]
         selectedTodo.done = !selectedTodo.done
-        if await todoManager.updateTodo(todo: selectedTodo) == true {
-            tableView.reloadRows(at: [indexPath], with: .automatic)
-        }
-    }
-    
-    private func tableView(_ tableView: UITableView,
-                           commit editingStyle: UITableViewCell.EditingStyle,
-                           forRowAt indexPath: IndexPath) async {
-        let todo = todoManager.getTodoList(date: Date())[indexPath.row]
-        if await todoManager.removeTodo(todo: todo) {
-            tableView.deleteRows(at: [indexPath], with: .automatic)
+        Task {
+            if await todoManager.updateTodo(todo: selectedTodo) == true {
+                tableView.reloadRows(at: [indexPath], with: .automatic)
+            }
         }
     }
     
     func tableView(_ tableView: UITableView,
-                   leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath
-    ) -> UISwipeActionsConfiguration? {
+                   commit editingStyle: UITableViewCell.EditingStyle,
+                   forRowAt indexPath: IndexPath) {
+        let todo = todoManager.getTodoList(date: Date())[indexPath.row]
+        Task {
+            if await todoManager.removeTodo(todo: todo) {
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView,
+                   leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let addAlarmAction = UIContextualAction(style: .normal,
                                                 title: viewModel.alarmActionTitle) { [weak self] _, _, _ in
             guard let self = self else { return }
@@ -118,15 +121,17 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
         return UISwipeActionsConfiguration(actions: [addAlarmAction])
     }
     
-    private func tableView(_ tableView: UITableView,
-                           moveRowAt sourceIndexPath: IndexPath,
-                           to destinationIndexPath: IndexPath) async {
+    func tableView(_ tableView: UITableView,
+                   moveRowAt sourceIndexPath: IndexPath,
+                   to destinationIndexPath: IndexPath) {
         if sourceIndexPath == destinationIndexPath { return }
-        await todoManager.moveTodo(
-            date: Date(),
-            startIndex: sourceIndexPath.row,
-            destinationIndex: destinationIndexPath.row
-        )
+        Task {
+            await todoManager.moveTodo(
+                date: Date(),
+                startIndex: sourceIndexPath.row,
+                destinationIndex: destinationIndexPath.row
+            )
+        }
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

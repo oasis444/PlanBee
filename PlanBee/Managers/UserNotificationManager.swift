@@ -26,23 +26,15 @@ final class UserNotificationManager {
                            done: todo.done,
                            alarm: nil)
         
-        if await storeManager.updateTodo(data: todo) {
-            if await TodoManager().updateTodo(todo: newTodo) {
-                userNotificationCenter.removePendingNotificationRequests(withIdentifiers: [todo.id.uuidString])
-                userNotificationCenter.removeDeliveredNotifications(withIdentifiers: [todo.id.uuidString])
-                completion?(true)
+        if await TodoManager().updateTodo(todo: newTodo) {
+            Task {
+                await storeManager.updateTodo(data: todo)
             }
+            userNotificationCenter.removePendingNotificationRequests(withIdentifiers: [todo.id.uuidString])
+            userNotificationCenter.removeDeliveredNotifications(withIdentifiers: [todo.id.uuidString])
+            completion?(true)
         }
         completion?(false)
-        
-//        if storeManager.updateTodo(data: todo) != nil { completion?(false) }
-//        if TodoManager().updateTodo(todo: newTodo) {
-//            userNotificationCenter.removePendingNotificationRequests(withIdentifiers: [todo.id.uuidString])
-//            userNotificationCenter.removeDeliveredNotifications(withIdentifiers: [todo.id.uuidString])
-//            completion?(true)
-//        } else {
-//            completion?(false)
-//        }
     }
     
     func removeAllDeliveredAlarm() {

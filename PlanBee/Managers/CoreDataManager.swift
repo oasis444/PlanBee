@@ -9,7 +9,6 @@ import UIKit
 import CoreData
 
 final class CoreDataManager {
-    
     private static let planEntityName = "Plan"
     
     private static let context: NSManagedObjectContext? = {
@@ -86,8 +85,7 @@ final class CoreDataManager {
         guard let context = context else { return false }
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>.init(entityName: planEntityName)
         fetchRequest.predicate = NSPredicate(format: "uuid = %@", newTodo.id.uuidString)
-//        fetchRequest.predicate = NSPredicate(format: "uuid = %@", id as CVarArg)
-
+        
         do {
             guard let result = try? context.fetch(fetchRequest),
                   let object = result.first as? NSManagedObject else { return false }
@@ -96,10 +94,11 @@ final class CoreDataManager {
             object.setValue(newTodo.priority, forKey: Todokeys.priority.key)
             object.setValue(newTodo.done, forKey: Todokeys.done.key)
             object.setValue(newTodo.alarm, forKey: Todokeys.alarm.key)
-
+            
             try context.save()
             return true
         } catch {
+            print("여기 에러: \(error)")
             print("error: \(error.localizedDescription)")
             return false
         }

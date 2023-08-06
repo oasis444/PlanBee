@@ -10,14 +10,14 @@ import Foundation
 final class TodoManager {
     private let storeManager = FirestoreManager()
     
-    func saveTodo(saveTodo: Todo) async -> Bool {
-        let result = Task {
-            if await storeManager.saveTodo(data: saveTodo) == true {
-                if CoreDataManager.saveTodoData(todo: saveTodo) { return true }
+    func saveTodo(saveTodo: Todo) -> Bool {
+        if CoreDataManager.saveTodoData(todo: saveTodo) {
+            Task {
+                await storeManager.saveTodo(data: saveTodo)
             }
-            return false
+            return true
         }
-        return await result.value
+        return false
     }
     
     func getDateList() -> [String] {
@@ -39,23 +39,23 @@ final class TodoManager {
     }
     
     func updateTodo(todo: Todo) async -> Bool {
-        let result = Task {
-            if await storeManager.updateTodo(data: todo) == true {
-                if CoreDataManager.updatePlanData(newTodo: todo) { return true }
+        if CoreDataManager.updatePlanData(newTodo: todo) {
+            Task {
+                await storeManager.updateTodo(data: todo)
             }
-            return false
+            return true
         }
-        return await result.value
+        return false
     }
     
     func removeTodo(todo: Todo) async -> Bool {
-        let result = Task {
-            if await storeManager.deleteTodo(data: todo) == true {
-                if CoreDataManager.deletePlanData(todo: todo) { return true }
+        if CoreDataManager.deletePlanData(todo: todo) {
+            Task {
+                await storeManager.deleteTodo(data: todo)
             }
-            return false
+            return true
         }
-        return await result.value
+        return false
     }
     
     func textFieldIsFullWithBlank(text: String) -> Bool {
@@ -71,20 +71,17 @@ final class TodoManager {
         todoList[newIndex...].sort {
             $0.priority < $1.priority
         }
-            todoList[destinationIndex...].forEach {
-                let updatedTodo = Todo(
-                    id: $0.id,
-                    content: $0.content,
-                    date: $0.date,
-                    priority: Date(),
-                    done: $0.done,
-                    alarm: $0.alarm
-                )
-                Task {
-                    await updateTodo(todo: updatedTodo)
-                }
-//            if storeManager.updateTodo(data: updatedTodo) != nil { return }
-//            _ = updateTodo(todo: updatedTodo)
+        
+        for index in destinationIndex..<todoList.count {
+            let updatedTodo = Todo(
+                id: todoList[index].id,
+                content: todoList[index].content,
+                date: todoList[index].date,
+                priority: Date(),
+                done: todoList[index].done,
+                alarm: todoList[index].alarm
+            )
+            _ = await updateTodo(todo: updatedTodo)
         }
     }
 }
