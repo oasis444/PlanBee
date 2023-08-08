@@ -10,11 +10,13 @@ import FirebaseCore
 import FirebaseFirestore
 
 final class FirestoreManager {
-    private let fireManager = FirebaseManager()
+    static let shared = FirestoreManager()
+    private init() { }
+    
     private let dataBase = Firestore.firestore().collection("User")
     
     func saveTodo(data: Todo) async {
-        guard let uid = fireManager.getUID() else { return }
+        guard let uid = FirebaseManager.shared.getUID() else { return }
         
         var retryCount = 0
         while retryCount < 3 {
@@ -41,7 +43,7 @@ final class FirestoreManager {
     }
     
     func deleteTodo(data: Todo) async {
-        guard let uid = fireManager.getUID() else { return }
+        guard let uid = FirebaseManager.shared.getUID() else { return }
         
         var retryCount = 0
         while retryCount < 3 {
@@ -60,7 +62,7 @@ final class FirestoreManager {
     
     // 우선순위, 완료, 알림 수정 가능
     func updateTodo(data: Todo) async {
-        guard let uid = fireManager.getUID() else { return }
+        guard let uid = FirebaseManager.shared.getUID() else { return }
         
         var retryCount = 0
         while retryCount < 3 {

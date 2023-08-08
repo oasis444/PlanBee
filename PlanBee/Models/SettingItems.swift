@@ -39,18 +39,18 @@ extension SettingSection {
     
     enum Infomation: String, CaseIterable {
         case version = "버전 정보"
-        case terms = "이용약관"
-        case privacyTerms = "개인정보 처리 방침"
+//        case terms = "이용약관"
+//        case privacyTerms = "개인정보 처리 방침"
         case openSource = "오픈소스 라이선스"
-        case notice = "공지사항"
-        case enquire = "문의하기"
+//        case notice = "공지사항"
+//        case enquire = "문의하기"
         
         var title: String { rawValue }
     }
     
     enum Etc: String, CaseIterable {
-        case developer = "개발진"
-        case copyright = "저작권"
+//        case developer = "개발진"
+//        case copyright = "저작권"
         case logout = "로그아웃"
         
         var title: String { rawValue }

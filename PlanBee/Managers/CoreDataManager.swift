@@ -9,6 +9,9 @@ import UIKit
 import CoreData
 
 final class CoreDataManager {
+    static let shared = CoreDataManager()
+    private init() { }
+    
     private static let planEntityName = "Plan"
     
     private static let context: NSManagedObjectContext? = {
@@ -19,10 +22,10 @@ final class CoreDataManager {
         return appDelegate.persistentContainer.viewContext
     }()
     
-    static func saveTodoData(todo: Todo) -> Bool {
-        guard let context = context else { return false }
+    func saveTodoData(todo: Todo) -> Bool {
+        guard let context = CoreDataManager.context else { return false }
         guard let entity = NSEntityDescription.entity(
-            forEntityName: planEntityName, in: context
+            forEntityName: CoreDataManager.planEntityName, in: context
         ) else { return false }
         
         let object = NSManagedObject(entity: entity, insertInto: context)
@@ -41,9 +44,9 @@ final class CoreDataManager {
         }
     }
     
-    static func fetchTodoData(date: Date? = nil) -> [Todo]? {
-        guard let context = context else { return nil }
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: planEntityName)
+    func fetchTodoData(date: Date? = nil) -> [Todo]? {
+        guard let context = CoreDataManager.context else { return nil }
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: CoreDataManager.planEntityName)
         
         do {
             if let date = date {
@@ -81,9 +84,9 @@ final class CoreDataManager {
         }
     }
     
-    static func updatePlanData(newTodo: Todo) -> Bool {
-        guard let context = context else { return false }
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>.init(entityName: planEntityName)
+    func updatePlanData(newTodo: Todo) -> Bool {
+        guard let context = CoreDataManager.context else { return false }
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>.init(entityName: CoreDataManager.planEntityName)
         fetchRequest.predicate = NSPredicate(format: "uuid = %@", newTodo.id.uuidString)
         
         do {
@@ -104,9 +107,9 @@ final class CoreDataManager {
         }
     }
     
-    static func deletePlanData(todo: Todo) -> Bool {
-        guard let context = context else { return false }
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>.init(entityName: planEntityName)
+    func deletePlanData(todo: Todo) -> Bool {
+        guard let context = CoreDataManager.context else { return false }
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>.init(entityName: CoreDataManager.planEntityName)
         fetchRequest.predicate = NSPredicate(format: "uuid = %@", todo.id.uuidString)
 
         do {

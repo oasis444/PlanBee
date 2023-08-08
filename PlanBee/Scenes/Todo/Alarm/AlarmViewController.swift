@@ -11,7 +11,6 @@ final class AlarmViewController: UIViewController {
     
     var todo: Todo?
     private let viewModel = AlarmViewModel()
-    private let alarmManager = UserNotificationManager()
     var reloadTodoTableView: ((_ reloadTableView: Bool) -> Void)?
     
     private lazy var removeAlarmBtn: UIButton = {
@@ -65,8 +64,8 @@ private extension AlarmViewController {
               todo.alarm != nil else { return }
         todo.alarm = nil
         Task {
-            if await TodoManager().updateTodo(todo: todo) {
-                alarmManager.removeAlarm(todo: todo)
+            if await TodoManager.shared.updateTodo(todo: todo) {
+                UserNotificationManager.shared.removeAlarm(todo: todo)
                 dismiss(animated: true) {
                     self.reloadTodoTableView?(true)
                 }
@@ -85,8 +84,8 @@ private extension AlarmViewController {
         if checkAlarmDate() {
             todo.alarm = alarmDatePicker.date
             Task {
-                if await TodoManager().updateTodo(todo: todo) {
-                    alarmManager.addAlarm(todo: todo)
+                if await TodoManager.shared.updateTodo(todo: todo) {
+                    UserNotificationManager.shared.addAlarm(todo: todo)
                 }
                 dismiss(animated: true) {
                     self.reloadTodoTableView?(true)

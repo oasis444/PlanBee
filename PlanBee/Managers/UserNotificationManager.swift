@@ -9,7 +9,9 @@ import Foundation
 import UserNotifications
 
 final class UserNotificationManager {
-    private let storeManager = FirestoreManager()
+    static let shared = UserNotificationManager()
+    private init() { }
+    
     private let userNotificationCenter = UNUserNotificationCenter.current()
     
     func addAlarm(todo: Todo) {

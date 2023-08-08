@@ -1,5 +1,5 @@
 //
-//  SettingProfileCell.swift
+//  ProfileCell.swift
 //  PlanBee
 //
 //  Copyright (c) 2023 z-wook. All right reserved.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-final class SettingProfileCell: UITableViewCell {
+final class ProfileCell: UITableViewCell {
     
-    private static let identifier = "SettingProfileCell"
+    private static let identifier = "ProfileCell"
     let viewModel = SettingProfileCellViewModel()
     
     static var getIdentifier: String {
@@ -45,12 +45,12 @@ final class SettingProfileCell: UITableViewCell {
     }
 }
 
-private extension SettingProfileCell {
+private extension ProfileCell {
     func configureCell() {
         selectionStyle = .none
         accessoryType = .disclosureIndicator
         
-        profileNickNameLabel.text = FirebaseManager().getUserEmail()
+        profileNickNameLabel.text = FirebaseManager.shared.getUserEmail()
     }
     
     func configureLayout() {

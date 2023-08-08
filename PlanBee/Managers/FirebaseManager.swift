@@ -9,6 +9,9 @@ import Foundation
 import FirebaseAuth
 
 class FirebaseManager {
+    static let shared = FirebaseManager()
+    private init() { }
+    
     private let auth = Auth.auth()
     
     func createUsers(email: String, password: String, completion: @escaping (FirebaseErrors?) -> Void) {
@@ -68,6 +71,39 @@ class FirebaseManager {
             }
             guard authResult != nil else { return }
             completion(nil)
+        }
+    }
+    
+    func sendEmailForChangePW() async -> Bool {
+        guard let email = auth.currentUser?.email else { return false }
+        do {
+            try await auth.sendPasswordReset(withEmail: email)
+            return true
+        } catch {
+            print("error: \(error.localizedDescription)")
+            return false
+        }
+    }
+    
+    func test() async -> Bool {
+        guard let user = auth.currentUser else { return false }
+        do {
+            try await user.sendEmailVerification()
+            return true
+        } catch {
+            print("error: \(error.localizedDescription)")
+            return false
+        }
+    }
+    
+    func revekeUser() async -> Bool {
+        guard let user = auth.currentUser else { return false }
+        do {
+            try await user.delete()
+            return true
+        } catch {
+            print("error: \(error.localizedDescription)")
+            return false
         }
     }
     

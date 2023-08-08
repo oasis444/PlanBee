@@ -12,7 +12,6 @@ import Combine
 final class LoginViewController: UIViewController {
     
     let viewModel = LoginViewModel()
-    let firebaseManager = FirebaseManager()
     var subscriptions = Set<AnyCancellable>()
     var popToRootViewsClosure: (() -> Void)?
     fileprivate var currentNonce: String?
@@ -285,7 +284,7 @@ private extension LoginViewController {
         
         switch viewModel.viewType {
         case .login:
-            firebaseManager.emailLogIn(email: email, password: password) { [weak self] firebaseError in
+            FirebaseManager.shared.emailLogIn(email: email, password: password) { [weak self] firebaseError in
                 guard let self = self else { return }
                 self.indicator.stopAnimating()
                 
@@ -299,7 +298,7 @@ private extension LoginViewController {
             }
             return
         case .register:
-            firebaseManager.createUsers(email: email, password: password) { [weak self] firebaseError in
+            FirebaseManager.shared.createUsers(email: email, password: password) { [weak self] firebaseError in
                 guard let self = self else { return }
                 self.indicator.stopAnimating()
                 

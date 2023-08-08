@@ -11,14 +11,13 @@ import SnapKit
 final class SettingViewController: UIViewController {
     
     private let viewModel = SettingViewModel()
-    private let firebaseManager = FirebaseManager()
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .PlanBeeBackgroundColor
-        tableView.register(SettingProfileCell.self, forCellReuseIdentifier: SettingProfileCell.getIdentifier)
+        tableView.register(ProfileCell.self, forCellReuseIdentifier: ProfileCell.getIdentifier)
         tableView.register(SettingCell.self, forCellReuseIdentifier: SettingCell.getIdentifier)
         return tableView
     }()
@@ -64,7 +63,7 @@ private extension SettingViewController {
             alert = UIAlertController(title: "로그아웃", message: "로그아웃 하시겠습니까?", preferredStyle: .alert)
             let logOut = UIAlertAction(title: "로그아웃", style: .destructive) { [weak self] _ in
                 guard let self = self else { return }
-                if let error = self.firebaseManager.logOut() {
+                if let error = FirebaseManager.shared.logOut() {
                     print(error)
                     showAlert1(title: "로그아웃 실패", message: "나중에 다시 로그아웃 해주세요")
                     return
@@ -99,7 +98,7 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
         case 3:
             return SettingSection.etc.title
         default:
-            return ""
+            return nil
         }
     }
     
@@ -120,8 +119,8 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let profileCell = tableView.dequeueReusableCell(
-            withIdentifier: SettingProfileCell.getIdentifier,
-            for: indexPath) as? SettingProfileCell else { return UITableViewCell() }
+            withIdentifier: ProfileCell.getIdentifier,
+            for: indexPath) as? ProfileCell else { return UITableViewCell() }
         
         guard let settingCell = tableView.dequeueReusableCell(
             withIdentifier: SettingCell.getIdentifier,
@@ -147,28 +146,26 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
                 iconImage: SettingIcons.setting.iconImage[indexPath.row],
                 iconColor: SettingIcons.setting.iconColor[indexPath.row],
                 screenMode: screedModeTitle)
-            return settingCell
         case 2:
             settingCell.configureCell(
                 title: SettingSection.infomation.items[indexPath.row],
                 iconImage: SettingIcons.infomation.iconImage[indexPath.row],
                 iconColor: SettingIcons.infomation.iconColor[indexPath.row])
-            return settingCell
         case 3:
             settingCell.configureCell(
                 title: SettingSection.etc.items[indexPath.row],
                 iconImage: SettingIcons.etc.iconImage[indexPath.row],
                 iconColor: SettingIcons.etc.iconColor[indexPath.row])
-            return settingCell
         default:
             return UITableViewCell()
         }
+        return settingCell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            if firebaseManager.checkLoginState() == true {
+            if FirebaseManager.shared.checkLoginState() == true {
                 let profileVC = ProfileViewController()
                 navigationController?.pushViewController(profileVC, animated: true)
                 return
@@ -181,31 +178,30 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
             switch cellTitle {
             case SettingSection.Setting.screenMode.title:
                 showScreenMode()
-                
             case SettingSection.Setting.alarm.title:
-                return
-                
-            default:
-                return
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            default: return
             }
             
         case 2:
-            return
+            switch indexPath.row {
+            case 0:
+                let versionVC = VersionViewController()
+                navigationController?.pushViewController(versionVC, animated: true)
+            case 1: return
+            default: return
+            }
             
         case 3:
             switch indexPath.row {
-            case 0:
-                return
-            case 1:
-                return
-            case 2:
-                let loginState = firebaseManager.checkLoginState()
-                showAlert(loginState: loginState)
             default:
-                return
+                let loginState = FirebaseManager.shared.checkLoginState()
+                showAlert(loginState: loginState)
             }
-        default:
-            return
+            
+        default: return
         }
     }
 }

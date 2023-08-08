@@ -8,12 +8,13 @@
 import Foundation
 
 final class TodoManager {
-    private let storeManager = FirestoreManager()
+    static let shared = TodoManager()
+    private init() { }
     
     func saveTodo(saveTodo: Todo) -> Bool {
-        if CoreDataManager.saveTodoData(todo: saveTodo) {
+        if CoreDataManager.shared.saveTodoData(todo: saveTodo) {
             Task {
-                await storeManager.saveTodo(data: saveTodo)
+                await FirestoreManager.shared.saveTodo(data: saveTodo)
             }
             return true
         }
@@ -21,7 +22,7 @@ final class TodoManager {
     }
     
     func getDateList() -> [String] {
-        let todoList = CoreDataManager.fetchTodoData()
+        let todoList = CoreDataManager.shared.fetchTodoData()
         guard let todoList = todoList else { return [] }
         let dateList = todoList.map { todo in
             todo.date
@@ -31,7 +32,7 @@ final class TodoManager {
     
     func getTodoList(date: Date?) -> [Todo] {
         guard let date = date,
-              let list = CoreDataManager.fetchTodoData(date: date) else { return [] }
+              let list = CoreDataManager.shared.fetchTodoData(date: date) else { return [] }
         let sortedList = list.sorted {
             $0.priority < $1.priority
         }
@@ -39,9 +40,9 @@ final class TodoManager {
     }
     
     func updateTodo(todo: Todo) async -> Bool {
-        if CoreDataManager.updatePlanData(newTodo: todo) {
+        if CoreDataManager.shared.updatePlanData(newTodo: todo) {
             Task {
-                await storeManager.updateTodo(data: todo)
+                await FirestoreManager.shared.updateTodo(data: todo)
             }
             return true
         }
@@ -49,9 +50,9 @@ final class TodoManager {
     }
     
     func removeTodo(todo: Todo) async -> Bool {
-        if CoreDataManager.deletePlanData(todo: todo) {
+        if CoreDataManager.shared.deletePlanData(todo: todo) {
             Task {
-                await storeManager.deleteTodo(data: todo)
+                await FirestoreManager.shared.deleteTodo(data: todo)
             }
             return true
         }

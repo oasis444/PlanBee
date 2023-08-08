@@ -11,7 +11,6 @@ import FSCalendar
 
 final class PlannerViewController: UIViewController {
     
-    private let todoManager = TodoManager()
     private let viewModel = PlannerViewModel()
     var selectDate = Date()
     
@@ -92,7 +91,7 @@ extension PlannerViewController: FSCalendarDataSource, FSCalendarDelegate, FSCal
                   numberOfEventsFor date: Date
     ) -> Int {
         let strDate = DateFormatter.formatTodoDate(date: date)
-        if todoManager.getDateList().contains(strDate) {
+        if TodoManager.shared.getDateList().contains(strDate) {
             return 1
         }
         return 0

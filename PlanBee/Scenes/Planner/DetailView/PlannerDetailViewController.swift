@@ -11,8 +11,6 @@ import Combine
 final class PlannerDetailViewController: UIViewController {
     
     var reloadCalendar: ((_ relodaCalendar: Bool) -> Void)?
-    private let todoManager = TodoManager()
-    private let storeManager = FirestoreManager()
     private var viewModel: PlannerDetailViewModel?
     private var subscriptions = Set<AnyCancellable>()
     
@@ -135,13 +133,13 @@ private extension PlannerDetailViewController {
     @objc func didTappedAddTodoButton() {
         guard let date = viewModel?.getDate,
               let text = inputTodoTextField.text else { return }
-        if todoManager.textFieldIsFullWithBlank(text: text) == false {
+        if TodoManager.shared.textFieldIsFullWithBlank(text: text) == false {
             let strDate = DateFormatter.formatTodoDate(date: date)
             let todo = Todo(
                 content: text,
                 date: strDate
             )
-            let saveResult = todoManager.saveTodo(saveTodo: todo)
+            let saveResult = TodoManager.shared.saveTodo(saveTodo: todo)
             if saveResult == true {
                 tableView.reloadData()
             } else {
@@ -180,7 +178,7 @@ private extension PlannerDetailViewController {
 
 extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return todoManager.getTodoList(date: viewModel?.getDate).count
+        return TodoManager.shared.getTodoList(date: viewModel?.getDate).count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -188,7 +186,7 @@ extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSourc
             withIdentifier: PlannerDetailTableViewCell.getIdentifier,
             for: indexPath
         ) as? PlannerDetailTableViewCell else { return UITableViewCell() }
-        let todoList = todoManager.getTodoList(date: viewModel?.getDate)
+        let todoList = TodoManager.shared.getTodoList(date: viewModel?.getDate)
         cell.configure(todo: todoList[indexPath.row])
         return cell
     }
@@ -198,10 +196,10 @@ extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var selectedTodo = todoManager.getTodoList(date: viewModel?.getDate)[indexPath.row]
+        var selectedTodo = TodoManager.shared.getTodoList(date: viewModel?.getDate)[indexPath.row]
         selectedTodo.done = !selectedTodo.done
         Task {
-            if await todoManager.updateTodo(todo: selectedTodo) == true {
+            if await TodoManager.shared.updateTodo(todo: selectedTodo) == true {
                 DispatchQueue.main.async {
                     tableView.reloadRows(at: [indexPath], with: .automatic)
                 }
@@ -212,9 +210,9 @@ extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView,
                    commit editingStyle: UITableViewCell.EditingStyle,
                    forRowAt indexPath: IndexPath) {
-        let todo = todoManager.getTodoList(date: viewModel?.getDate)[indexPath.row]
+        let todo = TodoManager.shared.getTodoList(date: viewModel?.getDate)[indexPath.row]
         Task {
-            if await todoManager.removeTodo(todo: todo) {
+            if await TodoManager.shared.removeTodo(todo: todo) {
                 DispatchQueue.main.async {
                     tableView.deleteRows(at: [indexPath], with: .automatic)
                 }
@@ -227,7 +225,7 @@ extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSourc
                    to destinationIndexPath: IndexPath) {
         if sourceIndexPath == destinationIndexPath { return }
         Task {
-            await todoManager.moveTodo(
+            await TodoManager.shared.moveTodo(
                 date: viewModel?.getDate,
                 startIndex: sourceIndexPath.row,
                 destinationIndex: destinationIndexPath.row

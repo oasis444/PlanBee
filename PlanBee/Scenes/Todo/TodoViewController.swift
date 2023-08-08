@@ -10,7 +10,6 @@ import SnapKit
 
 final class TodoViewController: UIViewController {
     
-    private let todoManager = TodoManager()
     private let viewModel = TodoViewModel()
     
     private lazy var tableView: UITableView = {
@@ -58,7 +57,7 @@ private extension TodoViewController {
     
     @objc func didTappedRightBarBtn() {
         let editing = tableView.isEditing
-        let todoList = todoManager.getTodoList(date: Date())
+        let todoList = TodoManager.shared.getTodoList(date: Date())
         if todoList.isEmpty { return }
         tableView.setEditing(!editing, animated: true)
     }
@@ -66,7 +65,7 @@ private extension TodoViewController {
 
 extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return todoManager.getTodoList(date: Date()).count
+        return TodoManager.shared.getTodoList(date: Date()).count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -74,17 +73,17 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
             withIdentifier: TodoTableViewCell.getIdentifier,
             for: indexPath
         ) as? TodoTableViewCell else { return UITableViewCell() }
-        let todoList = todoManager.getTodoList(date: Date())
+        let todoList = TodoManager.shared.getTodoList(date: Date())
         cell.configure(todo: todoList[indexPath.row])
         cell.backgroundColor = .systemGray5
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var selectedTodo = todoManager.getTodoList(date: Date())[indexPath.row]
+        var selectedTodo = TodoManager.shared.getTodoList(date: Date())[indexPath.row]
         selectedTodo.done = !selectedTodo.done
         Task {
-            if await todoManager.updateTodo(todo: selectedTodo) == true {
+            if await TodoManager.shared.updateTodo(todo: selectedTodo) == true {
                 DispatchQueue.main.async {
                     tableView.reloadRows(at: [indexPath], with: .automatic)
                 }
@@ -95,9 +94,9 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    commit editingStyle: UITableViewCell.EditingStyle,
                    forRowAt indexPath: IndexPath) {
-        let todo = todoManager.getTodoList(date: Date())[indexPath.row]
+        let todo = TodoManager.shared.getTodoList(date: Date())[indexPath.row]
         Task {
-            if await todoManager.removeTodo(todo: todo) {
+            if await TodoManager.shared.removeTodo(todo: todo) {
                 DispatchQueue.main.async {
                     tableView.deleteRows(at: [indexPath], with: .automatic)
                 }
@@ -111,7 +110,7 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
                                                 title: viewModel.alarmActionTitle) { [weak self] _, _, _ in
             guard let self = self else { return }
             let alarmVC = AlarmViewController()
-            let todoList = todoManager.getTodoList(date: Date())
+            let todoList = TodoManager.shared.getTodoList(date: Date())
             alarmVC.todo = todoList[indexPath.row]
             alarmVC.reloadTodoTableView = { [weak self] result in
                 guard let self = self else { return }
@@ -132,7 +131,7 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
                    to destinationIndexPath: IndexPath) {
         if sourceIndexPath == destinationIndexPath { return }
         Task {
-            await todoManager.moveTodo(
+            await TodoManager.shared.moveTodo(
                 date: Date(),
                 startIndex: sourceIndexPath.row,
                 destinationIndex: destinationIndexPath.row
