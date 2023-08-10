@@ -29,6 +29,8 @@ final class PlannerViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         presentEvents()
     }
 }

@@ -22,6 +22,7 @@ class ProfileDetailCell: UITableViewCell {
     
     func configure(title: String) {
         selectionStyle = .none
+        backgroundColor = .tableCellColor
         titleLabel.text = title
         
         configureLayout()

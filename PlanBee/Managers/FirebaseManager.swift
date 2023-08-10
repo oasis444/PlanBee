@@ -96,17 +96,6 @@ class FirebaseManager {
         }
     }
     
-    func revekeUser() async -> Bool {
-        guard let user = auth.currentUser else { return false }
-        do {
-            try await user.delete()
-            return true
-        } catch {
-            print("error: \(error.localizedDescription)")
-            return false
-        }
-    }
-    
     func checkLoginState() -> Bool {
         if auth.currentUser != nil {
             return true
@@ -130,5 +119,18 @@ class FirebaseManager {
     
     func getUID() -> String? {
         return auth.currentUser?.uid
+    }
+}
+
+extension FirebaseManager {
+    func removeUser() async -> Bool {
+        guard let user = auth.currentUser else { return false }
+        do {
+            try await user.delete()
+            return true
+        } catch {
+            print("error: \(error.localizedDescription)")
+            return false
+        }
     }
 }

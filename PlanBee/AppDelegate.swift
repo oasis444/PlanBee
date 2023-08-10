@@ -20,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         FirebaseApp.configure() // Firebase 초기화
+        NetworkManager.shared.startMonitoring() // 네트워크 연결 모니터링
         
         userNotificationCenter.delegate = self
         let authorizationOption: UNAuthorizationOptions = [.alert, .badge, .sound]

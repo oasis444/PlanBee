@@ -40,7 +40,7 @@ final class TodoManager {
     }
     
     func updateTodo(todo: Todo) async -> Bool {
-        if CoreDataManager.shared.updatePlanData(newTodo: todo) {
+        if CoreDataManager.shared.updateTodoData(newTodo: todo) {
             Task {
                 await FirestoreManager.shared.updateTodo(data: todo)
             }
@@ -50,7 +50,7 @@ final class TodoManager {
     }
     
     func removeTodo(todo: Todo) async -> Bool {
-        if CoreDataManager.shared.deletePlanData(todo: todo) {
+        if CoreDataManager.shared.deleteTodoData(todo: todo) {
             Task {
                 await FirestoreManager.shared.deleteTodo(data: todo)
             }

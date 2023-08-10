@@ -13,6 +13,7 @@ final class CoreDataManager {
     private init() { }
     
     private static let planEntityName = "Plan"
+    private static let tempTodoEntityName = "TempTodo"
     
     private static let context: NSManagedObjectContext? = {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -84,7 +85,7 @@ final class CoreDataManager {
         }
     }
     
-    func updatePlanData(newTodo: Todo) -> Bool {
+    func updateTodoData(newTodo: Todo) -> Bool {
         guard let context = CoreDataManager.context else { return false }
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>.init(entityName: CoreDataManager.planEntityName)
         fetchRequest.predicate = NSPredicate(format: "uuid = %@", newTodo.id.uuidString)
@@ -107,7 +108,7 @@ final class CoreDataManager {
         }
     }
     
-    func deletePlanData(todo: Todo) -> Bool {
+    func deleteTodoData(todo: Todo) -> Bool {
         guard let context = CoreDataManager.context else { return false }
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>.init(entityName: CoreDataManager.planEntityName)
         fetchRequest.predicate = NSPredicate(format: "uuid = %@", todo.id.uuidString)
@@ -123,5 +124,25 @@ final class CoreDataManager {
             print("error: \(error.localizedDescription)")
             return false
         }
+    }
+}
+
+extension CoreDataManager {
+    func removeAllPlanData() {
+        guard let context = CoreDataManager.context else { return }
+        let entityNames: [String] = [CoreDataManager.planEntityName, CoreDataManager.tempTodoEntityName]
+        
+        for entity in entityNames {
+            let fetrequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
+            // Batch는 한꺼번에 데이터처리를 할때 사용, 아래의 경우 저장된 데이터를 모두 지우는 것
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetrequest)
+            do {
+                try context.execute(deleteRequest)
+                print("\(entity) 데이터 모두 삭제")
+            } catch {
+                print("삭제 중 오류 발생: \(error.localizedDescription)")
+            }
+        }
+        return
     }
 }

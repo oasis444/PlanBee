@@ -50,14 +50,14 @@ private extension SettingViewController {
         }
     }
     
-    func showAlert1(title: String, message: String) {
+    func showDefaultAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let confirm = UIAlertAction(title: "확인", style: .default)
         alert.addAction(confirm)
         present(alert, animated: true)
     }
     
-    func showAlert(loginState: Bool) {
+    func showLogoutAlert(loginState: Bool) {
         var alert = UIAlertController()
         if loginState {
             alert = UIAlertController(title: "로그아웃", message: "로그아웃 하시겠습니까?", preferredStyle: .alert)
@@ -65,12 +65,12 @@ private extension SettingViewController {
                 guard let self = self else { return }
                 if let error = FirebaseManager.shared.logOut() {
                     print(error)
-                    showAlert1(title: "로그아웃 실패", message: "나중에 다시 로그아웃 해주세요")
+                    showDefaultAlert(title: "로그아웃 실패", message: "나중에 다시 로그아웃 해주세요")
                     return
                 }
                 tableView.reloadSections(IndexSet([0]), with: .automatic)
             }
-            let cancel = UIAlertAction(title: "취소", style: .cancel)
+            let cancel = UIAlertAction(title: "취소", style: .default)
             alert.addAction(logOut)
             alert.addAction(cancel)
         } else {
@@ -198,7 +198,7 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
             switch indexPath.row {
             default:
                 let loginState = FirebaseManager.shared.checkLoginState()
-                showAlert(loginState: loginState)
+                showLogoutAlert(loginState: loginState)
             }
             
         default: return

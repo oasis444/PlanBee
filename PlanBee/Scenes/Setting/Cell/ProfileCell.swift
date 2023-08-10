@@ -49,6 +49,7 @@ private extension ProfileCell {
     func configureCell() {
         selectionStyle = .none
         accessoryType = .disclosureIndicator
+        backgroundColor = .tableCellColor
         
         profileNickNameLabel.text = FirebaseManager.shared.getUserEmail()
     }

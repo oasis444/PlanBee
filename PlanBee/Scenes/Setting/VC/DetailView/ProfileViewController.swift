@@ -24,6 +24,7 @@ final class ProfileViewController: UIViewController {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.backgroundColor = .PlanBeeBackgroundColor
         tableView.register(ProfileDetailCell.self, forCellReuseIdentifier: ProfileDetailCell.getIdentifier)
         return tableView
     }()
@@ -157,7 +158,7 @@ extension ProfileViewController {
                 self.didTapped.toggle()
             }
         }
-        let cancel = UIAlertAction(title: "취소", style: .cancel)
+        let cancel = UIAlertAction(title: "취소", style: .default)
         alert.addAction(confirm)
         alert.addAction(cancel)
         present(alert, animated: true)

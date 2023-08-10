@@ -48,6 +48,7 @@ final class SettingCell: UITableViewCell {
     func configureCell(title: String?, iconImage: UIImage?, iconColor: UIColor?, screenMode: String? = nil) {
         selectionStyle = .none
         accessoryType = .disclosureIndicator
+        backgroundColor = .tableCellColor
         
         iconImageView.image = iconImage
         iconImageView.tintColor = iconColor

@@ -85,3 +85,15 @@ final class FirestoreManager {
         print("Max retry count reached, document could not be updated.")
     }
 }
+
+extension FirestoreManager {
+    func removeAllUserData() async {
+        guard let uid = FirebaseManager.shared.getUID() else { return }
+        // 하위 collecton 삭제하기
+        do {
+            try await dataBase.document(uid).delete()
+        } catch {
+            print("error: \(error.localizedDescription)")
+        }
+    }
+}
