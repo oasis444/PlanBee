@@ -44,7 +44,9 @@ final class RevokeViewModel {
         Task {
             await FirestoreManager.shared.saveRevokeUser()
             if await FirebaseManager.shared.removeUser() {
-                revokeDoneAlert(view: view)
+                DispatchQueue.main.async {
+                    self.revokeDoneAlert(view: view)
+                }
             }
         }
     }

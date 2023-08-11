@@ -96,9 +96,11 @@ private extension RevokeViewController {
             self.indicator.startAnimating()
             Task {
                 if await FirebaseManager.shared.reAuthenticate(password: userPW) {
-                    self.askRevokeAlert()
-                    self.indicator.stopAnimating()
-                    return
+                    DispatchQueue.main.async {
+                        self.indicator.stopAnimating()
+                        self.askRevokeAlert()
+                        return
+                    }
                 }
                 self.indicator.stopAnimating()
                 self.viewModel.showAlert(view: self, title: "사용자 인증 실패", message: "사용자 인증에 실패하였습니다. 다시 인증해 주세요")

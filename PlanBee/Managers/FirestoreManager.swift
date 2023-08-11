@@ -88,6 +88,63 @@ final class FirestoreManager {
 }
 
 extension FirestoreManager {
+    func getDocument(dateStr: String) async -> [Todo]? {
+        guard let uid = FirebaseManager.shared.getUID() else { return nil }
+        var todoList: [Todo] = []
+        
+        do {
+            let snap = try await userDB.document(uid).collection("20230811").getDocuments()
+            snap.documents.map { doc in
+                doc.data()
+            }.forEach {
+                guard let id = $0["id"] as? UUID,
+                      let content = $0["content"] as? String,
+                      let date = $0["date"] as? String,
+                      let priority = $0["priority"] as? Date,
+                      let done = $0["done"] as? Bool,
+                      let alarm = $0["alarm"] as? Date else { return }
+                
+                let todo = Todo(id: id,
+                                content: content,
+                                date: date,
+                                priority: priority,
+                                done: done,
+                                alarm: alarm)
+                todoList.append(todo)
+            }
+        } catch {
+            print("error: \(error.localizedDescription)")
+        }
+//        userDB.document(uid).collection("20230811").getDocuments { snap, error in
+//            if let error = error {
+//                print("error: \(error.localizedDescription)")
+//                return
+//            }
+//            guard let snap = snap else { return }
+//            snap.documents.map { doc in
+//                doc.data()
+//            }.forEach {
+//                guard let id = $0["id"] as? UUID,
+//                      let content = $0["content"] as? String,
+//                      let date = $0["date"] as? String,
+//                      let priority = $0["priority"] as? Date,
+//                      let done = $0["done"] as? Bool,
+//                      let alarm = $0["alarm"] as? Date else { return }
+//
+//                let todo = Todo(id: id,
+//                                content: content,
+//                                date: date,
+//                                priority: priority,
+//                                done: done,
+//                                alarm: alarm)
+//                todoList.append(todo)
+//            }
+//        }
+        return todoList
+    }
+}
+
+extension FirestoreManager {
     func saveRevokeUser() async {
         guard let uid = FirebaseManager.shared.getUID() else { return }
         
