@@ -13,7 +13,8 @@ final class FirestoreManager {
     static let shared = FirestoreManager()
     private init() { }
     
-    private let dataBase = Firestore.firestore().collection("User")
+    private let userDB = Firestore.firestore().collection("User")
+    private let revokeUserDB = Firestore.firestore().collection("RevokeUser")
     
     func saveTodo(data: Todo) async {
         guard let uid = FirebaseManager.shared.getUID() else { return }
@@ -21,7 +22,7 @@ final class FirestoreManager {
         var retryCount = 0
         while retryCount < 3 {
             do {
-                try await dataBase.document(uid)
+                try await userDB.document(uid)
                     .collection(data.date).document(data.id.uuidString).setData(
                         [
                             "id": data.id.uuidString,
@@ -48,7 +49,7 @@ final class FirestoreManager {
         var retryCount = 0
         while retryCount < 3 {
             do {
-                try await dataBase.document(uid)
+                try await userDB.document(uid)
                     .collection(data.date).document(data.id.uuidString).delete()
                 print("Document successfully removed!")
                 return
@@ -67,7 +68,7 @@ final class FirestoreManager {
         var retryCount = 0
         while retryCount < 3 {
             do {
-                try await dataBase.document(uid)
+                try await userDB.document(uid)
                     .collection(data.date).document(data.id.uuidString).updateData(
                         [
                             "priority": data.priority,
@@ -87,13 +88,23 @@ final class FirestoreManager {
 }
 
 extension FirestoreManager {
-    func removeAllUserData() async {
+    func saveRevokeUser() async {
         guard let uid = FirebaseManager.shared.getUID() else { return }
-        // 하위 collecton 삭제하기
-        do {
-            try await dataBase.document(uid).delete()
-        } catch {
-            print("error: \(error.localizedDescription)")
+        
+        var retryCount = 0
+        while retryCount < 3 {
+            do {
+                try await revokeUserDB.document(uid)
+                    .setData(
+                        ["revokeUser": uid]
+                    )
+                print("Document successfully added!")
+                return
+            } catch {
+                print("Error adding document: \(error.localizedDescription)")
+                retryCount += 1
+            }
         }
+        print("Max retry count reached, document could not be added.")
     }
 }

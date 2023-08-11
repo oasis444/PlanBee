@@ -85,17 +85,6 @@ class FirebaseManager {
         }
     }
     
-    func test() async -> Bool {
-        guard let user = auth.currentUser else { return false }
-        do {
-            try await user.sendEmailVerification()
-            return true
-        } catch {
-            print("error: \(error.localizedDescription)")
-            return false
-        }
-    }
-    
     func checkLoginState() -> Bool {
         if auth.currentUser != nil {
             return true
@@ -123,6 +112,20 @@ class FirebaseManager {
 }
 
 extension FirebaseManager {
+    // 재인증
+    func reAuthenticate(password: String) async -> Bool {
+        guard let user = auth.currentUser else { return false }
+        let credential = EmailAuthProvider.credential(withEmail: getUserEmail(), password: password)
+        
+        do {
+            try await user.reauthenticate(with: credential)
+            return true
+        } catch {
+            print("error: \(error.localizedDescription)")
+            return false
+        }
+    }
+    
     func removeUser() async -> Bool {
         guard let user = auth.currentUser else { return false }
         do {

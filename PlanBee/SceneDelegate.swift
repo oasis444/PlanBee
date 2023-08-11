@@ -23,8 +23,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = tabBar
         window?.makeKeyAndVisible()
         
-        let rawValue = UserDefaults.standard.integer(forKey: "Appearance")
-        window?.overrideUserInterfaceStyle = UIUserInterfaceStyle(rawValue: rawValue) ?? .unspecified
+        if let rawValue: Int = UserDefaultsManager.shared.getValue(forKey: "Appearance") {
+            window?.overrideUserInterfaceStyle = UIUserInterfaceStyle(rawValue: rawValue) ?? .unspecified
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
