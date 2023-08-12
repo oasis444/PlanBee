@@ -82,11 +82,11 @@
 
 ## 🔫 트러블 슈팅
 
-[비동기 처리 1](https://velog.io/@oasis444/트러블슈팅)
+- [비동기 처리 1](https://velog.io/@oasis444/트러블슈팅)
 
-[비동기 처리 2](https://velog.io/@oasis444/트러블-슈팅비동기-처리-2)
+- [비동기 처리 2](https://velog.io/@oasis444/트러블-슈팅비동기-처리-2)
 
-[낙관적 업데이트](https://velog.io/@oasis444/낙관적-업데이트)
+- [낙관적 업데이트](https://velog.io/@oasis444/낙관적-업데이트)
 
 <br>
 
