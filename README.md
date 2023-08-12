@@ -1,3 +1,5 @@
+<br>
+
 # 🐝 PlanBee
 
 ### **오늘 할 일, 앞으로 할 일을 쉽게 기록해 보세요.**
@@ -61,7 +63,7 @@
 1. [SwiftLint](https://github.com/realm/SwiftLint)
 2. [SnapKit](https://github.com/SnapKit/SnapKit)
 3. [FSCalendar](https://github.com/WenchaoD/FSCalendar.git)
-4. [firebase](https://github.com/firebase/firebase-ios-sdk)
+4. [Firebase](https://github.com/firebase/firebase-ios-sdk)
 
 <br>
 
@@ -75,7 +77,7 @@
 3. ***FSCalendar*** <br>
    `달력 기능을 제공`하기 위해서 사용
    
-4. ***firebase*** <br>
+4. ***Firebase*** <br>
    앱 삭제 후 `복귀한 유저의 데이터를 가져오기 위해` Firestore에 데이터 동기화를 위해서 사용
  
 <br>
