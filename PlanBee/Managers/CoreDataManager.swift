@@ -101,7 +101,6 @@ final class CoreDataManager {
             try context.save()
             return true
         } catch {
-            print("여기 에러: \(error)")
             print("error: \(error.localizedDescription)")
             return false
         }
@@ -127,6 +126,35 @@ final class CoreDataManager {
 }
 
 extension CoreDataManager {
+    /// 복귀 유저의 데이터 저장을 위한 메서드
+    func saveTodoDataAtOnce(todos: [Todo]) {
+        guard let context = context else { return }
+        let object = todos.compactMap { data -> [String: Any]? in
+            let todo: [String: Any] = [
+                Todokeys.uuid.key: data.id,
+                Todokeys.content.key: data.content,
+                Todokeys.date.key: data.date,
+                Todokeys.priority.key: data.priority,
+                Todokeys.done.key: data.done
+            ]
+            return todo
+        }
+        // NSBatchInsertRequest를 사용하면 대량의 데이터를 효율적으로 CoreData에 추가할 수 있습니다.
+        // 단일 요청으로 여러 객체를 추가할 수 있으므로 성능 향상을 기대할 수 있습니다.
+        let batchInsertRequest = NSBatchInsertRequest(entityName: planEntityName, objects: object)
+        
+        do {
+            let result = try context.execute(batchInsertRequest) as? NSBatchInsertResult
+            if let success = result?.result as? Bool, success {
+                print("Batch insert successful")
+                return
+            }
+        } catch {
+            print("error: \(error.localizedDescription)")
+            return
+        }
+    }
+    
     func removeAllPlanData() {
         guard let context = context else { return }
         let entityNames: [String] = [planEntityName]

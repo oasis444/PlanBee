@@ -8,7 +8,7 @@
 import Foundation
 
 final class ReturnPlanBee {
-    func printSixMonthsAgoDates() {
+    func saveTodoForReturnUser() {
         let calendar = Calendar.current
         let currentDate = Date()
         
@@ -22,8 +22,13 @@ final class ReturnPlanBee {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyyMMdd"
                 let formattedDate = dateFormatter.string(from: currentDate)
-                print(formattedDate)
-                
+                Task {
+                    if let todoList = await FirestoreManager.shared.getTodoList(strDate: formattedDate) {
+                        if !todoList.isEmpty {
+                            CoreDataManager.shared.saveTodoDataAtOnce(todos: todoList)
+                        }
+                    }
+                }
                 if let nextDate = calendar.date(byAdding: .day, value: 1, to: currentDate) {
                     currentDate = nextDate
                 } else {
