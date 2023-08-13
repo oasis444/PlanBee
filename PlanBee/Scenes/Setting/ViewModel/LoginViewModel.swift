@@ -13,12 +13,6 @@ enum LoginBtnType {
     case register
 }
 
-enum UserInterfaceStyle: Int {
-    case unspecified = 0
-    case light = 1
-    case dark = 2
-}
-
 final class LoginViewModel {
     
     @Published var email: String = ""
@@ -26,6 +20,7 @@ final class LoginViewModel {
     var viewType: LoginBtnType = .login
     var textFieldIsFill: Bool = false
     var checkBoxFill: Bool = false
+    let isReturnUser = "isReturnUser"
     private let emailChecker = EmailValidCheck()
     
     let indicatorColor: UIColor = .systemOrange
@@ -115,17 +110,21 @@ final class LoginViewModel {
         }
         .eraseToAnyPublisher()
     
-    func appleBtnImage(interfaceStyle: UserInterfaceStyle.RawValue) -> UIImage? {
-        switch interfaceStyle {
-        case 0:
-            return UIImage(named: "appleid_button-2")
-        case 1:
-            return UIImage(named: "appleid_button-2")
-        case 2:
-            return UIImage(named: "appleid_button-3")
-        default:
-            return UIImage(named: "appleid_button-2")
+    func checkReturnUser(view: UIViewController) -> Bool {
+        // 이전에 로그인 한 기록이 없다면 ReturnUser == true
+        if let isReturnUser: Bool = UserDefaultsManager.shared.getValue(forKey: isReturnUser) {
+            if isReturnUser { return true }
+            return false
+        } else {
+            return true
         }
+    }
+    
+    func showAlert(view: UIViewController, title: String, error: FirebaseErrors) {
+        let alert = UIAlertController(title: title, message: error.errorMessage, preferredStyle: .alert)
+        let confirm = UIAlertAction(title: "확인", style: .default)
+        alert.addAction(confirm)
+        view.present(alert, animated: true)
     }
 }
 

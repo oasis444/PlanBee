@@ -7,6 +7,12 @@
 
 import UIKit
 
+enum UserInterfaceStyle: Int {
+    case unspecified = 0
+    case light = 1
+    case dark = 2
+}
+
 final class SettingViewModel {
     let settingViewNavigationTitle = "설정"
     private let appearanceKey = "Appearance"
