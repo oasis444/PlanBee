@@ -280,18 +280,30 @@ private extension LoginViewController {
     @objc func didTappedSignUpBtn() {
         guard let email = emailTextField.text, email.isEmpty == false,
               let password = passwordTextField.text, password.isEmpty == false else { return }
+        signUpBtn.isEnabled = false
         indicator.startAnimating()
         
         switch viewModel.viewType {
         case .login:
             FirebaseManager.shared.emailLogIn(email: email, password: password) { [weak self] firebaseError in
                 guard let self = self else { return }
-                self.indicator.stopAnimating()
                 
                 if let error = firebaseError {
-                    self.showAlert(title: "로그인 실패", error: error)
+                    viewModel.showAlert(view: self, title: "로그인 실패", error: error)
+                    self.indicator.stopAnimating()
+                    signUpBtn.isEnabled = true
                     return
                 }
+                if viewModel.checkReturnUser(view: self) {
+                    ReturnPlanBee().saveTodoForReturnUser()
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                        print("======> here")
+                        self.welcomToReturnPlanBeeAlert()
+                    }
+                    return
+                }
+                self.indicator.stopAnimating()
                 self.dismiss(animated: true) {
                     self.popToRootViewsClosure?()
                 }
@@ -303,11 +315,15 @@ private extension LoginViewController {
                 self.indicator.stopAnimating()
                 
                 if let error = firebaseError {
-                    self.showAlert(title: "회원가입 실패", error: error)
+                    viewModel.showAlert(view: self, title: "회원가입 실패", error: error)
+                    signUpBtn.isEnabled = true
                     return
                 }
-                self.welcomPlanBee(title: "🎉 회원가입 완료 🎉", message: "플랜비에 오신 것을 환영합니다.")
+                
+                UserDefaultsManager.shared.setValue(value: false, key: viewModel.isReturnUser)
+                welcomPlanBee(title: "🎉 회원가입 완료 🎉", message: "플랜비에 오신 것을 환영합니다.")
             }
+            signUpBtn.isEnabled = true
             return
         }
     }
@@ -320,13 +336,6 @@ private extension LoginViewController {
                 self.popToRootViewsClosure?()
             }
         }
-        alert.addAction(confirm)
-        present(alert, animated: true)
-    }
-    
-    func showAlert(title: String, error: FirebaseErrors) {
-        let alert = UIAlertController(title: title, message: error.errorMessage, preferredStyle: .alert)
-        let confirm = UIAlertAction(title: "확인", style: .default)
         alert.addAction(confirm)
         present(alert, animated: true)
     }
@@ -349,5 +358,18 @@ private extension LoginViewController {
     
     @objc func didTappedDismissBtn() {
         dismiss(animated: true)
+    }
+    
+    func welcomToReturnPlanBeeAlert() {
+        let alert = UIAlertController(title: "🎉 복귀를 환영합니다 🎉", message: "최근 6개월간 데이터를 저장했습니다.", preferredStyle: .alert)
+        let confirm = UIAlertAction(title: "확인", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            UserDefaultsManager.shared.setValue(value: false, key: viewModel.isReturnUser)
+            self.dismiss(animated: true) {
+                self.popToRootViewsClosure?()
+            }
+        }
+        alert.addAction(confirm)
+        present(alert, animated: true)
     }
 }
