@@ -90,5 +90,7 @@
 
 - [낙관적 업데이트](https://velog.io/@oasis444/낙관적-업데이트)
 
+- [CoreData 대량 데이터 처리](https://velog.io/@oasis444/CoreData-대량-데이터-처리)
+
 <br>
 
