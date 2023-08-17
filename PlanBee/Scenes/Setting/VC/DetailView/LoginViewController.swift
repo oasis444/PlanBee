@@ -298,7 +298,6 @@ private extension LoginViewController {
                     ReturnPlanBee().saveTodoForReturnUser()
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-                        print("======> here")
                         self.welcomToReturnPlanBeeAlert()
                     }
                     return
