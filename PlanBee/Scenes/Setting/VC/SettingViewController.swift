@@ -190,7 +190,10 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
             case 0:
                 let versionVC = VersionViewController()
                 navigationController?.pushViewController(versionVC, animated: true)
-            case 1: return
+            case 1:
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
             default: return
             }
             
