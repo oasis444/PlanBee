@@ -68,6 +68,7 @@
 		339D6B772A8601FE00B23328 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339D6B762A8601FE00B23328 /* UserDefaultsManager.swift */; };
 		339D6B792A86245700B23328 /* ReturnPlanBee.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339D6B782A86245700B23328 /* ReturnPlanBee.swift */; };
 		339E45412A503B1500F732CD /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339E45402A503B1500F732CD /* Todo.swift */; };
+		33A4CFA02A9397A200613B2D /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 33A4CF9F2A9397A200613B2D /* Settings.bundle */; };
 		33A7C6D72A5A8A6800D2ECF6 /* AccessoryImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7C6D62A5A8A6800D2ECF6 /* AccessoryImage.swift */; };
 		33A7C6DA2A5B25E300D2ECF6 /* AlarmViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A7C6D92A5B25E300D2ECF6 /* AlarmViewController.swift */; };
 		33BC7AA42A6050CC009C9650 /* TodoCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BC7AA32A6050CC009C9650 /* TodoCellViewModel.swift */; };
@@ -134,6 +135,7 @@
 		339D6B782A86245700B23328 /* ReturnPlanBee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReturnPlanBee.swift; sourceTree = "<group>"; };
 		339E45402A503B1500F732CD /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
 		33A2341B2A7431C3006ED5EB /* PlanBee.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PlanBee.entitlements; sourceTree = "<group>"; };
+		33A4CF9F2A9397A200613B2D /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		33A7C6D62A5A8A6800D2ECF6 /* AccessoryImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessoryImage.swift; sourceTree = "<group>"; };
 		33A7C6D92A5B25E300D2ECF6 /* AlarmViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmViewController.swift; sourceTree = "<group>"; };
 		33BC7AA32A6050CC009C9650 /* TodoCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoCellViewModel.swift; sourceTree = "<group>"; };
@@ -248,6 +250,7 @@
 		3355074E2A4D6D9C005FBE21 = {
 			isa = PBXGroup;
 			children = (
+				33A4CF9F2A9397A200613B2D /* Settings.bundle */,
 				3338C71D2A4D867C0081CD07 /* .swiftlint.yml */,
 				335507592A4D6D9C005FBE21 /* PlanBee */,
 				335507582A4D6D9C005FBE21 /* Products */,
@@ -476,7 +479,7 @@
 			mainGroup = 3355074E2A4D6D9C005FBE21;
 			packageReferences = (
 				335507712A4D6E1F005FBE21 /* XCRemoteSwiftPackageReference "SnapKit" */,
-				33DE128F2A515B1800B3D3A7 /* XCRemoteSwiftPackageReference "FSCalendar.git" */,
+				33DE128F2A515B1800B3D3A7 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 				3306AEDE2A668B1800C14CC5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = 335507582A4D6D9C005FBE21 /* Products */;
@@ -495,6 +498,7 @@
 			files = (
 				3338C71E2A4D867C0081CD07 /* .swiftlint.yml in Resources */,
 				3306AEDD2A66862200C14CC5 /* GoogleService-Info.plist in Resources */,
+				33A4CFA02A9397A200613B2D /* Settings.bundle in Resources */,
 				3355076A2A4D6D9D005FBE21 /* LaunchScreen.storyboard in Resources */,
 				335507672A4D6D9D005FBE21 /* Assets.xcassets in Resources */,
 			);
@@ -843,7 +847,7 @@
 				minimumVersion = 5.0.0;
 			};
 		};
-		33DE128F2A515B1800B3D3A7 /* XCRemoteSwiftPackageReference "FSCalendar.git" */ = {
+		33DE128F2A515B1800B3D3A7 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/WenchaoD/FSCalendar.git";
 			requirement = {
@@ -921,7 +925,7 @@
 		};
 		33DE12902A515B1800B3D3A7 /* FSCalendar */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 33DE128F2A515B1800B3D3A7 /* XCRemoteSwiftPackageReference "FSCalendar.git" */;
+			package = 33DE128F2A515B1800B3D3A7 /* XCRemoteSwiftPackageReference "FSCalendar" */;
 			productName = FSCalendar;
 		};
 /* End XCSwiftPackageProductDependency section */
