@@ -61,29 +61,34 @@
 
 ## 🏹 사용한 라이브러리
 
-1. [SwiftLint](https://github.com/realm/SwiftLint)
-2. [SnapKit](https://github.com/SnapKit/SnapKit)
+1. [Alamofire](https://github.com/Alamofire/Alamofire)
+2. [Firebase](https://github.com/firebase/firebase-ios-sdk)
 3. [FSCalendar](https://github.com/WenchaoD/FSCalendar.git)
-4. [Firebase](https://github.com/firebase/firebase-ios-sdk)
-5. [LicensePlist](https://github.com/mono0926/LicensePlist)
+4. [LicensePlist](https://github.com/mono0926/LicensePlist)
+5. [SnapKit](https://github.com/SnapKit/SnapKit)
+6. [SwiftLint](https://github.com/realm/SwiftLint)
 
 <br>
 
 ## ⚡️ 라이브러리 사용 이유
-1. ***SwiftLint*** <br>
-    `코드 컨벤션 체크`를 위해 사용
-
-2. ***SnapKit*** <br>
-    `Auto Layout`을 쉽게 설정하기 위해 사용
+1. ***Alamofire*** <br>
+    `네트워크 작업`을 쉽게 처리하기 위해 사용
+   
+2. ***Firebase*** <br>
+    앱 삭제 후 `복귀한 유저의 데이터를 가져오기 위해` Firestore에 데이터 동기화를 위해서 사용
    
 3. ***FSCalendar*** <br>
     `달력 기능을 제공`하기 위해서 사용
    
-4. ***Firebase*** <br>
-    앱 삭제 후 `복귀한 유저의 데이터를 가져오기 위해` Firestore에 데이터 동기화를 위해서 사용
-
-5. ***LicensePlist*** <br>
+4. ***LicensePlist*** <br>
     `라이선스 표시`를 위해 사용
+   
+5. ***SnapKit*** <br>
+    `Auto Layout`을 쉽게 설정하기 위해 사용
+   
+6. ***SwiftLint*** <br>
+    `코드 컨벤션 체크`를 위해 사용
+
  
 <br>
 
