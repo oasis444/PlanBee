@@ -64,7 +64,7 @@ private extension AlarmViewController {
               todo.alarm != nil else { return }
         todo.alarm = nil
         Task {
-            if await TodoManager.shared.updateTodo(todo: todo) {
+            if await TodoManager.shared.updateTodo(todo: todo, needServerUpdate: false) {
                 UserNotificationManager.shared.removeAlarm(todo: todo)
                 dismiss(animated: true) {
                     self.reloadTodoTableView?(true)
@@ -75,16 +75,12 @@ private extension AlarmViewController {
         }
     }
     
-    @objc func didTappedDismissBtn() {
-        dismiss(animated: true)
-    }
-    
     @objc func didTappedSetAlarmBtn() {
         guard var todo = todo else { return }
         if checkAlarmDate() {
             todo.alarm = alarmDatePicker.date
             Task {
-                if await TodoManager.shared.updateTodo(todo: todo) {
+                if await TodoManager.shared.updateTodo(todo: todo, needServerUpdate: false) {
                     UserNotificationManager.shared.addAlarm(todo: todo)
                 }
                 dismiss(animated: true) {
@@ -94,6 +90,10 @@ private extension AlarmViewController {
         } else {
             showAlert(title: viewModel.setAlertTitle, message: viewModel.setAlertMessage)
         }
+    }
+    
+    @objc func didTappedDismissBtn() {
+        dismiss(animated: true)
     }
 }
 

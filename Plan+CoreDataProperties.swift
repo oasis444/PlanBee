@@ -22,5 +22,4 @@ extension Plan {
     @NSManaged public var priority: Date?
     @NSManaged public var uuid: UUID?
     @NSManaged public var serverid: Int16
-
 }

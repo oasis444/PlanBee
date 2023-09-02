@@ -59,6 +59,7 @@ final class CoreDataManager {
                         content: $0.content ?? "nil",
                         date: $0.date ?? strDate,
                         priority: $0.priority ?? Date(),
+                        serverid: $0.serverid,
                         done: $0.done,
                         alarm: $0.alarm
                     )
@@ -73,6 +74,7 @@ final class CoreDataManager {
                     content: $0.content ?? "nil",
                     date: $0.date ?? defaultDate,
                     priority: $0.priority ?? Date(),
+                    serverid: $0.serverid,
                     done: $0.done,
                     alarm: $0.alarm
                 )
@@ -126,6 +128,24 @@ final class CoreDataManager {
 }
 
 extension CoreDataManager {
+    /// 서버에서 받은 id 값 저장
+    func updateServerID(uuid: UUID, id: Int) {
+        guard let context = context else { return }
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>.init(entityName: planEntityName)
+        fetchRequest.predicate = NSPredicate(format: "uuid = %@", uuid.uuidString)
+        
+        do {
+            guard let result = try? context.fetch(fetchRequest),
+                  let object = result.first as? NSManagedObject else { return }
+            object.setValue(Int16(id), forKey: Todokeys.serverid.key)
+            
+            try context.save()
+            return
+        } catch {
+            print("error: \(error.localizedDescription)")
+        }
+    }
+    
     /// 복귀 유저의 데이터 저장을 위한 메서드
     func saveTodoDataAtOnce(todos: [Todo]) {
         guard let context = context else { return }
@@ -151,7 +171,6 @@ extension CoreDataManager {
             }
         } catch {
             print("error: \(error.localizedDescription)")
-            return
         }
     }
     

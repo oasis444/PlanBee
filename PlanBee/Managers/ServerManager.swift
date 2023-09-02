@@ -37,8 +37,9 @@ final class ServerManager {
     }
     
     /// MyTodo?
-    func updateTodo<T: Codable>(data: Todo, id: Int) async -> T? {
-        guard let url = URL(string: BASEURL + subPath + "/\(id)") else { return nil }
+    func updateTodo<T: Codable>(data: Todo) async -> T? {
+        guard let serverID = data.serverid,
+              let url = URL(string: BASEURL + subPath + "/\(serverID)") else { return nil }
         let params: [String: Any] = [
             "content": data.content,
             "done": data.done
@@ -49,8 +50,8 @@ final class ServerManager {
         return result
     }
     
-    func deleteTodo(id: Int) async -> Data? {
-        guard let url = URL(string: BASEURL + subPath + "/\(id)") else { return nil }
+    func deleteTodo(serverID: Int) async -> Data? {
+        guard let url = URL(string: BASEURL + subPath + "/\(serverID)") else { return nil }
         let request = AF.request(url, method: .delete)
         let dataTask = request.serializingData()
         
