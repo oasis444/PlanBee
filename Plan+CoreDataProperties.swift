@@ -15,11 +15,11 @@ extension Plan {
         return NSFetchRequest<Plan>(entityName: "Plan")
     }
 
+    @NSManaged public var alarm: Date?
     @NSManaged public var content: String?
     @NSManaged public var date: String?
     @NSManaged public var done: Bool
     @NSManaged public var priority: Date?
     @NSManaged public var uuid: UUID?
-    @NSManaged public var alarm: Date?
-
+    @NSManaged public var serverid: Int16
 }
