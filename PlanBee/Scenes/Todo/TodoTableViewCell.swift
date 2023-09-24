@@ -9,7 +9,6 @@ import UIKit
 
 final class TodoTableViewCell: UITableViewCell {
     private static let identifier = "TodoTableViewCell"
-    private let viewModel = TodoCellViewModel()
     private var todo: Todo?
     
     static var getIdentifier: String {
@@ -17,18 +16,21 @@ final class TodoTableViewCell: UITableViewCell {
     }
     
     private lazy var todoTitleLabel: UILabel = {
-        let label = UILabel()
-        label.font = viewModel.todoTitleLabelFont
-        label.textColor = viewModel.todoTitleLabelColor
-        label.numberOfLines = viewModel.todoTitleNumberOfLines
+        let label = LabelFactory.makeLabel(
+            text: nil,
+            font: ThemeFont.bold(size: 30),
+            textAlignment: .left)
+        label.numberOfLines = 0
         return label
     }()
     
     private lazy var alarmLabel: UILabel = {
-        let label = UILabel()
-        label.font = viewModel.alarmLabelFont
-        label.textColor = viewModel.alarmLabelColor
-        label.numberOfLines = viewModel.alarmLabelNumberOfLines
+        let label = LabelFactory.makeLabel(
+            text: nil,
+            font: ThemeFont.demibold(size: 17),
+            textColor: .darkGray,
+            textAlignment: .left)
+        label.numberOfLines = 1
         return label
     }()
     
@@ -37,7 +39,7 @@ final class TodoTableViewCell: UITableViewCell {
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .equalSpacing
-        stackView.spacing = viewModel.stackViewSpacing
+        stackView.spacing = 8
         
         [todoTitleLabel, alarmLabel].forEach {
             stackView.addArrangedSubview($0)
@@ -47,32 +49,31 @@ final class TodoTableViewCell: UITableViewCell {
     
     func configure(todo: Todo) {
         self.todo = todo
-        configureLayout()
-        configureCell()
+        setLayout()
+        configCell()
     }
 }
 
 private extension TodoTableViewCell {
-    func configureLayout() {
+    func setLayout() {
         contentView.addSubview(todoStackView)
         
         todoStackView.snp.makeConstraints {
-            $0.leading.top.trailing.bottom.equalToSuperview().inset(viewModel.spacing)
+            $0.leading.top.trailing.bottom.equalToSuperview().inset(AppConstraint.defaultSpacing)
         }
     }
     
-    func configureCell() {
-        let checkMarkImage = AccessoryImage().accessoryImage
+    func configCell() {
+        let checkMarkImage = AccessoryImage.accessoryImage
         let accessoryImage: UIImageView? = todo?.done == true ? checkMarkImage : nil
         accessoryView = accessoryImage
-        
         selectionStyle = .none
         
         todoTitleLabel.text = todo?.content
         
         if let alarmDate = todo?.alarm {
             alarmLabel.text = "⏰ 알림, " + DateFormatter.formatAlarmTime(date: alarmDate)
-            todoStackView.spacing = viewModel.stackViewSpacing
+            todoStackView.spacing = AppConstraint.stackViewSpacing
         } else {
             alarmLabel.text = ""
             todoStackView.spacing = 0

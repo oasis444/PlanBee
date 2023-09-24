@@ -8,7 +8,6 @@
 import UIKit
 
 final class ProfileCell: UITableViewCell {
-    
     private static let identifier = "ProfileCell"
     let viewModel = SettingProfileCellViewModel()
     
@@ -39,9 +38,14 @@ final class ProfileCell: UITableViewCell {
         return stackView
     }()
     
-    func configure() {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureCell()
         configureLayout()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -49,7 +53,7 @@ private extension ProfileCell {
     func configureCell() {
         selectionStyle = .none
         accessoryType = .disclosureIndicator
-        backgroundColor = .tableCellColor
+        backgroundColor = ThemeColor.tableCellColor
         
         profileNickNameLabel.text = FirebaseManager.shared.getUserEmail()
     }

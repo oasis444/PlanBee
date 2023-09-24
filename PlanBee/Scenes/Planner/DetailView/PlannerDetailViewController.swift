@@ -7,78 +7,41 @@
 
 import UIKit
 import Combine
+import SwiftUI
 
 final class PlannerDetailViewController: UIViewController {
     
-    var reloadCalendar: ((_ relodaCalendar: Bool) -> Void)?
+    private var plannerDetailView = PlannerDetailView()
     private var viewModel: PlannerDetailViewModel?
+    var reloadCalendar: ((_ relodaCalendar: Bool) -> Void)?
     private var subscriptions = Set<AnyCancellable>()
     
     init(date: Date) {
         super.init(nibName: nil, bundle: nil)
         viewModel = PlannerDetailViewModel(selectedDate: date)
+        plannerDetailView.dateLabel.text = viewModel?.dateLabelText
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private lazy var dateLabel: UILabel = {
-        let label = UILabel()
-        label.font = viewModel?.dateLabelFont
-        label.text = viewModel?.dateLabelText
-        label.textColor = viewModel?.dateLabelTextColor
-        return label
-    }()
-    
-    private lazy var addTodoButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(viewModel?.addTodoBtnImage, for: .normal)
-        button.addTarget(self, action: #selector(didTappedAddTodoButton), for: .touchUpInside)
-        button.isEnabled = false
-        return button
-    }()
-    
-    private lazy var inputTodoTextField: UITextField = {
-        let textField = UITextField()
-        textField.borderStyle = viewModel?.textFieldBorderStyle ?? .roundedRect
-        textField.font = viewModel?.textFieldFont
-        textField.placeholder = viewModel?.textFieldPlaceHolderText
-        textField.backgroundColor = viewModel?.textFieldBackgoundColor
-        textField.delegate = self
-        return textField
-    }()
-    
-    private lazy var editModeButton: UIButton = {
-        let button = UIButton()
-        button.setTitle(viewModel?.editBtnTitle, for: .normal)
-        button.setTitleColor(viewModel?.editBtnTitleColor, for: .normal)
-        button.addTarget(self, action: #selector(didTappedEditButton), for: .touchUpInside)
-        return button
-    }()
-    
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(
-            PlannerDetailTableViewCell.self,
-            forCellReuseIdentifier: PlannerDetailTableViewCell.getIdentifier
-        )
-        tableView.layer.cornerRadius = viewModel?.tableViewCornerRadius ?? 15
-        return tableView
-    }()
+    override func loadView() {
+        super.loadView()
+        
+        view = plannerDetailView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureView()
-        configureLayout()
+        configure()
         bind()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        
         reloadCalendar?(true)
     }
     
@@ -92,87 +55,55 @@ final class PlannerDetailViewController: UIViewController {
 }
 
 private extension PlannerDetailViewController {
-    func configureView() {
-        view.backgroundColor = .PlanBeeBackgroundColor
+    func configure() {
+        plannerDetailView.tableView.delegate = self
+        plannerDetailView.tableView.dataSource = self
+        plannerDetailView.inputTodoTextField.delegate = self
+        
+        plannerDetailView.addTodoButton.addTarget(
+            self,
+            action: #selector(didTappedAddTodoButton),
+            for: .touchUpInside)
+        plannerDetailView.editModeButton.addTarget(
+            self,
+            action: #selector(didTappedEditButton),
+            for: .touchUpInside)
     }
     
-    func configureLayout() {
-        [dateLabel, addTodoButton, inputTodoTextField, editModeButton, tableView].forEach {
-            view.addSubview($0)
-        }
-        
-        dateLabel.snp.makeConstraints {
-            $0.leading.top.equalToSuperview().inset(viewModel?.layoutSpacing ?? 16)
-            $0.trailing.equalTo(addTodoButton.snp.leading)
-        }
-        
-        addTodoButton.snp.makeConstraints {
-            $0.top.trailing.equalToSuperview().inset(viewModel?.layoutSpacing ?? 26)
-            $0.height.equalTo(dateLabel.snp.height)
-        }
-        
-        inputTodoTextField.snp.makeConstraints {
-            $0.top.equalTo(dateLabel.snp.bottom).offset(viewModel?.layoutContentSpacing ?? 16)
-            $0.leading.trailing.equalToSuperview().inset(viewModel?.layoutSpacing ?? 40)
-            $0.height.equalTo(viewModel?.layoutContentSpacing ?? 40)
-        }
-        
-        editModeButton.snp.makeConstraints {
-            $0.top.equalTo(inputTodoTextField.snp.bottom).offset(viewModel?.layoutSpacing ?? 16)
-            $0.trailing.equalToSuperview().inset(viewModel?.layoutSpacing ?? 16)
-            $0.bottom.equalTo(tableView.snp.top)
-        }
-        
-        tableView.snp.makeConstraints {
-            $0.top.equalTo(editModeButton.snp.bottom)
-            $0.leading.trailing.equalToSuperview().inset(viewModel?.layoutSpacing ?? 16)
-            $0.bottom.equalToSuperview().inset(viewModel?.layoutContentSpacing ?? 40)
-        }
-    }
-    
-    @objc func didTappedAddTodoButton() {
-        guard let date = viewModel?.getDate,
-              let text = inputTodoTextField.text else { return }
-        if TodoManager.shared.textFieldIsFullWithBlank(text: text) == false {
-            let strDate = DateFormatter.formatTodoDate(date: date)
-            let todo = Todo(
-                content: text,
-                date: strDate
-            )
-            let saveResult = TodoManager.shared.saveTodo(saveTodo: todo)
-            if saveResult == true {
-                tableView.reloadData()
-            } else {
-                showAlert()
-            }
-        }
-        inputTodoTextField.text?.removeAll()
-        addTodoButton.isEnabled = false
-    }
-    
-    @objc func didTappedEditButton() {
-        let editing = tableView.isEditing
-        tableView.setEditing(!editing, animated: true)
-    }
-}
-
-private extension PlannerDetailViewController {
     func bind() {
-        inputTodoTextField.textFieldPublisher
+        plannerDetailView.inputTodoTextField.textFieldPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] text in
-                self?.addTodoButton.isEnabled = !text.isEmpty
+                guard let self = self else { return }
+                self.plannerDetailView.addTodoButton.isEnabled = !text.isEmpty
             }
             .store(in: &subscriptions)
     }
     
     func showAlert() {
-        let alert = UIAlertController(title: viewModel?.alertTitle,
-                                      message: viewModel?.alertMessage,
+        let alert = UIAlertController(title: "Todo 저장 실패",
+                                      message: "잠시 후 다시 시도해 주세요.",
                                       preferredStyle: .alert)
-        let confirm = UIAlertAction(title: viewModel?.alertActionTitle, style: .default)
+        let confirm = UIAlertAction(title: "확인", style: .default)
         alert.addAction(confirm)
         present(alert, animated: true)
+    }
+    
+    @objc func didTappedAddTodoButton() {
+        guard let viewModel = viewModel,
+              let text = plannerDetailView.inputTodoTextField.text else { return }
+        if viewModel.saveTodoResult(text: text) == true {
+            plannerDetailView.tableView.reloadData()
+        } else {
+            showAlert()
+        }
+        plannerDetailView.inputTodoTextField.text?.removeAll()
+        plannerDetailView.addTodoButton.isEnabled = false
+    }
+    
+    @objc func didTappedEditButton() {
+        let editing = plannerDetailView.tableView.isEditing
+        plannerDetailView.tableView.setEditing(!editing, animated: true)
     }
 }
 
@@ -192,7 +123,7 @@ extension PlannerDetailViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return viewModel?.tableViewHeaderTitle
+        return "Todo"
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -238,5 +169,12 @@ extension PlannerDetailViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+}
+
+struct PlannerDetailVCPreView: PreviewProvider {
+    static var previews: some View {
+        let plannerDetailVC = PlannerDetailViewController(date: Date())
+        plannerDetailVC.toPreview().edgesIgnoringSafeArea(.bottom)
     }
 }

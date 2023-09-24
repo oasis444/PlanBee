@@ -29,7 +29,7 @@ class VersionViewController: UIViewController {
 
 private extension VersionViewController {
     func configure() {
-        view.backgroundColor = .PlanBeeBackgroundColor
+        view.backgroundColor = ThemeColor.PlanBeeBackgroundColor
         versionLabel.text = version
         
         configureLayout()

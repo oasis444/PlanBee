@@ -6,33 +6,28 @@
 //
 
 import UIKit
+import Combine
+import SwiftUI
 
 final class ProfileViewController: UIViewController {
     
+    private let profileView = ProfileView()
     private let viewModel = ProfileViewModel()
     private let detailViewModel = ProfileDetailViewModel()
     private var didTapped: Bool = false
+    private var cancellable = Set<AnyCancellable>()
     
-    private lazy var indicator: UIActivityIndicatorView = {
-        let indicatorView = UIActivityIndicatorView(style: .large)
-        indicatorView.hidesWhenStopped = true
-        indicatorView.color = viewModel.indicatorColor
-        return indicatorView
-    }()
-    
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.backgroundColor = .PlanBeeBackgroundColor
-        tableView.register(ProfileDetailCell.self, forCellReuseIdentifier: ProfileDetailCell.getIdentifier)
-        return tableView
-    }()
+    override func loadView() {
+        super.loadView()
+        
+        view = profileView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configure()
+        bind()
     }
     
     deinit {
@@ -43,27 +38,72 @@ final class ProfileViewController: UIViewController {
 private extension ProfileViewController {
     func configure() {
         navigationItem.largeTitleDisplayMode = .never
-        view.backgroundColor = .PlanBeeBackgroundColor
+        view.backgroundColor = ThemeColor.PlanBeeBackgroundColor
         
-        configureLayout()
+        profileView.tableView.delegate = self
+        profileView.tableView.dataSource = self
     }
     
-    func configureLayout() {
-        view.addSubview(tableView)
-        tableView.addSubview(indicator)
-        
-        indicator.snp.makeConstraints {
-            $0.centerX.centerY.equalToSuperview()
-        }
-        
-        tableView.snp.makeConstraints {
-            $0.leading.top.trailing.equalToSuperview()
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
-        }
+    func bind() {
+        viewModel.sendEmailSubject.sink { [weak self] alertType in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.didTapped.toggle()
+                self.profileView.indicator.stopAnimating()
+                
+                switch alertType {
+                case .sendEmailSuccess:
+                    self.showSendEmailAlert(email: self.viewModel.getUserEmail, type: .sendEmailSuccess)
+                    
+                case .sendEmailFail:
+                    self.showSendEmailAlert(type: .sendEmailFail)
+                }
+            }
+        }.store(in: &cancellable)
     }
     
-    @objc func didTappedWithdrawalBtn() {
-        print("didTapped")
+    func showChangePWAlert() {
+        let alert = AlertFactory.makeAlert(
+            title: "비밀번호 변경",
+            message: "비밀번호를 변경하시겠습니까?",
+            firstActionTitle: "확인",
+            firstActionStyle: .destructive,
+            firstActionCompletion: { [weak self] in
+                guard let self = self else { return }
+                self.didTapped.toggle()
+                self.profileView.indicator.startAnimating()
+                viewModel.sendEmail
+            },
+            secondActionTitle: "취소")
+        present(alert, animated: true)
+    }
+    
+    func showSendEmailAlert(email: String? = nil, type: AlertType) {
+        let title: String
+        let message: String
+        let actionTitle = "확인"
+        var firstActionCompletion: (() -> Void)?
+        
+        switch type {
+        case .sendEmailSuccess:
+            guard let email = email else { return }
+            title = "이메일 전송 완료"
+            message = "비밀번호 변경을 위해 '\(email)'로 이메일이 전송되었습니다. 비밀번호 변경 후 다시 로그인해 주세요."
+            firstActionCompletion = { [weak self] in
+                self?.navigationController?.popToRootViewController(animated: true)
+            }
+            
+        case .sendEmailFail:
+            title = "이메일 전송 실패"
+            message = "이메일 전송에 실패했습니다. 잠시 후 다시 시도해 주세요."
+        }
+        
+        let alert = AlertFactory.makeAlert(
+            title: title,
+            message: message,
+            firstActionTitle: actionTitle,
+            firstActionCompletion: firstActionCompletion)
+        present(alert, animated: true)
     }
 }
 
@@ -117,7 +157,7 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
             switch cellTitle {
             case ProfileDetailItems.Account.password.title:
                 if didTapped == false {
-                    showAlert()
+                    showChangePWAlert()
                 }
             default: return
             }
@@ -136,31 +176,10 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
-extension ProfileViewController {
-    func showAlert() {
-        let alert = UIAlertController(title: "비밀번호 변경",
-                                      message: "비밀번호를 변경하시겠습니까?",
-                                      preferredStyle: .alert)
-        let confirm = UIAlertAction(title: "확인", style: .destructive) { _ in
-            self.didTapped.toggle()
-            self.indicator.startAnimating()
-            Task {
-                let sendEmailResult = await FirebaseManager.shared.sendEmailForChangePW()
-                if sendEmailResult {
-                    self.viewModel.showAlert(view: self,
-                                             email: FirebaseManager.shared.getUserEmail(),
-                                             type: AlertType.sendEmailSuccess)
-                    _ = FirebaseManager.shared.logOut()
-                    return
-                }
-                self.indicator.stopAnimating()
-                self.viewModel.showAlert(view: self, type: AlertType.sendEmailFail)
-                self.didTapped.toggle()
-            }
-        }
-        let cancel = UIAlertAction(title: "취소", style: .default)
-        alert.addAction(confirm)
-        alert.addAction(cancel)
-        present(alert, animated: true)
+struct ProfileVCPreView: PreviewProvider {
+    static var previews: some View {
+        let profileVC = ProfileViewController()
+        UINavigationController(rootViewController: profileVC)
+            .toPreview().edgesIgnoringSafeArea(.all)
     }
 }

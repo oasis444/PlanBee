@@ -6,135 +6,55 @@
 //
 
 import UIKit
+import SwiftUI
 
 final class AlarmViewController: UIViewController {
     
-    var todo: Todo?
+    private let alarmView = AlarmView()
     private let viewModel = AlarmViewModel()
+    private var todo: Todo?
     var reloadTodoTableView: ((_ reloadTableView: Bool) -> Void)?
     
-    private lazy var removeAlarmBtn: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle(viewModel.removeAlarmBtnTitle, for: .normal)
-        button.titleLabel?.font = viewModel.removeAlarmBtnFont
-        button.setTitleColor(viewModel.removeAlarmBtnColor, for: .normal)
-        button.addTarget(self, action: #selector(didTappedRemoveAlarmBtn), for: .touchUpInside)
-        return button
-    }()
-    
-    private lazy var dismissBtn: UIButton = {
-        let button = UIButton(type: .close)
-        button.addTarget(self, action: #selector(didTappedDismissBtn), for: .touchUpInside)
-        return button
-    }()
-    
-    private lazy var alarmDatePicker: UIDatePicker = {
-        let datePicker = UIDatePicker()
-        datePicker.datePickerMode = .time
-        datePicker.preferredDatePickerStyle = .wheels
-        return datePicker
-    }()
-    
-    private lazy var registerAlarmButton: UIButton = {
-        let button = UIButton()
-        button.setTitle(viewModel.alarmBtnTitle, for: .normal)
-        button.titleLabel?.font = viewModel.alarmBtnFont
-        button.tintColor = viewModel.alarmBtnTintColor
-        button.backgroundColor = viewModel.alarmBtnBackgroundColor
-        button.layer.cornerRadius = viewModel.alarmBtnCornerRadius
-        button.addTarget(self, action: #selector(didTappedSetAlarmBtn), for: .touchUpInside)
-        return button
-    }()
+    override func loadView() {
+        super.loadView()
+        
+        view = alarmView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureView()
-        configureLayout()
+        configure()
+        setButtonTarget()
     }
     
     deinit {
         print("deinit - AlarmVC")
     }
-}
-
-private extension AlarmViewController {
-    @objc func didTappedRemoveAlarmBtn() {
-        guard var todo = todo,
-              todo.alarm != nil else { return }
-        todo.alarm = nil
-        Task {
-            if await TodoManager.shared.updateTodo(todo: todo, needServerUpdate: false) {
-                UserNotificationManager.shared.removeAlarm(todo: todo)
-                dismiss(animated: true) {
-                    self.reloadTodoTableView?(true)
-                }
-            } else {
-                showAlert(title: viewModel.removeAlertTitle, message: viewModel.removeAlertMessage)
-            }
-        }
-    }
     
-    @objc func didTappedSetAlarmBtn() {
-        guard var todo = todo else { return }
-        if checkAlarmDate() {
-            todo.alarm = alarmDatePicker.date
-            Task {
-                if await TodoManager.shared.updateTodo(todo: todo, needServerUpdate: false) {
-                    UserNotificationManager.shared.addAlarm(todo: todo)
-                }
-                dismiss(animated: true) {
-                    self.reloadTodoTableView?(true)
-                }
-            }
-        } else {
-            showAlert(title: viewModel.setAlertTitle, message: viewModel.setAlertMessage)
-        }
-    }
-    
-    @objc func didTappedDismissBtn() {
-        dismiss(animated: true)
+    func configure(todo: Todo) {
+        self.todo = todo
     }
 }
 
 private extension AlarmViewController {
-    func configureView() {
-        view.backgroundColor = .PlanBeeBackgroundColor
+    func configure() {
+        view.backgroundColor = ThemeColor.PlanBeeBackgroundColor
     }
     
-    func configureLayout() {
-        [removeAlarmBtn, dismissBtn, alarmDatePicker, registerAlarmButton].forEach {
-            view.addSubview($0)
-        }
-        
-        removeAlarmBtn.snp.makeConstraints {
-            $0.leading.equalTo(view.safeAreaLayoutGuide).inset(viewModel.contentViewSpacing)
-            $0.centerY.equalTo(dismissBtn.snp.centerY)
-        }
-        
-        dismissBtn.snp.makeConstraints {
-            $0.top.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel.contentViewSpacing)
-            $0.width.equalTo(viewModel.dismissBtnWidth)
-            $0.height.equalTo(dismissBtn.snp.width)
-        }
-        
-        alarmDatePicker.snp.makeConstraints {
-            $0.top.equalTo(dismissBtn.snp.bottom).offset(viewModel.contentViewHeightSpacing)
-            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel.contentViewSpacing)
-        }
-        
-        registerAlarmButton.snp.makeConstraints {
-            $0.top.equalTo(alarmDatePicker.snp.bottom).offset(viewModel.contentViewHeightSpacing)
-            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(viewModel.contentViewSpacing)
-        }
-    }
-    
-    func checkAlarmDate() -> Bool {
-        if alarmDatePicker.date > Date() {
-            return true
-        } else {
-            return false
-        }
+    func setButtonTarget() {
+        alarmView.removeAlarmBtn.addTarget(
+            self,
+            action: #selector(didTappedRemoveAlarmBtn),
+            for: .touchUpInside)
+        alarmView.dismissBtn.addTarget(
+            self,
+            action: #selector(didTappedDismissBtn),
+            for: .touchUpInside)
+        alarmView.registerAlarmButton.addTarget(
+            self,
+            action: #selector(didTappedSetAlarmBtn),
+            for: .touchUpInside)
     }
     
     func showAlert(title: String, message: String) {
@@ -144,5 +64,52 @@ private extension AlarmViewController {
         let confirm = UIAlertAction(title: "확인", style: .default)
         alert.addAction(confirm)
         present(alert, animated: true)
+    }
+}
+
+private extension AlarmViewController {
+    @objc func didTappedRemoveAlarmBtn() {
+        guard var todo = todo,
+              todo.alarm != nil else { return }
+        todo.alarm = nil
+        
+        viewModel.removeAlarm(todo: todo) { [weak self] result in
+            guard let self = self else { return }
+            if result {
+                dismiss(animated: true) {
+                    self.reloadTodoTableView?(true)
+                    return
+                }
+            }
+            showAlert(title: "알림 삭제 오류", message: "알림 삭제에 실패했습니다. 잠시 후 다시 시도해 주세요.")
+        }
+    }
+    
+    @objc func didTappedSetAlarmBtn() {
+        guard var todo = todo else { return }
+        let check = viewModel.checkAlarmDate(date: alarmView.alarmDatePicker.date)
+        if check {
+            todo.alarm = alarmView.alarmDatePicker.date
+            viewModel.setAlarm(todo: todo) { [weak self] result in
+                guard let self = self else { return }
+                if result {
+                    dismiss(animated: true) {
+                        self.reloadTodoTableView?(true)
+                        return
+                    }
+                }
+                showAlert(title: "알림 삭제 오류", message: "알림 삭제에 실패했습니다. 잠시 후 다시 시도해 주세요.")
+            }
+        }
+    }
+    
+    @objc func didTappedDismissBtn() {
+        dismiss(animated: true)
+    }
+}
+
+struct AlarmVCPreView: PreviewProvider {
+    static var previews: some View {
+        AlarmViewController().toPreview().edgesIgnoringSafeArea(.all)
     }
 }

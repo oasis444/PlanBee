@@ -8,9 +8,7 @@
 import UIKit
 
 final class PlannerDetailTableViewCell: UITableViewCell {
-    
     private static let identifier = "PlannerDetailTableViewCell"
-    private let viewModel = PlannerDetailCellViewModel()
     private var todo: Todo?
     
     static var getIdentifier: String {
@@ -18,34 +16,34 @@ final class PlannerDetailTableViewCell: UITableViewCell {
     }
     
     private lazy var todoTitleLabel: UILabel = {
-        let label = UILabel()
-        label.font = viewModel.todoTitleLabelFont
-        label.textColor = viewModel.todoTitleLabelColor
-        label.textAlignment = .left
-        label.numberOfLines = viewModel.todoTitleLabelNumberOfLines
+        let label = LabelFactory.makeLabel(
+            text: nil,
+            font: ThemeFont.regular(size: 23),
+            textAlignment: .left)
+        label.numberOfLines = 0
         return label
     }()
     
     func configure(todo: Todo?) {
         self.todo = todo
-        configureLayout()
+        setLayout()
         configureCell()
     }
 }
 
 private extension PlannerDetailTableViewCell {
-    func configureLayout() {
+    func setLayout() {
         contentView.addSubview(todoTitleLabel)
         
         todoTitleLabel.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(viewModel.spacing)
-            $0.top.bottom.equalToSuperview().inset(viewModel.verticalSpacing)
-            $0.trailing.equalToSuperview().inset(viewModel.spacing)
+            $0.leading.equalToSuperview().inset(AppConstraint.defaultSpacing)
+            $0.top.bottom.equalToSuperview().inset(AppConstraint.defaultSpacing)
+            $0.trailing.equalToSuperview().inset(AppConstraint.defaultSpacing)
         }
     }
     
     func configureCell() {
-        let checkMarkImage = AccessoryImage().accessoryImage
+        let checkMarkImage = AccessoryImage.accessoryImage
         let accessoryImage: UIImageView? = todo?.done == true ? checkMarkImage : nil
         accessoryView = accessoryImage
         

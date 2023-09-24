@@ -6,68 +6,60 @@
 //
 
 import UIKit
-import SnapKit
+import SwiftUI
 
 final class TodoViewController: UIViewController {
     
+    private let todoView = TodoView()
     private let viewModel = TodoViewModel()
     
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.backgroundColor = .PlanBeeBackgroundColor
-        tableView.register(TodoTableViewCell.self, forCellReuseIdentifier: TodoTableViewCell.getIdentifier)
-        return tableView
+    private lazy var rightBarButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "편집",
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(didTappedRightBarBtn))
+        return button
     }()
+    
+    override func loadView() {
+        super.loadView()
+        
+        view = todoView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureTodoView()
-        configureLayout()
+        configure()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        tableView.reloadData()
+        todoView.tableView.reloadData()
     }
 }
 
 private extension TodoViewController {
-    func configureTodoView() {
+    func configure() {
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = viewModel.todoTitle
+        navigationItem.title = "오늘 일정"
+        navigationItem.rightBarButtonItem = rightBarButton
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: viewModel.navigationRightBtnTitle,
-            style: .plain,
-            target: self,
-            action: #selector(didTappedRightBarBtn)
-        )
-    }
-    
-    func configureLayout() {
-        view.addSubview(tableView)
-        
-        tableView.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
-        }
+        todoView.tableView.dataSource = self
+        todoView.tableView.delegate = self
     }
     
     @objc func didTappedRightBarBtn() {
-        let editing = tableView.isEditing
-        let todoList = TodoManager.shared.getTodoList(date: Date())
-        if todoList.isEmpty { return }
-        tableView.setEditing(!editing, animated: true)
+        let editing = todoView.tableView.isEditing
+        if viewModel.getTodoList.isEmpty { return }
+        todoView.tableView.setEditing(!editing, animated: true)
     }
 }
 
 extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return TodoManager.shared.getTodoList(date: Date()).count
+        return viewModel.getTodoList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -75,17 +67,16 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
             withIdentifier: TodoTableViewCell.getIdentifier,
             for: indexPath
         ) as? TodoTableViewCell else { return UITableViewCell() }
-        let todoList = TodoManager.shared.getTodoList(date: Date())
+        let todoList = viewModel.getTodoList
         cell.configure(todo: todoList[indexPath.row])
-        cell.backgroundColor = .systemGray5
+        cell.backgroundColor = ThemeColor.tableCellColor
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var selectedTodo = TodoManager.shared.getTodoList(date: Date())[indexPath.row]
-        selectedTodo.done = !selectedTodo.done
         Task {
-            if await TodoManager.shared.updateTodo(todo: selectedTodo) == true {
+            let result = await viewModel.updateTodo(index: indexPath.row)
+            if result {
                 DispatchQueue.main.async {
                     tableView.reloadRows(at: [indexPath], with: .automatic)
                 }
@@ -96,9 +87,9 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    commit editingStyle: UITableViewCell.EditingStyle,
                    forRowAt indexPath: IndexPath) {
-        let todo = TodoManager.shared.getTodoList(date: Date())[indexPath.row]
         Task {
-            if await TodoManager.shared.removeTodo(todo: todo) {
+            let result = await viewModel.removeTodo(index: indexPath.row)
+            if result {
                 DispatchQueue.main.async {
                     tableView.deleteRows(at: [indexPath], with: .automatic)
                 }
@@ -109,22 +100,23 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let addAlarmAction = UIContextualAction(style: .normal,
-                                                title: viewModel.alarmActionTitle) { [weak self] _, _, _ in
+                                                title: "알림 설정") { [weak self] _, _, _ in
             guard let self = self else { return }
             let alarmVC = AlarmViewController()
-            let todoList = TodoManager.shared.getTodoList(date: Date())
-            alarmVC.todo = todoList[indexPath.row]
+            let todoList = viewModel.getTodoList
+            alarmVC.configure(todo: todoList[indexPath.row])
+            
             alarmVC.reloadTodoTableView = { [weak self] result in
                 guard let self = self else { return }
                 if result {
                     DispatchQueue.main.async {
-                        self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                        self.todoView.tableView.reloadRows(at: [indexPath], with: .automatic)
                     }
                 }
             }
             self.present(alarmVC, animated: true)
         }
-        addAlarmAction.image = viewModel.alarmActionImage
+        addAlarmAction.image = UIImage(systemName: "alarm")
         return UISwipeActionsConfiguration(actions: [addAlarmAction])
     }
     
@@ -132,16 +124,18 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
                    moveRowAt sourceIndexPath: IndexPath,
                    to destinationIndexPath: IndexPath) {
         if sourceIndexPath == destinationIndexPath { return }
-        Task {
-            await TodoManager.shared.moveTodo(
-                date: Date(),
-                startIndex: sourceIndexPath.row,
-                destinationIndex: destinationIndexPath.row
-            )
-        }
+        viewModel.moveTodo(startIndex: sourceIndexPath.row, destinationIndex: destinationIndexPath.row)
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return viewModel.todoHeaderTitle
+    }
+}
+
+struct TodoVCPreView: PreviewProvider {
+    static var previews: some View {
+        let todoVC = TodoViewController()
+        UINavigationController(rootViewController: todoVC)
+            .toPreview().edgesIgnoringSafeArea(.all)
     }
 }

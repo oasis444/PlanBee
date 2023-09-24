@@ -56,7 +56,7 @@ final class SignInViewController: UIViewController {
     
     func configure() {
         navigationItem.largeTitleDisplayMode = .never
-        view.backgroundColor = .PlanBeeBackgroundColor
+        view.backgroundColor = ThemeColor.PlanBeeBackgroundColor
         
         introLabel.text = viewModel.introLabelText
         
@@ -91,7 +91,9 @@ private extension SignInViewController {
     }
     
     @objc func didTappedLoginBtn() {
-        let loginVC = LoginViewController()
+        let loginVC = LoginViewController(
+            buttonType: .login,
+            title: LoginBtnType.login.title)
         loginVC.modalPresentationStyle = .fullScreen
         loginVC.modalTransitionStyle = .flipHorizontal
         loginVC.configure(tapped: .login)
@@ -102,7 +104,9 @@ private extension SignInViewController {
     }
     
     @objc func didTappedRegisterBtn() {
-        let loginVC = LoginViewController()
+        let loginVC = LoginViewController(
+            buttonType: .register,
+            title: LoginBtnType.register.title)
         loginVC.modalPresentationStyle = .fullScreen
         loginVC.modalTransitionStyle = .flipHorizontal
         loginVC.configure(tapped: .register)

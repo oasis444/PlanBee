@@ -14,28 +14,44 @@ enum UserInterfaceStyle: Int {
 }
 
 final class SettingViewModel {
-    let settingViewNavigationTitle = "설정"
+    private let firebaseManager = FirebaseManager.shared
+    private let userDefaultsManager = UserDefaultsManager.shared
     private let appearanceKey = "Appearance"
-    let userDefaultsManager = UserDefaultsManager.shared
+}
+
+extension SettingViewModel {
+    func logout() -> Bool {
+        if firebaseManager.logOut() != nil {
+            return false
+        }
+        if removeKeychain {
+            return true
+        }
+        return false
+    }
+    
+    private var removeKeychain: Bool {
+        let result = KeychainManager.removeKeychain(forKey: .token)
+        return result
+    }
     
     func subTitle(type: SettingSection.Setting) -> String? {
-        if type == .screenMode {
-            if let rawValue: Int = userDefaultsManager.getValue(forKey: appearanceKey) {
-                var screenMode: String? {
-                    switch rawValue {
-                    case 0: return "시스템 기본값"
-                    case 1: return "라이트 모드"
-                    case 2: return "다크 모드"
-                    default: return nil
-                    }
+        switch type {
+        case .screenMode:
+            guard let rawValue: Int = userDefaultsManager.getValue(forKey: appearanceKey) else { return nil }
+            var screenMode: String? {
+                switch rawValue {
+                case 0: return "시스템 기본값"
+                case 1: return "라이트 모드"
+                case 2: return "다크 모드"
+                default: return nil
                 }
-                return screenMode
             }
-        }
-        if type == .alarm {
+            return screenMode
+            
+        case .alarm:
             return nil
         }
-        return nil
     }
     
     func saveScreenMode(viewController: UIViewController, mode: UserInterfaceStyle) {

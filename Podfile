@@ -7,5 +7,6 @@ target 'PlanBee' do
   
   # Pods for PlanBee
   pod 'SwiftLint'
+  pod 'SwiftKeychainWrapper'
   
 end

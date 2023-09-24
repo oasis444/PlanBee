@@ -9,24 +9,54 @@ import UIKit
 import UserNotifications
 
 final class AlarmViewModel {
-    let alarmBtnTitle = "알림 설정"
+    private let todoManager = TodoManager.shared
+    private let notificationManager = UserNotificationManager.shared
+}
+
+extension AlarmViewModel {
+    func checkAlarmDate(date: Date) -> Bool {
+        if date > Date() {
+            return true
+        } else {
+            return false
+        }
+    }
     
-    let removeAlarmBtnTitle = "알림 삭제"
-    let removeAlarmBtnFont: UIFont = .systemFont(ofSize: 22, weight: .medium)
-    let removeAlarmBtnColor: UIColor = .systemPink
+    func removeAlarm(todo: Todo, completion: @escaping (Bool) -> Void) {
+        Task {
+            if await todoManager.updateTodo(todo: todo, needServerUpdate: false) {
+                removeAlarm(todo: todo)
+                DispatchQueue.main.async {
+                    completion(true)
+                    return
+                }
+            }
+            DispatchQueue.main.async {
+                completion(false)
+            }
+        }
+    }
     
-    let contentViewSpacing: CGFloat = 16
-    let contentViewHeightSpacing: CGFloat = 50
+    func setAlarm(todo: Todo, completion: @escaping (Bool) -> Void) {
+        Task {
+            if await todoManager.updateTodo(todo: todo, needServerUpdate: false) {
+                addAlarm(todo: todo)
+                DispatchQueue.main.async {
+                    completion(true)
+                    return
+                }
+            }
+            DispatchQueue.main.async {
+                completion(false)
+            }
+        }
+    }
     
-    let alarmBtnTintColor: UIColor = .white
-    let alarmBtnBackgroundColor: UIColor = .systemPurple
-    let alarmBtnFont: UIFont = .systemFont(ofSize: 30, weight: .bold)
-    let alarmBtnCornerRadius: CGFloat = 15
+    private func removeAlarm(todo: Todo) {
+        notificationManager.removeAlarm(todo: todo)
+    }
     
-    let dismissBtnWidth: CGFloat = 40
-    
-    let removeAlertTitle = "알림 삭제 오류"
-    let removeAlertMessage = "알림 삭제에 실패했습니다. 잠시 후 다시 시도해 주세요."
-    let setAlertTitle = "알림 설정 오류"
-    let setAlertMessage = "현재 시간보다 이전으로 알림을 설정할 수 없습니다."
+    private func addAlarm(todo: Todo) {
+        notificationManager.addAlarm(todo: todo)
+    }
 }

@@ -77,7 +77,7 @@ final class TodoManager {
         return false
     }
     
-    func textFieldIsFullWithBlank(text: String) -> Bool {
+    func textIsFullWithBlank(text: String) -> Bool {
         let trimmedText = text.trimmingCharacters(in: .whitespaces)
         return trimmedText.isEmpty ? true : false
     }

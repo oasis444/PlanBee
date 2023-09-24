@@ -7,10 +7,10 @@
 
 import UIKit
 
-final class AccessoryImage {
-    var accessoryImage: UIImageView {
+struct AccessoryImage {
+    static var accessoryImage: UIImageView {
         let imageView = UIImageView(image: UIImage(systemName: "checkmark"))
-        imageView.tintColor = .PlanBeetintColor
+        imageView.tintColor = ThemeColor.PlanBeeTintColor
         return imageView
     }
 }

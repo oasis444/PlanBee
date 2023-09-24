@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 enum AlertType {
     case sendEmailSuccess
@@ -13,29 +14,28 @@ enum AlertType {
 }
 
 final class ProfileViewModel {
+    private let firebaseManger = FirebaseManager.shared
+    let sendEmailSubject = PassthroughSubject<AlertType, Never>()
+}
+
+extension ProfileViewModel {
+    var getUserEmail: String {
+        return firebaseManger.getUserEmail()
+    }
     
-    let indicatorColor: UIColor = .systemOrange
-    
-    func showAlert(view: UIViewController, email: String? = nil, type: AlertType) {
-        switch type {
-        case .sendEmailSuccess:
-            guard let email = email else { return }
-            let alert = UIAlertController(title: "이메일 전송 완료",
-                                          message: "비밀번호 변경을 위해 '\(email)'로 이메일이 전송되었습니다. 비밀번호 변경 후 다시 로그인해 주세요.",
-                                          preferredStyle: .alert)
-            let confirm = UIAlertAction(title: "확인", style: .default) {_ in
-                view.navigationController?.popToRootViewController(animated: true)
+    var sendEmail: Void {
+        Task {
+            let sendEmailResult = await firebaseManger.sendEmailForChangePW()
+            if sendEmailResult {
+                logOut
+                sendEmailSubject.send(.sendEmailSuccess)
+                return
             }
-            alert.addAction(confirm)
-            view.present(alert, animated: true)
-            
-        case .sendEmailFail:
-            let alert = UIAlertController(title: "이메일 전송 실패",
-                                          message: "이메일 전송에 실패했습니다. 잠시 후 다시 시도해 주세요.",
-                                          preferredStyle: .alert)
-            let confirm = UIAlertAction(title: "확인", style: .default)
-            alert.addAction(confirm)
-            view.present(alert, animated: true)
+            sendEmailSubject.send(.sendEmailFail)
         }
+    }
+    
+    private var logOut: Void {
+        _ = firebaseManger.logOut()
     }
 }

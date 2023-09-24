@@ -96,6 +96,7 @@ class FirebaseManager {
             try auth.signOut()
             return nil
         } catch {
+            print("error: \(error.localizedDescription)")
             return error.localizedDescription
         }
     }

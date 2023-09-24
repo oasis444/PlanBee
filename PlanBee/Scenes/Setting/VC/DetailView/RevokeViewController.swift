@@ -52,7 +52,7 @@ class RevokeViewController: UIViewController {
 
 private extension RevokeViewController {
     func configure() {
-        view.backgroundColor = .PlanBeeBackgroundColor
+        view.backgroundColor = ThemeColor.PlanBeeBackgroundColor
         
         configureLayout()
     }

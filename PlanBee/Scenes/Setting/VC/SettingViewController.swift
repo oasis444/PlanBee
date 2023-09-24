@@ -7,76 +7,71 @@
 
 import UIKit
 import SnapKit
+import SwiftUI
 
 final class SettingViewController: UIViewController {
     
+    private let settingView = SettingView()
     private let viewModel = SettingViewModel()
     
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.backgroundColor = .PlanBeeBackgroundColor
-        tableView.register(ProfileCell.self, forCellReuseIdentifier: ProfileCell.getIdentifier)
-        tableView.register(SettingCell.self, forCellReuseIdentifier: SettingCell.getIdentifier)
-        return tableView
-    }()
+    override func loadView() {
+        super.loadView()
+        
+        view = settingView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureSettingView()
-        configLayout()
+        configure()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        tableView.reloadSections(IndexSet([0]), with: .automatic)
+        settingView.tableView.reloadSections(IndexSet([0]), with: .automatic)
     }
 }
 
 private extension SettingViewController {
-    func configureSettingView() {
+    func configure() {
+        navigationItem.title = "설정"
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = viewModel.settingViewNavigationTitle
-    }
-    
-    func configLayout() {
-        view.addSubview(tableView)
         
-        tableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
+        settingView.tableView.delegate = self
+        settingView.tableView.dataSource = self
     }
     
     func showDefaultAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let confirm = UIAlertAction(title: "확인", style: .default)
-        alert.addAction(confirm)
+        let alert = AlertFactory.makeAlert(
+            title: title,
+            message: message,
+            firstActionTitle: "확인")
         present(alert, animated: true)
     }
     
-    func showLogoutAlert(loginState: Bool) {
-        var alert = UIAlertController()
+    func showLogOutAlert(loginState: Bool) {
+        var alert: UIAlertController
         if loginState {
-            alert = UIAlertController(title: "로그아웃", message: "로그아웃 하시겠습니까?", preferredStyle: .alert)
-            let logOut = UIAlertAction(title: "로그아웃", style: .destructive) { [weak self] _ in
-                guard let self = self else { return }
-                if let error = FirebaseManager.shared.logOut() {
-                    print(error)
+            alert = AlertFactory.makeAlert(
+                title: "로그아웃",
+                message: "로그아웃 하시겠습니까?",
+                firstActionTitle: "로그아웃",
+                firstActionStyle: .destructive,
+                firstActionCompletion: { [weak self] in
+                    guard let self = self else { return }
+                    if viewModel.logout() {
+                        settingView.tableView.reloadSections(IndexSet([0]), with: .automatic)
+                        return
+                    }
                     showDefaultAlert(title: "로그아웃 실패", message: "나중에 다시 로그아웃 해주세요")
-                    return
-                }
-                tableView.reloadSections(IndexSet([0]), with: .automatic)
-            }
-            let cancel = UIAlertAction(title: "취소", style: .default)
-            alert.addAction(logOut)
-            alert.addAction(cancel)
+                },
+                secondActionTitle: "취소")
         } else {
-            alert = UIAlertController(title: nil, message: "현재 로그아웃 상태입니다.", preferredStyle: .alert)
-            let confirm = UIAlertAction(title: "확인", style: .default)
-            alert.addAction(confirm)
+            alert = AlertFactory.makeAlert(
+                title: nil,
+                message: "현재 로그아웃 상태입니다.",
+                firstActionTitle: "확인")
         }
         present(alert, animated: true)
     }
@@ -125,10 +120,10 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
         guard let settingCell = tableView.dequeueReusableCell(
             withIdentifier: SettingCell.getIdentifier,
             for: indexPath) as? SettingCell else { return UITableViewCell() }
+        let index = indexPath.row
         
         switch indexPath.section {
         case 0:
-            profileCell.configure()
             return profileCell
         case 1:
             var screedModeTitle: String?
@@ -142,20 +137,20 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
                 return settingCell
             }
             settingCell.configureCell(
-                title: SettingSection.setting.items[indexPath.row],
-                iconImage: SettingIcons.setting.iconImage[indexPath.row],
-                iconColor: SettingIcons.setting.iconColor[indexPath.row],
+                title: SettingSection.setting.items[index],
+                iconImage: SettingIcons.setting.iconImage[index],
+                iconColor: SettingIcons.setting.iconColor[index],
                 screenMode: screedModeTitle)
         case 2:
             settingCell.configureCell(
-                title: SettingSection.infomation.items[indexPath.row],
-                iconImage: SettingIcons.infomation.iconImage[indexPath.row],
-                iconColor: SettingIcons.infomation.iconColor[indexPath.row])
+                title: SettingSection.infomation.items[index],
+                iconImage: SettingIcons.infomation.iconImage[index],
+                iconColor: SettingIcons.infomation.iconColor[index])
         case 3:
             settingCell.configureCell(
-                title: SettingSection.etc.items[indexPath.row],
-                iconImage: SettingIcons.etc.iconImage[indexPath.row],
-                iconColor: SettingIcons.etc.iconColor[indexPath.row])
+                title: SettingSection.etc.items[index],
+                iconImage: SettingIcons.etc.iconImage[index],
+                iconColor: SettingIcons.etc.iconColor[index])
         default:
             return UITableViewCell()
         }
@@ -201,7 +196,7 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
             switch indexPath.row {
             default:
                 let loginState = FirebaseManager.shared.checkLoginState()
-                showLogoutAlert(loginState: loginState)
+                showLogOutAlert(loginState: loginState)
             }
             
         default: return
@@ -215,22 +210,30 @@ private extension SettingViewController {
         let systemMode = UIAlertAction(title: "시스템 기본값", style: .default) { [weak self] _ in
             guard let self = self else { return }
             self.viewModel.saveScreenMode(viewController: self, mode: .unspecified)
-            self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
+            settingView.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
         }
         let lightMode = UIAlertAction(title: "라이트 모드", style: .default) { [weak self] _ in
             guard let self = self else { return }
             self.viewModel.saveScreenMode(viewController: self, mode: .light)
-            self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
+            settingView.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
         }
         let darkMode = UIAlertAction(title: "다크 모드", style: .default) { [weak self] _ in
             guard let self = self else { return }
             self.viewModel.saveScreenMode(viewController: self, mode: .dark)
-            self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
+            settingView.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
         }
         let cancel = UIAlertAction(title: "취소", style: .cancel)
         [systemMode, lightMode, darkMode, cancel].forEach {
             alert.addAction($0)
         }
         present(alert, animated: true)
+    }
+}
+
+struct SettingVCPreView: PreviewProvider {
+    static var previews: some View {
+        let settingVC = SettingViewController()
+        UINavigationController(rootViewController: settingVC)
+            .toPreview().edgesIgnoringSafeArea(.all)
     }
 }
