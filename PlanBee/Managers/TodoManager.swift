@@ -16,13 +16,6 @@ final class TodoManager {
             Task {
                 await FirestoreManager.shared.saveTodo(data: saveTodo)
             }
-            Task {
-                let myTodo: MyTodo? = await ServerManager.shared.createTodo(data: saveTodo)
-                print("myTodo: \(String(describing: myTodo))")
-                if let myTodo = myTodo {
-                    CoreDataManager.shared.updateServerID(uuid: saveTodo.id, id: myTodo.id)
-                }
-            }
             return true
         }
         return false
@@ -46,16 +39,10 @@ final class TodoManager {
         return sortedList
     }
     
-    func updateTodo(todo: Todo, needServerUpdate: Bool = true) async -> Bool {
+    func updateTodo(todo: Todo) async -> Bool {
         if CoreDataManager.shared.updateTodoData(newTodo: todo) {
             Task {
                 await FirestoreManager.shared.updateTodo(data: todo)
-            }
-            if needServerUpdate {
-                Task {
-                    let myTodo: MyTodo? = await ServerManager.shared.updateTodo(data: todo)
-                    print("myTodo: \(String(describing: myTodo))")
-                }
             }
             return true
         }
@@ -66,11 +53,6 @@ final class TodoManager {
         if CoreDataManager.shared.deleteTodoData(todo: todo) {
             Task {
                 await FirestoreManager.shared.deleteTodo(data: todo)
-            }
-            Task {
-                guard let id = todo.serverid else { return }
-                let data: Data? = await ServerManager.shared.deleteTodo(serverID: Int(id))
-                print("data: \(String(describing: data))")
             }
             return true
         }

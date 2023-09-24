@@ -124,6 +124,7 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
         
         switch indexPath.section {
         case 0:
+            profileCell.profileNickNameLabel.text = FirebaseManager.shared.getUserEmail
             return profileCell
         case 1:
             var screedModeTitle: String?

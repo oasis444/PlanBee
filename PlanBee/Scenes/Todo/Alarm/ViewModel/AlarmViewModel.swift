@@ -24,7 +24,7 @@ extension AlarmViewModel {
     
     func removeAlarm(todo: Todo, completion: @escaping (Bool) -> Void) {
         Task {
-            if await todoManager.updateTodo(todo: todo, needServerUpdate: false) {
+            if await todoManager.updateTodo(todo: todo) {
                 removeAlarm(todo: todo)
                 DispatchQueue.main.async {
                     completion(true)
@@ -39,7 +39,7 @@ extension AlarmViewModel {
     
     func setAlarm(todo: Todo, completion: @escaping (Bool) -> Void) {
         Task {
-            if await todoManager.updateTodo(todo: todo, needServerUpdate: false) {
+            if await todoManager.updateTodo(todo: todo) {
                 addAlarm(todo: todo)
                 DispatchQueue.main.async {
                     completion(true)

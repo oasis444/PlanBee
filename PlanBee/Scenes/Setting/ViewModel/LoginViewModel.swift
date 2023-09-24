@@ -10,7 +10,6 @@ import Combine
 
 final class LoginViewModel {
     private let firebaseManager = FirebaseManager.shared
-    private let loginManager = LogInManager.shared
     private let userDefaultManager = UserDefaultsManager.shared
     
     @Published var email: String = ""
@@ -60,19 +59,9 @@ extension LoginViewModel {
                 return
             }
             if checkReturnUser {
-                ReturnPlanBee().saveTodoForReturnUser()
+                ReturnPlanBee().saveTodoForReturnUser
             }
-            serverLogin(email: email, password: password) { tokenInfo in
-                guard let token = tokenInfo?.token else {
-                    completion(false)
-                    return
-                }
-                if self.setKeyChain(token: token) {
-                    completion(true)
-                    return
-                }
-            }
-            completion(false)
+            completion(true)
         }
     }
     
@@ -83,25 +72,8 @@ extension LoginViewModel {
                 errorSubject.send(("회원가입 실패", error))
                 return
             }
-            guard let userName = firebaseManager.getUID() else { return }
-            serverSignup(userName: userName, password: password, email: email) { tokenInfo in
-                guard tokenInfo != nil else {
-                    completion(false)
-                    return
-                }
-                self.serverLogin(email: email, password: password) { tokeInfo in
-                    guard let token = tokeInfo?.token else {
-                        completion(false)
-                        return
-                    }
-                    if self.setKeyChain(token: token) {
-                        self.userDefaultManager.setValue(value: false, key: self.isReturnUser)
-                        completion(true)
-                        return
-                    }
-                    completion(false)
-                }
-            }
+            self.userDefaultManager.setValue(value: false, key: self.isReturnUser)
+            completion(true)
         }
     }
 }
@@ -146,33 +118,5 @@ private extension LoginViewModel {
             }
             completion(nil)
         }
-    }
-    
-    func serverLogin(email: String, password: String, completion: @escaping (TokenInfo?) -> Void) {
-        Task {
-            if let tokenInfo = await loginManager.logIn(email: email, password: password) {
-                completion(tokenInfo)
-                return
-            }
-            completion(nil)
-        }
-    }
-    
-    func serverSignup(userName: String,
-                      password: String,
-                      email: String,
-                      url: String? = nil,
-                      completion: @escaping (TokenInfo?) -> Void) {
-        Task {
-            if let tokenInfo = await loginManager.signUp(name: userName, email: email, password: password, url: url) {
-                completion(tokenInfo)
-                return
-            }
-            completion(nil)
-        }
-    }
-    
-    func setKeyChain(token: String) -> Bool {
-        return KeychainManager.setKeychain(token, forKey: .token)
     }
 }

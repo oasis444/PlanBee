@@ -20,7 +20,7 @@ final class ProfileViewModel {
 
 extension ProfileViewModel {
     var getUserEmail: String {
-        return firebaseManger.getUserEmail()
+        return firebaseManger.getUserEmail
     }
     
     var sendEmail: Void {

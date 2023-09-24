@@ -147,42 +147,11 @@ private extension LoginViewController {
                     self.loginView.indicator.stopAnimating()
                     if result {
                         if self.viewModel.checkReturnUser {
-                            let alert = AlertFactory.makeAlert(
-                                title: "🎉 복귀를 환영합니다 🎉",
-                                message: "최근 6개월간 데이터를 저장했습니다.",
-                                firstActionTitle: "확인",
-                                firstActionCompletion: { [weak self] in
-                                    guard let self = self else { return }
-                                    UserDefaultsManager.shared.setValue(value: false, key: "isReturnUser")
-                                    self.dismiss(animated: true) {
-                                        self.popToRootViewsClosure?()
-                                    }
-                                })
-                            self.present(alert, animated: true)
+                            self.present(self.returnPlanBeeAlert, animated: true)
                             return
                         }
-                        let alert = AlertFactory.makeAlert(
-                            title: "🎉 로그인 완료 🎉",
-                            message: "플랜비에 오신 것을 환영합니다.",
-                            firstActionTitle: "확인",
-                            firstActionCompletion: { [weak self] in
-                                guard let self = self else { return }
-                                self.dismiss(animated: true) {
-                                    self.popToRootViewsClosure?()
-                                }
-                            })
-                        self.present(alert, animated: true)
-                        return
+                        self.present(self.loginAlert, animated: true)
                     }
-                    let alert = AlertFactory.makeAlert(
-                        title: "로그인 실패",
-                        message: "로그인에 실패하였습니다. 잠시 후 다시 시도해 주세요.",
-                        firstActionTitle: "확인",
-                        firstActionCompletion: { [weak self] in
-                            guard let self = self else { return }
-                            self.loginView.signUpBtn.isEnabled = true
-                        })
-                    self.present(alert, animated: true)
                 }
             }
             
@@ -192,28 +161,10 @@ private extension LoginViewController {
                 DispatchQueue.main.async {
                     self.loginView.indicator.stopAnimating()
                     if result {
-                        let alert = AlertFactory.makeAlert(
-                            title: "🎉 회원가입 완료 🎉",
-                            message: "플랜비에 오신 것을 환영합니다.",
-                            firstActionTitle: "확인",
-                            firstActionCompletion: { [weak self] in
-                                guard let self = self else { return }
-                                self.dismiss(animated: true) {
-                                    self.popToRootViewsClosure?()
-                                }
-                            })
-                        self.present(alert, animated: true)
+                        self.present(self.welcomAlert, animated: true)
                         return
                     }
-                    let alert = AlertFactory.makeAlert(
-                        title: "회원가입 실패",
-                        message: "회원 가입에 실패하였습니다. 잠시 후 다시 시도해 주세요.",
-                        firstActionTitle: "확인",
-                        firstActionCompletion: { [weak self] in
-                            guard let self = self else { return }
-                            self.loginView.signUpBtn.isEnabled = true
-                        })
-                    self.present(alert, animated: true)
+                    self.present(self.signUpFailAlert, animated: true)
                 }
             }
         }
@@ -247,6 +198,63 @@ private extension LoginViewController {
     func buttonOFF(button: UIButton) {
         button.isEnabled = false
         button.backgroundColor = .lightGray
+    }
+}
+
+private extension LoginViewController {
+    var welcomAlert: UIAlertController {
+        let alert = AlertFactory.makeAlert(
+            title: "🎉 회원가입 완료 🎉",
+            message: "플랜비에 오신 것을 환영합니다.",
+            firstActionTitle: "확인",
+            firstActionCompletion: { [weak self] in
+                guard let self = self else { return }
+                self.dismiss(animated: true) {
+                    self.popToRootViewsClosure?()
+                }
+            })
+        return alert
+    }
+    
+    var signUpFailAlert: UIAlertController {
+        let alert = AlertFactory.makeAlert(
+            title: "회원가입 실패",
+            message: "회원 가입에 실패하였습니다. 잠시 후 다시 시도해 주세요.",
+            firstActionTitle: "확인",
+            firstActionCompletion: { [weak self] in
+                guard let self = self else { return }
+                self.loginView.signUpBtn.isEnabled = true
+            })
+        return alert
+    }
+    
+    var loginAlert: UIAlertController {
+        let alert = AlertFactory.makeAlert(
+            title: "🎉 로그인 완료 🎉",
+            message: "플랜비에 오신 것을 환영합니다.",
+            firstActionTitle: "확인",
+            firstActionCompletion: { [weak self] in
+                guard let self = self else { return }
+                self.dismiss(animated: true) {
+                    self.popToRootViewsClosure?()
+                }
+            })
+        return alert
+    }
+    
+    var returnPlanBeeAlert: UIAlertController {
+        let alert = AlertFactory.makeAlert(
+            title: "🎉 복귀를 환영합니다 🎉",
+            message: "최근 6개월간 데이터를 저장했습니다.",
+            firstActionTitle: "확인",
+            firstActionCompletion: { [weak self] in
+                guard let self = self else { return }
+                UserDefaultsManager.shared.setValue(value: false, key: "isReturnUser")
+                self.dismiss(animated: true) {
+                    self.popToRootViewsClosure?()
+                }
+            })
+        return alert
     }
 }
 

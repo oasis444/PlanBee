@@ -8,7 +8,7 @@
 import Foundation
 
 final class ReturnPlanBee {
-    func saveTodoForReturnUser() {
+    var saveTodoForReturnUser: Void {
         let calendar = Calendar.current
         let currentDate = Date()
         

@@ -13,7 +13,6 @@ final class ProfileViewController: UIViewController {
     
     private let profileView = ProfileView()
     private let viewModel = ProfileViewModel()
-    private let detailViewModel = ProfileDetailViewModel()
     private var didTapped: Bool = false
     private var cancellable = Set<AnyCancellable>()
     

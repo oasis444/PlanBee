@@ -101,9 +101,8 @@ class FirebaseManager {
         }
     }
     
-    func getUserEmail() -> String {
+    var getUserEmail: String {
         guard let currentUserEmail = auth.currentUser?.email else { return "익명" }
-        print(currentUserEmail)
         return currentUserEmail
     }
     
@@ -116,7 +115,7 @@ extension FirebaseManager {
     // 재인증
     func reAuthenticate(password: String) async -> Bool {
         guard let user = auth.currentUser else { return false }
-        let credential = EmailAuthProvider.credential(withEmail: getUserEmail(), password: password)
+        let credential = EmailAuthProvider.credential(withEmail: getUserEmail, password: password)
         
         do {
             try await user.reauthenticate(with: credential)

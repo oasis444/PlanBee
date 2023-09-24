@@ -31,10 +31,6 @@ final class PlannerViewController: UIViewController {
         super.viewWillAppear(animated)
         
         presentEvents()
-        
-        
-        let result = KeychainManager.getKeychainStringValue(forKey: .token)
-        print("=====> result: \(String(describing: result))")
     }
 }
 

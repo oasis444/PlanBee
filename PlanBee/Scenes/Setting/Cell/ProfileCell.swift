@@ -21,7 +21,7 @@ final class ProfileCell: UITableViewCell {
         return imageView
     }()
     
-    private lazy var profileNickNameLabel: UILabel = {
+    lazy var profileNickNameLabel: UILabel = {
         let label = UILabel()
         label.font = viewModel.profileNickNameFont
         label.textColor = viewModel.profileNickNameColor
@@ -55,7 +55,7 @@ private extension ProfileCell {
         accessoryType = .disclosureIndicator
         backgroundColor = ThemeColor.tableCellColor
         
-        profileNickNameLabel.text = FirebaseManager.shared.getUserEmail()
+        profileNickNameLabel.text = FirebaseManager.shared.getUserEmail
     }
     
     func configureLayout() {

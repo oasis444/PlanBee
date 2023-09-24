@@ -24,15 +24,7 @@ extension SettingViewModel {
         if firebaseManager.logOut() != nil {
             return false
         }
-        if removeKeychain {
-            return true
-        }
-        return false
-    }
-    
-    private var removeKeychain: Bool {
-        let result = KeychainManager.removeKeychain(forKey: .token)
-        return result
+        return true
     }
     
     func subTitle(type: SettingSection.Setting) -> String? {
