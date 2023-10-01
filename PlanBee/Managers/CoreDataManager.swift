@@ -112,12 +112,12 @@ final class CoreDataManager {
         guard let context = context else { return false }
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>.init(entityName: planEntityName)
         fetchRequest.predicate = NSPredicate(format: "uuid = %@", todo.id.uuidString)
-
+        
         do {
             guard let result = try? context.fetch(fetchRequest),
                   let object = result.first as? NSManagedObject else { return false }
             context.delete(object)
-
+            
             try context.save()
             return true
         } catch {

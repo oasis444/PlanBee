@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let tabBar  = TabBarController()
         window = UIWindow(windowScene: windowScene)
-        window?.backgroundColor = .PlanBeeBackgroundColor
+        window?.backgroundColor = ThemeColor.PlanBeeBackgroundColor
         window?.rootViewController = tabBar
         window?.makeKeyAndVisible()
         
