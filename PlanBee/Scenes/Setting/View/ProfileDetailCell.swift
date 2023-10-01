@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class ProfileDetailCell: UITableViewCell {
     
@@ -16,8 +17,9 @@ class ProfileDetailCell: UITableViewCell {
     }
     
     private lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        return label
+        LabelFactory.makeLabel(
+            text: nil,
+            font: ThemeFont.regular(size: 17))
     }()
     
     func configure(title: String) {

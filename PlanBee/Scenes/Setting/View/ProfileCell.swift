@@ -6,25 +6,24 @@
 //
 
 import UIKit
+import SnapKit
 
 final class ProfileCell: UITableViewCell {
     private static let identifier = "ProfileCell"
-    let viewModel = SettingProfileCellViewModel()
-    
     static var getIdentifier: String {
         return identifier
     }
     
     private lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = viewModel.defaultProfileImage
+        imageView.image = UIImage(systemName: "person.fill")
         return imageView
     }()
     
     lazy var profileNickNameLabel: UILabel = {
-        let label = UILabel()
-        label.font = viewModel.profileNickNameFont
-        label.textColor = viewModel.profileNickNameColor
+        let label = LabelFactory.makeLabel(
+            text: nil,
+            font: ThemeFont.demibold(size: 25))
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
@@ -32,7 +31,7 @@ final class ProfileCell: UITableViewCell {
     private lazy var profileStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.spacing = viewModel.profileStackViewSpacing
+        stackView.spacing = 20
         stackView.alignment = .fill
         stackView.distribution = .fillProportionally
         return stackView
@@ -66,11 +65,11 @@ private extension ProfileCell {
         contentView.addSubview(profileStackView)
         
         profileImageView.snp.makeConstraints {
-            $0.width.height.equalTo(viewModel.profileImageWidth)
+            $0.width.height.equalTo(80)
         }
         
         profileStackView.snp.makeConstraints {
-            $0.edges.equalToSuperview().inset(viewModel.profileStackViewInset)
+            $0.edges.equalToSuperview().inset(AppConstraint.defaultSpacing)
         }
     }
 }

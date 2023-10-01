@@ -5,7 +5,7 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
+import Foundation
 
 final class PlannerDetailViewModel {
     private let todoManager = TodoManager.shared

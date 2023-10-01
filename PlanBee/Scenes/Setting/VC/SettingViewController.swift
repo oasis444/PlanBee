@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SnapKit
 import SwiftUI
 
 final class SettingViewController: UIViewController {
@@ -210,17 +209,20 @@ private extension SettingViewController {
         let alert = UIAlertController(title: "화면 모드", message: nil, preferredStyle: .actionSheet)
         let systemMode = UIAlertAction(title: "시스템 기본값", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.viewModel.saveScreenMode(viewController: self, mode: .unspecified)
+            view.window?.overrideUserInterfaceStyle = .unspecified
+            viewModel.saveScreenMode(mode: .unspecified)
             settingView.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
         }
         let lightMode = UIAlertAction(title: "라이트 모드", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.viewModel.saveScreenMode(viewController: self, mode: .light)
+            view.window?.overrideUserInterfaceStyle = .light
+            viewModel.saveScreenMode(mode: .light)
             settingView.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
         }
         let darkMode = UIAlertAction(title: "다크 모드", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            self.viewModel.saveScreenMode(viewController: self, mode: .dark)
+            view.window?.overrideUserInterfaceStyle = .dark
+            viewModel.saveScreenMode(mode: .dark)
             settingView.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
         }
         let cancel = UIAlertAction(title: "취소", style: .cancel)

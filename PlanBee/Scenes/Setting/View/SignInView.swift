@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class SignInView: UIView {
     private lazy var introLabel: UILabel = {
@@ -23,17 +24,15 @@ final class SignInView: UIView {
     }()
     
     lazy var loginBtn: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("로그인하기", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 22, weight: .medium)
-        return button
+        ButtonFactory.makeButton(
+            title: "로그인하기",
+            titleLabelFont: ThemeFont.demibold(size: 22))
     }()
     
     lazy var registerBtn: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("회원가입하기", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 22, weight: .medium)
-        return button
+        ButtonFactory.makeButton(
+            title: "회원가입하기",
+            titleLabelFont: ThemeFont.demibold(size: 22))
     }()
     
     private lazy var stackView: UIStackView = {

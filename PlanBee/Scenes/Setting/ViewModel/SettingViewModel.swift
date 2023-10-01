@@ -5,7 +5,7 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
+import Foundation
 
 enum UserInterfaceStyle: Int {
     case unspecified = 0
@@ -16,7 +16,7 @@ enum UserInterfaceStyle: Int {
 final class SettingViewModel {
     private let firebaseManager = FirebaseManager.shared
     private let userDefaultsManager = UserDefaultsManager.shared
-    private let appearanceKey = "Appearance"
+    let appearanceKey = "Appearance"
 }
 
 extension SettingViewModel {
@@ -46,17 +46,13 @@ extension SettingViewModel {
         }
     }
     
-    func saveScreenMode(viewController: UIViewController, mode: UserInterfaceStyle) {
+    func saveScreenMode(mode: UserInterfaceStyle) {
         switch mode {
         case .unspecified:
-            viewController.view.window?.overrideUserInterfaceStyle = .unspecified
             userDefaultsManager.setValue(value: 0, key: appearanceKey)
         case .light:
-            viewController.view.window?.overrideUserInterfaceStyle = .light
-            
             userDefaultsManager.setValue(value: 1, key: appearanceKey)
         case .dark:
-            viewController.view.window?.overrideUserInterfaceStyle = .dark
             userDefaultsManager.setValue(value: 2, key: appearanceKey)
         }
     }

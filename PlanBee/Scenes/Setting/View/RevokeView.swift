@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class RevokeView: UIView {
     private lazy var warningLabel: UILabel = {

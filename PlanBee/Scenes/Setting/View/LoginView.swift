@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class LoginView: UIView {
     private let buttonType: LoginBtnType

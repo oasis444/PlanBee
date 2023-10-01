@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		33052DE32A5E9B1E00CF024F /* UNUserNotificationCenter+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33052DE22A5E9B1E00CF024F /* UNUserNotificationCenter+.swift */; };
 		33052DE52A5E9B5100CF024F /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33052DE42A5E9B5100CF024F /* Alert.swift */; };
-		3306AED72A667DA200C14CC5 /* SettingCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3306AED62A667DA200C14CC5 /* SettingCellViewModel.swift */; };
 		3306AEDD2A66862200C14CC5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3306AEDC2A66862200C14CC5 /* GoogleService-Info.plist */; };
 		3306AEE02A668B1800C14CC5 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 3306AEDF2A668B1800C14CC5 /* FirebaseAnalytics */; };
 		3306AEE22A668B1800C14CC5 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3306AEE12A668B1800C14CC5 /* FirebaseAnalyticsSwift */; };
@@ -25,11 +24,9 @@
 		3306AEF62A668B1800C14CC5 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 3306AEF52A668B1800C14CC5 /* FirebaseStorage */; };
 		3306AEF82A669B1000C14CC5 /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3306AEF72A669B1000C14CC5 /* FirebaseManager.swift */; };
 		3306AEFA2A669C1D00C14CC5 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3306AEF92A669C1D00C14CC5 /* ProfileCell.swift */; };
-		3306AEFC2A66F41F00C14CC5 /* SettingProfileCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3306AEFB2A66F41F00C14CC5 /* SettingProfileCellViewModel.swift */; };
 		330710352A533BE000A57A4B /* UITextField+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 330710342A533BE000A57A4B /* UITextField+.swift */; };
 		330710372A53425300A57A4B /* TodoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 330710362A53425300A57A4B /* TodoManager.swift */; };
 		3307B2582A6ADA65001FD5A4 /* FirebaseErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3307B2572A6ADA65001FD5A4 /* FirebaseErrors.swift */; };
-		330BA9BC2AA2729600335DF9 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 330BA9BB2AA2729600335DF9 /* Alamofire */; };
 		330BA9C02AA2736100335DF9 /* MyTodo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 330BA9BF2AA2736100335DF9 /* MyTodo.swift */; };
 		331D39F42A51508900683211 /* TodoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331D39F32A51508900683211 /* TodoViewController.swift */; };
 		331F0FA22A81C04A00491359 /* ProfileDetailItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331F0FA12A81C04A00491359 /* ProfileDetailItems.swift */; };
@@ -102,11 +99,9 @@
 /* Begin PBXFileReference section */
 		33052DE22A5E9B1E00CF024F /* UNUserNotificationCenter+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNUserNotificationCenter+.swift"; sourceTree = "<group>"; };
 		33052DE42A5E9B5100CF024F /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
-		3306AED62A667DA200C14CC5 /* SettingCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCellViewModel.swift; sourceTree = "<group>"; };
 		3306AEDC2A66862200C14CC5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../Firebase/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		3306AEF72A669B1000C14CC5 /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		3306AEF92A669C1D00C14CC5 /* ProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
-		3306AEFB2A66F41F00C14CC5 /* SettingProfileCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingProfileCellViewModel.swift; sourceTree = "<group>"; };
 		330710342A533BE000A57A4B /* UITextField+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+.swift"; sourceTree = "<group>"; };
 		330710362A53425300A57A4B /* TodoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoManager.swift; sourceTree = "<group>"; };
 		3307B2572A6ADA65001FD5A4 /* FirebaseErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseErrors.swift; sourceTree = "<group>"; };
@@ -197,7 +192,6 @@
 				33DE12912A515B1800B3D3A7 /* FSCalendar in Frameworks */,
 				3306AEEE2A668B1800C14CC5 /* FirebaseFirestoreSwift in Frameworks */,
 				3306AEF62A668B1800C14CC5 /* FirebaseStorage in Frameworks */,
-				330BA9BC2AA2729600335DF9 /* Alamofire in Frameworks */,
 				3306AEE02A668B1800C14CC5 /* FirebaseAnalytics in Frameworks */,
 				3306AEEA2A668B1800C14CC5 /* FirebaseDynamicLinks in Frameworks */,
 				E186649517B587F88567D993 /* Pods_PlanBee.framework in Frameworks */,
@@ -222,7 +216,6 @@
 			isa = PBXGroup;
 			children = (
 				33A3EB842AC0C115004A637F /* View */,
-				33A3EB852AC0C138004A637F /* Cell */,
 				33BC7AA72A605F1C009C9650 /* ViewModel */,
 				33A3EB832AC0C10A004A637F /* VC */,
 			);
@@ -243,7 +236,6 @@
 			isa = PBXGroup;
 			children = (
 				33A3EB7F2AC0BFC9004A637F /* View */,
-				33693A872A67A9D0001A408D /* Cell */,
 				33BC7AAB2A605F61009C9650 /* ViewModel */,
 				33693A882A67A9E3001A408D /* VC */,
 			);
@@ -345,16 +337,6 @@
 			path = Scenes;
 			sourceTree = "<group>";
 		};
-		33693A872A67A9D0001A408D /* Cell */ = {
-			isa = PBXGroup;
-			children = (
-				3306AEF92A669C1D00C14CC5 /* ProfileCell.swift */,
-				3359E3622A811F8A009AD85D /* ProfileDetailCell.swift */,
-				335C669C2A64555700B48720 /* SettingCell.swift */,
-			);
-			path = Cell;
-			sourceTree = "<group>";
-		};
 		33693A882A67A9E3001A408D /* VC */ = {
 			isa = PBXGroup;
 			children = (
@@ -371,7 +353,6 @@
 		337FD7692A540FFD0088ABCE /* VC */ = {
 			isa = PBXGroup;
 			children = (
-				337FD7672A540F980088ABCE /* PlannerDetailTableViewCell.swift */,
 				334939B52A5292F5007EE8FA /* PlannerDetailViewController.swift */,
 				335507742A4D6E49005FBE21 /* PlannerViewController.swift */,
 			);
@@ -387,6 +368,9 @@
 				33DDEA842ABC779700E1C4DE /* SettingView.swift */,
 				33A3EB792AC0A5E6004A637F /* SignInView.swift */,
 				33A3EB7B2AC0AD67004A637F /* VersionView.swift */,
+				3306AEF92A669C1D00C14CC5 /* ProfileCell.swift */,
+				3359E3622A811F8A009AD85D /* ProfileDetailCell.swift */,
+				335C669C2A64555700B48720 /* SettingCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -396,6 +380,7 @@
 			children = (
 				33DDEA7B2ABBB39800E1C4DE /* PlannerView.swift */,
 				33DDEA7D2ABBCA3D00E1C4DE /* PlannerDetailView.swift */,
+				337FD7672A540F980088ABCE /* PlannerDetailTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -428,16 +413,9 @@
 			isa = PBXGroup;
 			children = (
 				33E06E642AB3FAAC003D9B19 /* TodoView.swift */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		33A3EB852AC0C138004A637F /* Cell */ = {
-			isa = PBXGroup;
-			children = (
 				33EAC0DA2A566C67001FE244 /* TodoTableViewCell.swift */,
 			);
-			path = Cell;
+			path = View;
 			sourceTree = "<group>";
 		};
 		33A7C6D82A5A973900D2ECF6 /* Managers */ = {
@@ -485,8 +463,6 @@
 				3359E3602A8115A7009AD85D /* ProfileViewModel.swift */,
 				339D6B742A85CF3A00B23328 /* RevokeViewModel.swift */,
 				333CDA8F2A5CF49F0051C591 /* SettingViewModel.swift */,
-				3306AED62A667DA200C14CC5 /* SettingCellViewModel.swift */,
-				3306AEFB2A66F41F00C14CC5 /* SettingProfileCellViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -553,7 +529,6 @@
 				3306AEF12A668B1800C14CC5 /* FirebaseRemoteConfig */,
 				3306AEF32A668B1800C14CC5 /* FirebaseRemoteConfigSwift */,
 				3306AEF52A668B1800C14CC5 /* FirebaseStorage */,
-				330BA9BB2AA2729600335DF9 /* Alamofire */,
 			);
 			productName = PlanBee;
 			productReference = 335507572A4D6D9C005FBE21 /* PlanBee.app */;
@@ -588,7 +563,6 @@
 				335507712A4D6E1F005FBE21 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				33DE128F2A515B1800B3D3A7 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 				3306AEDE2A668B1800C14CC5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				330BA9BA2AA2729600335DF9 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			productRefGroup = 335507582A4D6D9C005FBE21 /* Products */;
 			projectDirPath = "";
@@ -674,13 +648,11 @@
 				3324F67D2A5C590A002F70C6 /* PlannerDetailViewModel.swift in Sources */,
 				33E9EEF82A7920AC00E4F032 /* ProfileViewController.swift in Sources */,
 				33DDEA6C2ABB7E6200E1C4DE /* ThemeColor.swift in Sources */,
-				3306AEFC2A66F41F00C14CC5 /* SettingProfileCellViewModel.swift in Sources */,
 				339AE2212ABA973E005E1666 /* TokenInfo.swift in Sources */,
 				335C669F2A64709E00B48720 /* SettingItems.swift in Sources */,
 				333BE9F52A61B22D006184C0 /* UserNotificationManager.swift in Sources */,
 				335C669D2A64555700B48720 /* SettingCell.swift in Sources */,
 				334939B62A5292F5007EE8FA /* PlannerDetailViewController.swift in Sources */,
-				3306AED72A667DA200C14CC5 /* SettingCellViewModel.swift in Sources */,
 				33052DE32A5E9B1E00CF024F /* UNUserNotificationCenter+.swift in Sources */,
 				3351C59E2A658A8C00E915CC /* ImageIcons.swift in Sources */,
 				33DDEA7A2ABB980C00E1C4DE /* UIViewController+.swift in Sources */,
@@ -963,14 +935,6 @@
 				minimumVersion = 10.0.0;
 			};
 		};
-		330BA9BA2AA2729600335DF9 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Alamofire/Alamofire";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.0;
-			};
-		};
 		335507712A4D6E1F005FBE21 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit";
@@ -1049,11 +1013,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3306AEDE2A668B1800C14CC5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
-		};
-		330BA9BB2AA2729600335DF9 /* Alamofire */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 330BA9BA2AA2729600335DF9 /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = Alamofire;
 		};
 		335507722A4D6E1F005FBE21 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;

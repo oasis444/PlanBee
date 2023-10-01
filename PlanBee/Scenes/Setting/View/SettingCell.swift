@@ -6,12 +6,10 @@
 //
 
 import UIKit
+import SnapKit
 
 final class SettingCell: UITableViewCell {
-    
     private static let identifier = "SettingCell"
-    private let viewModel = SettingCellViewModel()
-    
     static var getIdentifier: String {
         return identifier
     }
@@ -22,24 +20,23 @@ final class SettingCell: UITableViewCell {
     }()
     
     private lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = viewModel.titleLabelFont
-        label.textColor = viewModel.titleLabelColor
-        return label
+        LabelFactory.makeLabel(
+            text: nil,
+            font: ThemeFont.demibold(size: 17))
     }()
     
     private lazy var stateTitleLabel: UILabel = {
-        let label = UILabel()
-        label.font = viewModel.stateTitleFont
-        label.textColor = viewModel.stateTitleColor
-        label.textAlignment = .right
-        return label
+        LabelFactory.makeLabel(
+            text: nil,
+            font: ThemeFont.demibold(size: 17),
+            textColor: .lightGray,
+            textAlignment: .right)
     }()
     
     private lazy var settingStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.spacing = viewModel.settingStackViewSpacing
+        stackView.spacing = 20
         stackView.alignment = .fill
         stackView.distribution = .fillProportionally
         return stackView
@@ -55,12 +52,12 @@ final class SettingCell: UITableViewCell {
         titleLabel.text = title
         stateTitleLabel.text = screenMode
         
-        configureLayout()
+        setLayout()
     }
 }
 
 private extension SettingCell {
-    func configureLayout() {
+    func setLayout() {
         [iconImageView, titleLabel, stateTitleLabel].forEach {
             settingStackView.addArrangedSubview($0)
         }
@@ -68,11 +65,11 @@ private extension SettingCell {
         contentView.addSubview(settingStackView)
         
         iconImageView.snp.makeConstraints {
-            $0.width.height.equalTo(viewModel.iconImageWidth)
+            $0.width.height.equalTo(30)
         }
         
         settingStackView.snp.makeConstraints {
-            $0.edges.equalToSuperview().inset(viewModel.settingStackViewInset)
+            $0.edges.equalToSuperview().inset(AppConstraint.defaultSpacing)
         }
     }
 }
