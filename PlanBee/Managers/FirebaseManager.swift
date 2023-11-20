@@ -14,63 +14,17 @@ class FirebaseManager {
     
     private let auth = Auth.auth()
     
-    func createUsers(email: String, password: String, completion: @escaping (FirebaseErrors?) -> Void) {
+    typealias AuthCompletion = (FirebaseErrors?) -> Void
+    
+    func createUsers(email: String, password: String, completion: @escaping AuthCompletion) {
         auth.createUser(withEmail: email, password: password) { authResult, error in
-            if let error = error {
-                let sampleError = (error as NSError)
-                let code = sampleError.code
-                print("code: \(code)")
-                switch code {
-                case 17005:
-                    completion(.FIRAuthErrorCodeUserDisabled)
-                case 17007:
-                    completion(.FIRAuthErrorCodeEmailAlreadyInUse)
-                case 17008:
-                    completion(.FIRAuthErrorCodeInvalidEmail)
-                case 17009:
-                    completion(.FIRAuthErrorCodeWrongPassword)
-                case 17011:
-                    completion(.FIRAuthErrorCodeOperationNotAllowed)
-                case 17026:
-                    completion(.FIRAuthErrorCodeLeastPasswordLength)
-                default:
-                    print("error: \(error.localizedDescription)")
-                    completion(.unknown)
-                    return
-                }
-            }
-            guard authResult != nil else { return }
-            completion(nil)
+            self.handleAuthResult(authResult, error: error, completion: completion)
         }
     }
     
-    func emailLogIn(email: String, password: String, completion: @escaping (FirebaseErrors?) -> Void) {
+    func emailLogIn(email: String, password: String, completion: @escaping AuthCompletion) {
         auth.signIn(withEmail: email, password: password) { authResult, error in
-            if let error = error {
-                let sampleError = (error as NSError)
-                let code = sampleError.code
-                print("에러코드: \(code)")
-                switch code {
-                case 17005:
-                    completion(.FIRAuthErrorCodeUserDisabled)
-                case 17007:
-                    completion(.FIRAuthErrorCodeEmailAlreadyInUse)
-                case 17008:
-                    completion(.FIRAuthErrorCodeInvalidEmail)
-                case 17009:
-                    completion(.FIRAuthErrorCodeWrongPassword)
-                case 17011:
-                    completion(.FIRAuthErrorCodeOperationNotAllowed)
-                case 17026:
-                    completion(.FIRAuthErrorCodeLeastPasswordLength)
-                default:
-                    print("error: \(error.localizedDescription)")
-                    completion(.unknown)
-                    return
-                }
-            }
-            guard authResult != nil else { return }
-            completion(nil)
+            self.handleAuthResult(authResult, error: error, completion: completion)
         }
     }
     
@@ -134,6 +88,35 @@ extension FirebaseManager {
         } catch {
             print("error: \(error.localizedDescription)")
             return false
+        }
+    }
+}
+
+private extension FirebaseManager {
+    func handleAuthResult(_ authResult: AuthDataResult?, error: Error?, completion: AuthCompletion) {
+        if let error = error {
+            if let errorCode = (error as NSError?)?.code {
+                switch errorCode {
+                case 17005:
+                    completion(.FIRAuthErrorCodeUserDisabled)
+                case 17007:
+                    completion(.FIRAuthErrorCodeEmailAlreadyInUse)
+                case 17008:
+                    completion(.FIRAuthErrorCodeInvalidEmail)
+                case 17009:
+                    completion(.FIRAuthErrorCodeWrongPassword)
+                case 17011:
+                    completion(.FIRAuthErrorCodeOperationNotAllowed)
+                case 17026:
+                    completion(.FIRAuthErrorCodeLeastPasswordLength)
+                default:
+                    print("error: \(error.localizedDescription)")
+                    completion(.unknown)
+                    return
+                }
+            }
+        } else {
+            completion(nil)
         }
     }
 }
