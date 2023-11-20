@@ -5,8 +5,8 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
 import SnapKit
+import UIKit
 
 final class ProfileCell: UITableViewCell {
     private static let identifier = "ProfileCell"

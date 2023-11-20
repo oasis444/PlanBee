@@ -5,11 +5,10 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
 import SwiftUI
+import UIKit
 
 final class SignInViewController: UIViewController {
-    
     private let signInView = SignInView()
     
     override func loadView() {
@@ -25,13 +24,15 @@ final class SignInViewController: UIViewController {
         setButtonTarget()
     }
     
+    deinit {
+        print("deinit - ProfileVC")
+    }
+}
+
+extension SignInViewController {
     func configure() {
         navigationItem.largeTitleDisplayMode = .never
         view.backgroundColor = ThemeColor.PlanBeeBackgroundColor
-    }
-    
-    deinit {
-        print("deinit - ProfileVC")
     }
 }
 

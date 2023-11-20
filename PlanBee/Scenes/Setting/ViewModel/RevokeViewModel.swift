@@ -24,6 +24,7 @@ final class RevokeViewModel {
         }
     }
     
+    /// 재인증
     func reAuthenticate(password: String, completion: @escaping (Bool) -> Void) {
         Task {
             if await firebaseManager.reAuthenticate(password: password) {

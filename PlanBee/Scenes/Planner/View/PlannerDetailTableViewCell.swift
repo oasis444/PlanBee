@@ -23,7 +23,9 @@ final class PlannerDetailTableViewCell: UITableViewCell {
         label.numberOfLines = 0
         return label
     }()
-    
+}
+
+extension PlannerDetailTableViewCell {
     func configure(todo: Todo?) {
         self.todo = todo
         setLayout()

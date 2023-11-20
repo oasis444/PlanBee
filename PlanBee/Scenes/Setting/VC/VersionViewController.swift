@@ -5,11 +5,10 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
 import SwiftUI
+import UIKit
 
 class VersionViewController: UIViewController {
-    
     private let versionView = VersionView()
     
     override func loadView() {

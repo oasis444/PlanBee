@@ -5,8 +5,8 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import Foundation
 import FirebaseAuth
+import Foundation
 
 class FirebaseManager {
     static let shared = FirebaseManager()
@@ -15,7 +15,9 @@ class FirebaseManager {
     private let auth = Auth.auth()
     
     typealias AuthCompletion = (FirebaseErrors?) -> Void
-    
+}
+
+extension FirebaseManager {
     func createUsers(email: String, password: String, completion: @escaping AuthCompletion) {
         auth.createUser(withEmail: email, password: password) { authResult, error in
             self.handleAuthResult(authResult, error: error, completion: completion)

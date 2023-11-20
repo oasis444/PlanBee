@@ -10,7 +10,9 @@ import Foundation
 final class UserDefaultsManager {
     static let shared = UserDefaultsManager()
     private init() { }
-    
+}
+
+extension UserDefaultsManager {
     func setValue<T>(value: T, key: String) {
         UserDefaults.standard.set(value, forKey: key)
     }

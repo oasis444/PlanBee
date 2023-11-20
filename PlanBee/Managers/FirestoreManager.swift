@@ -5,9 +5,9 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import Foundation
 import FirebaseCore
 import FirebaseFirestore
+import Foundation
 
 final class FirestoreManager {
     static let shared = FirestoreManager()
@@ -15,7 +15,9 @@ final class FirestoreManager {
     
     private let userDB = Firestore.firestore().collection("Todo")
     private let revokeUserDB = Firestore.firestore().collection("RevokeUser")
-    
+}
+
+extension FirestoreManager {
     func saveTodo(data: Todo) async {
         guard let uid = FirebaseManager.shared.getUID() else { return }
         

@@ -5,12 +5,11 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
 import Combine
 import SwiftUI
+import UIKit
 
 final class ProfileViewController: UIViewController {
-    
     private let profileView = ProfileView()
     private let viewModel = ProfileViewModel()
     private var didTapped: Bool = false

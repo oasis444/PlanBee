@@ -43,8 +43,10 @@ extension PlannerDetailViewModel {
         }
         return false
     }
-    
-    private func saveTodo(todo: Todo) -> Bool {
+}
+
+private extension PlannerDetailViewModel {
+    func saveTodo(todo: Todo) -> Bool {
         return todoManager.saveTodo(saveTodo: todo)
     }
 }

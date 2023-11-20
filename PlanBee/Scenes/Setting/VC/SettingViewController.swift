@@ -5,11 +5,10 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
 import SwiftUI
+import UIKit
 
 final class SettingViewController: UIViewController {
-    
     private let settingView = SettingView()
     private let viewModel = SettingViewModel()
     

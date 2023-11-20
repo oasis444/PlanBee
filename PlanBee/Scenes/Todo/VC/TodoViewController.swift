@@ -5,11 +5,10 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
 import SwiftUI
+import UIKit
 
 final class TodoViewController: UIViewController {
-    
     private let todoView = TodoView()
     private let viewModel = TodoViewModel()
     

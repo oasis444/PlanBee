@@ -5,8 +5,8 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
 import SnapKit
+import UIKit
 
 final class LoginView: UIView {
     private let buttonType: LoginBtnType
@@ -120,7 +120,7 @@ final class LoginView: UIView {
         return button
     }()
     
-    lazy var personalInfoLabel: UIButton = {
+    lazy var privacyInfoButton: UIButton = {
         let button = ButtonFactory.makeButton(
             title: "개인정보 수집 이용 및 동의서",
             titleLabelFont: ThemeFont.bold(size: 22),
@@ -146,7 +146,7 @@ final class LoginView: UIView {
         stackView.distribution = .fillProportionally
         stackView.spacing = 20
         
-        [personalInfoCheckBox, personalInfoLabel].forEach {
+        [personalInfoCheckBox, privacyInfoButton].forEach {
             stackView.addArrangedSubview($0)
         }
         return stackView
