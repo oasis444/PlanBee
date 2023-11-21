@@ -120,9 +120,9 @@ final class LoginView: UIView {
         return button
     }()
     
-    lazy var privacyInfoButton: UIButton = {
+    lazy var consentButton: UIButton = {
         let button = ButtonFactory.makeButton(
-            title: "개인정보 수집 이용 및 동의서",
+            title: "개인정보 동의서",
             titleLabelFont: ThemeFont.bold(size: 22),
             titleColor: .systemPink)
         button.contentHorizontalAlignment = .left
@@ -146,7 +146,7 @@ final class LoginView: UIView {
         stackView.distribution = .fillProportionally
         stackView.spacing = 20
         
-        [personalInfoCheckBox, privacyInfoButton].forEach {
+        [personalInfoCheckBox, consentButton].forEach {
             stackView.addArrangedSubview($0)
         }
         return stackView

@@ -77,9 +77,9 @@ private extension LoginViewController {
             action: #selector(didTappedSignUpBtn),
             for: .touchUpInside)
         
-        loginView.privacyInfoButton.addTarget(
+        loginView.consentButton.addTarget(
             self,
-            action: #selector(didTappedPrivacyInfoBtn),
+            action: #selector(didTappedConsentBtn),
             for: .touchUpInside)
     }
     
@@ -207,8 +207,8 @@ private extension LoginViewController {
         button.backgroundColor = .lightGray
     }
     
-    @objc func didTappedPrivacyInfoBtn() {
-        if let url = URL(string: PRIVACY) {
+    @objc func didTappedConsentBtn() {
+        if let url = URL(string: CONSENT) {
             let privacyVC = SFSafariViewController(url: url)
             present(privacyVC, animated: true)
         }

@@ -5,6 +5,7 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
+import SafariServices
 import SwiftUI
 import UIKit
 
@@ -185,9 +186,17 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
                 let versionVC = VersionViewController()
                 navigationController?.pushViewController(versionVC, animated: true)
             case 1:
+                if let url = URL(string: PRIVACY) {
+                    let privacyVC = SFSafariViewController(url: url)
+                    present(privacyVC, animated: true)
+                }
+            case 2:
                 if let url = URL(string: UIApplication.openSettingsURLString) {
                     UIApplication.shared.open(url)
                 }
+            case 3:
+                let askVC = AskViewController()
+                navigationController?.pushViewController(askVC, animated: true)
             default: return
             }
             

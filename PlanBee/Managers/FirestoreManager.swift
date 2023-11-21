@@ -14,6 +14,7 @@ final class FirestoreManager {
     private init() { }
     
     private let userDB = Firestore.firestore().collection("Todo")
+    private let askDB = Firestore.firestore().collection("Ask")
     private let revokeUserDB = Firestore.firestore().collection("RevokeUser")
 }
 
@@ -85,6 +86,22 @@ extension FirestoreManager {
             }
         }
         print("Max retry count reached, document could not be updated.")
+    }
+}
+
+extension FirestoreManager {
+    func saveAsk(title: String, descriptions: String) async -> Error? {
+        let docRef = askDB.document(Date().debugDescription)
+        do {
+            try await docRef.setData([
+                "currentUser": FirebaseManager.shared.getUID() ?? "익명",
+                "title": title,
+                "descriptions": descriptions
+            ])
+            return nil
+        } catch {
+            return error
+        }
     }
 }
 

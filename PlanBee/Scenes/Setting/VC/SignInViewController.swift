@@ -25,7 +25,7 @@ final class SignInViewController: UIViewController {
     }
     
     deinit {
-        print("deinit - ProfileVC")
+        print("deinit - SignInVC")
     }
 }
 

@@ -20,6 +20,10 @@ class VersionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+    
+    deinit {
+        print("deinit - VersionVC")
+    }
 }
 
 struct VersionVCPreView: PreviewProvider {
