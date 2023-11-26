@@ -13,6 +13,13 @@
 
 <br>
 
+## 📺 UI 미리보기
+<img src="https://github.com/z-wook/PlanBee/assets/101041221/3a53fb8d-2da4-42d6-acea-bbaf3fe86b14" width="300" /></a>
+<img src="https://github.com/z-wook/PlanBee/assets/101041221/782260b3-9190-4899-8994-d9961f61b0e5" width="300" /></a>
+<img src="https://github.com/z-wook/PlanBee/assets/101041221/a8afb59e-09ba-4527-bf60-1cba1296f8f3" width="300" /></a>
+
+<br>
+
 ## 📚 구현 기능
     
 0. **공통**
@@ -45,7 +52,6 @@
     - [x] 비밀번호 재설정 
     - [x] 회원가입, 로그인, 로그아웃, 서비스 탈퇴
     
-    <br>
 <br>
 
 ## ⚙️ <b>Tech Stack</b>
@@ -59,7 +65,7 @@
 <br>
 <div align="left">
 
-## 🏹 사용한 라이브러리
+## 🏛️ 사용한 라이브러리
 
 1. [Alamofire](https://github.com/Alamofire/Alamofire)
 2. [Firebase](https://github.com/firebase/firebase-ios-sdk)
@@ -67,7 +73,6 @@
 4. [LicensePlist](https://github.com/mono0926/LicensePlist)
 5. [SnapKit](https://github.com/SnapKit/SnapKit)
 6. [SwiftLint](https://github.com/realm/SwiftLint)
-
 <br>
 
 ## ⚡️ 라이브러리 사용 이유
@@ -88,19 +93,15 @@
    
 6. ***SwiftLint*** <br>
     `코드 컨벤션 체크`를 위해 사용
-
- 
 <br>
 
 ## 🔫 트러블 슈팅
 
-- [비동기 처리 1](https://velog.io/@oasis444/트러블슈팅)
+- [비관적 업데이트의 문제점](https://velog.io/@oasis444/트러블슈팅)
 
-- [비동기 처리 2](https://velog.io/@oasis444/트러블-슈팅비동기-처리-2)
+- [잘못 사용한 비동기 작업 해결](https://velog.io/@oasis444/트러블-슈팅비동기-처리-2)
 
-- [낙관적 업데이트](https://velog.io/@oasis444/낙관적-업데이트)
+- [낙관적 업데이트 적용](https://velog.io/@oasis444/낙관적-업데이트)
 
 - [CoreData 대량 데이터 처리](https://velog.io/@oasis444/CoreData-대량-데이터-처리)
-
-<br>
 
