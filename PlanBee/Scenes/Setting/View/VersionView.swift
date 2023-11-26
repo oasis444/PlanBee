@@ -5,11 +5,11 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
 import SnapKit
+import UIKit
 
 final class VersionView: UIView {
-    lazy var versionLabel: UILabel = {
+    private lazy var versionLabel: UILabel = {
         let label = LabelFactory.makeLabel(
             text: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0",
             font: ThemeFont.bold(size: 20))
@@ -19,6 +19,7 @@ final class VersionView: UIView {
     
     init() {
         super.init(frame: .zero)
+        backgroundColor = ThemeColor.PlanBeeBackgroundColor
         setLayout()
     }
     

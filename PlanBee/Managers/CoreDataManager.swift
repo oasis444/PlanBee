@@ -5,8 +5,8 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
 import CoreData
+import UIKit
 
 final class CoreDataManager {
     static let shared = CoreDataManager()
@@ -174,6 +174,7 @@ extension CoreDataManager {
         }
     }
     
+    /// CoreData에 저장된 정보 모두 삭제
     func removeAllPlanData() {
         guard let context = context else { return }
         let entityNames: [String] = [planEntityName]

@@ -5,11 +5,12 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
 import SnapKit
+import UIKit
 
 final class SettingCell: UITableViewCell {
     private static let identifier = "SettingCell"
+    
     static var getIdentifier: String {
         return identifier
     }
@@ -41,7 +42,9 @@ final class SettingCell: UITableViewCell {
         stackView.distribution = .fillProportionally
         return stackView
     }()
-    
+}
+
+extension SettingCell {
     func configureCell(title: String?, iconImage: UIImage?, iconColor: UIColor?, screenMode: String? = nil) {
         selectionStyle = .none
         accessoryType = .disclosureIndicator

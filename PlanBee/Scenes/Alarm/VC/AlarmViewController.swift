@@ -5,11 +5,10 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
 import SwiftUI
+import UIKit
 
 final class AlarmViewController: UIViewController {
-    
     private let alarmView = AlarmView()
     private let viewModel = AlarmViewModel()
     private var todo: Todo?
@@ -30,8 +29,10 @@ final class AlarmViewController: UIViewController {
     
     deinit {
         print("deinit - AlarmVC")
-    }
-    
+    }    
+}
+
+extension AlarmViewController {
     func configure(todo: Todo) {
         self.todo = todo
     }

@@ -13,7 +13,9 @@ final class UserNotificationManager {
     private init() { }
     
     private let userNotificationCenter = UNUserNotificationCenter.current()
-    
+}
+
+extension UserNotificationManager {
     func addAlarm(todo: Todo) {
         guard let alarmDate = todo.alarm else { return }
         let alert = Alert(id: todo.id, date: alarmDate)

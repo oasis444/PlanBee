@@ -5,11 +5,10 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
 import SwiftUI
+import UIKit
 
-class RevokeViewController: UIViewController {
-    
+final class RevokeViewController: UIViewController {
     private let revokeView = RevokeView()
     private let viewModel = RevokeViewModel()
     

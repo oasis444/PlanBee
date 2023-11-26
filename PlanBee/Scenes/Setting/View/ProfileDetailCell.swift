@@ -5,11 +5,10 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
 import SnapKit
+import UIKit
 
 class ProfileDetailCell: UITableViewCell {
-    
     private static let identifier = "ProfileDetailCell"
     
     static var getIdentifier: String {
@@ -21,7 +20,9 @@ class ProfileDetailCell: UITableViewCell {
             text: nil,
             font: ThemeFont.regular(size: 17))
     }()
-    
+}
+
+extension ProfileDetailCell {
     func configure(title: String) {
         selectionStyle = .none
         backgroundColor = ThemeColor.tableCellColor

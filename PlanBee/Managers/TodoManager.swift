@@ -10,7 +10,9 @@ import Foundation
 final class TodoManager {
     static let shared = TodoManager()
     private init() { }
-    
+}
+
+extension TodoManager {
     func saveTodo(saveTodo: Todo) -> Bool {
         if CoreDataManager.shared.saveTodoData(todo: saveTodo) {
             Task {

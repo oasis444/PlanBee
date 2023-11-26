@@ -40,10 +40,10 @@ extension SettingSection {
     enum Infomation: String, CaseIterable {
         case version = "버전 정보"
 //        case terms = "이용약관"
-//        case privacyTerms = "개인정보 처리 방침"
+        case privacyTerms = "개인정보 처리 방침"
         case openSource = "오픈소스 라이선스"
 //        case notice = "공지사항"
-//        case enquire = "문의하기"
+        case enquire = "문의하기"
         
         var title: String { rawValue }
     }

@@ -60,6 +60,9 @@
 		33693A832A67A883001A408D /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33693A822A67A883001A408D /* SignInViewController.swift */; };
 		33693A8A2A684D79001A408D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33693A892A684D79001A408D /* LoginViewController.swift */; };
 		337FD7682A540F980088ABCE /* PlannerDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 337FD7672A540F980088ABCE /* PlannerDetailTableViewCell.swift */; };
+		338B1B2B2B0C1C6800C964E9 /* AskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338B1B2A2B0C1C6800C964E9 /* AskView.swift */; };
+		338B1B2D2B0C1C8700C964E9 /* AskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338B1B2C2B0C1C8700C964E9 /* AskViewController.swift */; };
+		338B1B2F2B0C9BA600C964E9 /* AskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 338B1B2E2B0C9BA600C964E9 /* AskViewModel.swift */; };
 		339AE21F2ABA8A6C005E1666 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339AE21E2ABA8A6C005E1666 /* UserInfo.swift */; };
 		339AE2212ABA973E005E1666 /* TokenInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339AE2202ABA973E005E1666 /* TokenInfo.swift */; };
 		339D6B752A85CF3A00B23328 /* RevokeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339D6B742A85CF3A00B23328 /* RevokeViewModel.swift */; };
@@ -140,6 +143,9 @@
 		33693A822A67A883001A408D /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		33693A892A684D79001A408D /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		337FD7672A540F980088ABCE /* PlannerDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlannerDetailTableViewCell.swift; sourceTree = "<group>"; };
+		338B1B2A2B0C1C6800C964E9 /* AskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskView.swift; sourceTree = "<group>"; };
+		338B1B2C2B0C1C8700C964E9 /* AskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskViewController.swift; sourceTree = "<group>"; };
+		338B1B2E2B0C9BA600C964E9 /* AskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskViewModel.swift; sourceTree = "<group>"; };
 		339AE21E2ABA8A6C005E1666 /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		339AE2202ABA973E005E1666 /* TokenInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenInfo.swift; sourceTree = "<group>"; };
 		339D6B742A85CF3A00B23328 /* RevokeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevokeViewModel.swift; sourceTree = "<group>"; };
@@ -340,6 +346,7 @@
 		33693A882A67A9E3001A408D /* VC */ = {
 			isa = PBXGroup;
 			children = (
+				338B1B2C2B0C1C8700C964E9 /* AskViewController.swift */,
 				33693A892A684D79001A408D /* LoginViewController.swift */,
 				33E9EEF72A7920AC00E4F032 /* ProfileViewController.swift */,
 				3364A2132A8250D900EF1416 /* RevokeViewController.swift */,
@@ -362,6 +369,7 @@
 		33A3EB7F2AC0BFC9004A637F /* View */ = {
 			isa = PBXGroup;
 			children = (
+				338B1B2A2B0C1C6800C964E9 /* AskView.swift */,
 				33C762312ABCC70400E7A35E /* LoginView.swift */,
 				33A3EB752AC00516004A637F /* ProfileView.swift */,
 				33A3EB772AC093F3004A637F /* RevokeView.swift */,
@@ -459,6 +467,7 @@
 		33BC7AAB2A605F61009C9650 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				338B1B2E2B0C9BA600C964E9 /* AskViewModel.swift */,
 				33CE26812A6D8D6800E321F1 /* LoginViewModel.swift */,
 				3359E3602A8115A7009AD85D /* ProfileViewModel.swift */,
 				339D6B742A85CF3A00B23328 /* RevokeViewModel.swift */,
@@ -650,6 +659,7 @@
 				33DDEA6C2ABB7E6200E1C4DE /* ThemeColor.swift in Sources */,
 				339AE2212ABA973E005E1666 /* TokenInfo.swift in Sources */,
 				335C669F2A64709E00B48720 /* SettingItems.swift in Sources */,
+				338B1B2F2B0C9BA600C964E9 /* AskViewModel.swift in Sources */,
 				333BE9F52A61B22D006184C0 /* UserNotificationManager.swift in Sources */,
 				335C669D2A64555700B48720 /* SettingCell.swift in Sources */,
 				334939B62A5292F5007EE8FA /* PlannerDetailViewController.swift in Sources */,
@@ -675,6 +685,7 @@
 				3307B2582A6ADA65001FD5A4 /* FirebaseErrors.swift in Sources */,
 				333CDA8E2A5CE7300051C591 /* PlannerViewModel.swift in Sources */,
 				339E45412A503B1500F732CD /* Todo.swift in Sources */,
+				338B1B2D2B0C1C8700C964E9 /* AskViewController.swift in Sources */,
 				3338C7202A4DA0840081CD07 /* TabBarController.swift in Sources */,
 				335507752A4D6E49005FBE21 /* PlannerViewController.swift in Sources */,
 				339AE21F2ABA8A6C005E1666 /* UserInfo.swift in Sources */,
@@ -702,6 +713,7 @@
 				33DDEA6F2ABB830E00E1C4DE /* LabelFactory.swift in Sources */,
 				33DDEA762ABB886600E1C4DE /* AlarmView.swift in Sources */,
 				337FD7682A540F980088ABCE /* PlannerDetailTableViewCell.swift in Sources */,
+				338B1B2B2B0C1C6800C964E9 /* AskView.swift in Sources */,
 				33A3EB7C2AC0AD67004A637F /* VersionView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -5,13 +5,13 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
-import FirebaseAuth
 import Combine
+import FirebaseAuth
+import SafariServices
 import SwiftUI
+import UIKit
 
 final class LoginViewController: UIViewController {
-    
     private let loginView: LoginView
     private let viewModel: LoginViewModel
     var subscriptions = Set<AnyCancellable>()
@@ -28,10 +28,6 @@ final class LoginViewController: UIViewController {
         
         bind()
         setButtonTarget()
-    }
-   
-    func configure(tapped: LoginBtnType) {
-        view.backgroundColor = ThemeColor.PlanBeeBackgroundColor
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -50,6 +46,12 @@ final class LoginViewController: UIViewController {
     
     deinit {
         print("deint - LoginVC")
+    }
+}
+
+extension LoginViewController {
+    func configure(tapped: LoginBtnType) {
+        view.backgroundColor = ThemeColor.PlanBeeBackgroundColor
     }
 }
 
@@ -73,6 +75,11 @@ private extension LoginViewController {
         loginView.signUpBtn.addTarget(
             self,
             action: #selector(didTappedSignUpBtn),
+            for: .touchUpInside)
+        
+        loginView.consentButton.addTarget(
+            self,
+            action: #selector(didTappedConsentBtn),
             for: .touchUpInside)
     }
     
@@ -198,6 +205,13 @@ private extension LoginViewController {
     func buttonOFF(button: UIButton) {
         button.isEnabled = false
         button.backgroundColor = .lightGray
+    }
+    
+    @objc func didTappedConsentBtn() {
+        if let url = URL(string: CONSENT) {
+            let privacyVC = SFSafariViewController(url: url)
+            present(privacyVC, animated: true)
+        }
     }
 }
 

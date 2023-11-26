@@ -5,12 +5,11 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import UIKit
 import FSCalendar
 import SwiftUI
+import UIKit
 
 final class PlannerViewController: UIViewController {
-    
     private let plannerView = PlannerView()
     private let viewModel = PlannerViewModel()
     

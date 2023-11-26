@@ -46,7 +46,9 @@ final class TodoTableViewCell: UITableViewCell {
         }
         return stackView
     }()
-    
+}
+
+extension TodoTableViewCell {
     func configure(todo: Todo) {
         self.todo = todo
         setLayout()
