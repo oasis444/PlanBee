@@ -14,9 +14,9 @@
 <br>
 
 ## 📺 UI 미리보기
-<img src="https://github.com/z-wook/PlanBee/assets/101041221/3a53fb8d-2da4-42d6-acea-bbaf3fe86b14" width="300" /></a>
-<img src="https://github.com/z-wook/PlanBee/assets/101041221/782260b3-9190-4899-8994-d9961f61b0e5" width="300" /></a>
-<img src="https://github.com/z-wook/PlanBee/assets/101041221/a8afb59e-09ba-4527-bf60-1cba1296f8f3" width="300" /></a>
+<img src="https://github.com/z-wook/PlanBee/assets/101041221/3a53fb8d-2da4-42d6-acea-bbaf3fe86b14" width="250" /></a>
+<img src="https://github.com/z-wook/PlanBee/assets/101041221/782260b3-9190-4899-8994-d9961f61b0e5" width="250" /></a>
+<img src="https://github.com/z-wook/PlanBee/assets/101041221/a8afb59e-09ba-4527-bf60-1cba1296f8f3" width="250" /></a>
 
 <br>
 
