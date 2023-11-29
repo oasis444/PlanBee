@@ -23,7 +23,8 @@ final class SettingCell: UITableViewCell {
     private lazy var titleLabel: UILabel = {
         LabelFactory.makeLabel(
             text: nil,
-            font: ThemeFont.demibold(size: 17))
+            font: ThemeFont.demibold(size: 17),
+            textAlignment: .left)
     }()
     
     private lazy var stateTitleLabel: UILabel = {

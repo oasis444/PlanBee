@@ -6,7 +6,6 @@
 //
 
 import Combine
-import SwiftUI
 import UIKit
 
 final class ProfileViewController: UIViewController {
@@ -171,13 +170,5 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
             
         default: return
         }
-    }
-}
-
-struct ProfileVCPreView: PreviewProvider {
-    static var previews: some View {
-        let profileVC = ProfileViewController()
-        UINavigationController(rootViewController: profileVC)
-            .toPreview().edgesIgnoringSafeArea(.all)
     }
 }

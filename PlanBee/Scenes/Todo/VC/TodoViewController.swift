@@ -5,7 +5,6 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import SwiftUI
 import UIKit
 
 final class TodoViewController: UIViewController {
@@ -128,13 +127,5 @@ extension TodoViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return viewModel.todoHeaderTitle
-    }
-}
-
-struct TodoVCPreView: PreviewProvider {
-    static var previews: some View {
-        let todoVC = TodoViewController()
-        UINavigationController(rootViewController: todoVC)
-            .toPreview().edgesIgnoringSafeArea(.all)
     }
 }

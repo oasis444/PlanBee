@@ -6,7 +6,6 @@
 //
 
 import FSCalendar
-import SwiftUI
 import UIKit
 
 final class PlannerViewController: UIViewController {
@@ -80,12 +79,4 @@ extension PlannerViewController: FSCalendarDataSource, FSCalendarDelegate, FSCal
 //            return .label
 //        }
 //    }
-}
-
-struct PlannerVCPreView: PreviewProvider {
-    static var previews: some View {
-        let plannerVC = PlannerViewController()
-        UINavigationController(rootViewController: plannerVC)
-            .toPreview().edgesIgnoringSafeArea(.all)
-    }
 }
