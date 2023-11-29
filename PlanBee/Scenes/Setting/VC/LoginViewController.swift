@@ -8,7 +8,6 @@
 import Combine
 import FirebaseAuth
 import SafariServices
-import SwiftUI
 import UIKit
 
 final class LoginViewController: UIViewController {
@@ -269,13 +268,5 @@ private extension LoginViewController {
                 }
             })
         return alert
-    }
-}
-
-struct LoginVCPreView: PreviewProvider {
-    static var previews: some View {
-        let loginVC = LoginViewController(buttonType: .register, title: "회원가입")
-        UINavigationController(rootViewController: loginVC)
-            .toPreview().edgesIgnoringSafeArea(.all)
     }
 }

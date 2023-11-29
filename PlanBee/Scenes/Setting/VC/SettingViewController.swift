@@ -6,7 +6,6 @@
 //
 
 import SafariServices
-import SwiftUI
 import UIKit
 
 final class SettingViewController: UIViewController {
@@ -238,13 +237,5 @@ private extension SettingViewController {
             alert.addAction($0)
         }
         present(alert, animated: true)
-    }
-}
-
-struct SettingVCPreView: PreviewProvider {
-    static var previews: some View {
-        let settingVC = SettingViewController()
-        UINavigationController(rootViewController: settingVC)
-            .toPreview().edgesIgnoringSafeArea(.all)
     }
 }

@@ -6,7 +6,6 @@
 //
 
 import Combine
-import SwiftUI
 import UIKit
 
 final class PlannerDetailViewController: UIViewController {
@@ -168,12 +167,5 @@ extension PlannerDetailViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
-    }
-}
-
-struct PlannerDetailVCPreView: PreviewProvider {
-    static var previews: some View {
-        let plannerDetailVC = PlannerDetailViewController(date: Date())
-        plannerDetailVC.toPreview().edgesIgnoringSafeArea(.bottom)
     }
 }

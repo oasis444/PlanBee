@@ -5,7 +5,6 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import SwiftUI
 import UIKit
 
 final class AlarmViewController: UIViewController {
@@ -106,11 +105,5 @@ private extension AlarmViewController {
     
     @objc func didTappedDismissBtn() {
         dismiss(animated: true)
-    }
-}
-
-struct AlarmVCPreView: PreviewProvider {
-    static var previews: some View {
-        AlarmViewController().toPreview().edgesIgnoringSafeArea(.all)
     }
 }

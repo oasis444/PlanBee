@@ -5,7 +5,6 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import SwiftUI
 import UIKit
 
 class VersionViewController: UIViewController {
@@ -23,13 +22,5 @@ class VersionViewController: UIViewController {
     
     deinit {
         print("deinit - VersionVC")
-    }
-}
-
-struct VersionVCPreView: PreviewProvider {
-    static var previews: some View {
-        let versionVC = VersionViewController()
-        UINavigationController(rootViewController: versionVC)
-            .toPreview().edgesIgnoringSafeArea(.all)
     }
 }

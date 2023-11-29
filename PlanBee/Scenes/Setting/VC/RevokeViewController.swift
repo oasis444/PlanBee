@@ -5,7 +5,6 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import SwiftUI
 import UIKit
 
 final class RevokeViewController: UIViewController {
@@ -135,13 +134,5 @@ private extension RevokeViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             exit(0)
         }
-    }
-}
-
-struct RevokeVCPreView: PreviewProvider {
-    static var previews: some View {
-        let revokeVC = RevokeViewController()
-        UINavigationController(rootViewController: revokeVC)
-            .toPreview().edgesIgnoringSafeArea(.all)
     }
 }

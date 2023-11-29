@@ -6,7 +6,6 @@
 //
 
 import SnapKit
-import SwiftUI
 import UIKit
 
 final class AskViewController: UIViewController {
@@ -66,13 +65,5 @@ private extension AskViewController {
                 firstAction?()
             })
         present(alert, animated: true)
-    }
-}
-
-struct AskVCPreView: PreviewProvider {
-    static var previews: some View {
-        let askVC = AskViewController()
-        UINavigationController(rootViewController: askVC)
-            .toPreview().edgesIgnoringSafeArea(.all)
     }
 }

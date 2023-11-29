@@ -5,7 +5,6 @@
 //  Copyright (c) 2023 z-wook. All right reserved.
 //
 
-import SwiftUI
 import UIKit
 
 final class SignInViewController: UIViewController {
@@ -75,13 +74,5 @@ private extension SignInViewController {
             self.navigationController?.popToRootViewController(animated: true)
         }
         present(loginVC, animated: true)
-    }
-}
-
-struct SignInVCPreView: PreviewProvider {
-    static var previews: some View {
-        let signInVC = SignInViewController()
-        UINavigationController(rootViewController: signInVC)
-            .toPreview().edgesIgnoringSafeArea(.all)
     }
 }
