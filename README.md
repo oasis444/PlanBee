@@ -1,17 +1,23 @@
-<br>
-
 # 🐝 PlanBee
-
-### **오늘 할 일, 앞으로 할 일을 쉽게 기록해 보세요.**
-### **할 일을 깜빡하고 놓치지 않도록 해드릴게요!**
-
-<br>
+<img src="https://github.com/z-wook/PlanBee/assets/101041221/51884240-7cca-496d-8242-7fabda0bab2a" width="300" height="300">
+<br><br>
 
 ## 📆 프로젝트 기간
-
-2023년 07월 10일 ~ 2023년 08월 11일 (4주)
+2023년 07월 10일 ~ 현재 (개발 기간 4주)
 
 <br>
+
+## ⭐️ 프로젝트 소개 ⭐️
+### **오늘 할 일, 앞으로 할 일을 쉽게 기록해 보세요.**
+### **할 일을 깜빡하고 놓치지 않도록 해드릴게요!**
+<br>
+
+## 📱 앱 다운로드
+<a href="https://apps.apple.com/kr/app/%ED%94%8C%EB%9E%9C%EB%B9%84/id6473266809">
+   <img src="https://github.com/z-wook/PlanBee/assets/101041221/bf5b1fbd-3415-4cb6-836f-06b1e02164da" alt="AppStore" height="50" />
+</a>
+
+<br><br>
 
 ## 📺 UI 미리보기
 <img src="https://github.com/z-wook/PlanBee/assets/101041221/3a53fb8d-2da4-42d6-acea-bbaf3fe86b14" width="250" /></a>
@@ -104,4 +110,3 @@
 - [낙관적 업데이트 적용](https://velog.io/@oasis444/낙관적-업데이트)
 
 - [CoreData 대량 데이터 처리](https://velog.io/@oasis444/CoreData-대량-데이터-처리)
-
