@@ -8,6 +8,7 @@
 import Foundation
 
 final class TodoViewModel {
+    private let notificationManager = UserNotificationManager.shared
     private let todoManager = TodoManager.shared
     private let formatter = DateFormatter()
 }
@@ -37,6 +38,7 @@ extension TodoViewModel {
     
     func removeTodo(index: Int) async -> Bool {
         let todo = getTodoList[index]
+        notificationManager.removeAlarm(todo: todo)
         return await todoManager.removeTodo(todo: todo)
     }
 }
